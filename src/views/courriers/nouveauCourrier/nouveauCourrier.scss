@@ -1,0 +1,404 @@
+@use "../../../utils/styles/variables" as vars;
+@use "../../../utils/styles/mixins" as mixins;
+
+// Le main prend le reste de l'espace après header+subnav 
+#nouveauCourrier {
+  min-height: calc(100dvh - 6dvh - 4dvh); // 100dvh - header - subnav
+  background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 50%, #f0f3f7 100%);
+  padding: 1em 0;
+  margin-top: calc(6dvh + 4dvh); // Compenser header + subnav fixe
+
+  // Responsive tablette
+  @media (min-width: vars.$tabletWidth) {
+    padding: 1.5em 0;
+  }
+
+  // Responsive desktop
+  @media (min-width: vars.$desktopWidth) {
+    padding: 2em 0;
+  }
+
+  .nouveauCourrierContainer {
+    max-width: 62.5em;
+    margin: 0 auto;
+    padding: 0 0.5em; // Mobile first
+    flex: 1; // Prend tout l'espace disponible
+    display: flex;
+    flex-direction: column;
+
+    // Responsive tablette
+    @media (min-width: vars.$tabletWidth) {
+      padding: 0 1em;
+    }
+  }
+
+  .nouveauCourrierHeader {
+    display: flex;
+    flex-direction: column; // Mobile first - stack vertically
+    gap: 1em; // Mobile gap
+    color: vars.$fontColorPrimary;
+
+    // Responsive tablette
+    @media (min-width: vars.$tabletWidth) {
+      flex-direction: row; // Horizontal on larger screens
+      align-items: center;
+      gap: 2em;
+    }
+
+    .backButton {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 0.75em 1.5em;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      font-size: 0.9em;
+      transition: all 0.3s ease;
+      align-self: flex-start; // Don't stretch on mobile
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateX(-2em);
+      }
+    }
+
+    .pageTitle {
+      font-size: 2em; // Mobile first
+      font-weight: 700;
+      margin: 0;
+      background: vars.$utilsGradient;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      // Responsive tablette
+      @media (min-width: vars.$tabletWidth) {
+        font-size: 2.3em;
+      }
+
+      // Responsive desktop
+      @media (min-width: vars.$desktopWidth) {
+        font-size: 2.5em;
+      }
+    }
+  }
+
+  .courrierForm {
+    background: white;
+    border-radius: 12px; // Mobile first
+    box-shadow: 0 0.25em 1.25em rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin: 1.5em 0 0; // Only top margin
+
+    // Responsive tablette
+    @media (min-width: vars.$tabletWidth) {
+      border-radius: 16px;
+      box-shadow: 0 0.625em 2.5em rgba(0, 0, 0, 0.1);
+      margin-top: 2em;
+    }
+
+    .formGrid {
+      padding: 1.5rem; // Mobile first
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem; // Mobile gap
+
+      // Responsive tablette
+      @media (min-width: vars.$tabletWidth) {
+        padding: 2rem;
+        gap: 2rem;
+      }
+    }
+
+    .formSection {
+      .sectionTitle {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1.2rem; // Mobile first
+        font-weight: 600;
+        color: vars.$utilsPrimary;
+        padding: 0 0 0.5rem; // Only bottom padding
+        border-bottom: 2px solid vars.$borderColor;
+        
+        // Responsive tablette
+        @media (min-width: vars.$tabletWidth) {
+          font-size: 1.3rem;
+        }
+        
+        svg {
+          font-size: 1.3rem; // Mobile first
+
+          // Responsive tablette
+          @media (min-width: vars.$tabletWidth) {
+            font-size: 1.4rem;
+          }
+        }
+      }
+    }
+
+    .formRow {
+      display: flex;
+      flex-direction: column; // Mobile: stack vertically
+      gap: 1rem; // Mobile gap
+
+      // Responsive tablette
+      @media (min-width: vars.$tabletWidth) {
+        flex-direction: row; // Horizontal on larger screens
+        gap: 1.5rem;
+      }
+    }
+
+    .formGroup {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem; // Using gap instead of margins
+      flex: 1; // Equal distribution in rows
+      
+      label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        color: vars.$fontColorPrimary;
+        font-size: 0.9rem;
+        
+        svg {
+          font-size: 1rem;
+          color: vars.$utilsPrimary;
+        }
+      }
+      
+      input, select, textarea {
+        padding: 0.75rem 1rem;
+        border: 2px solid vars.$borderColor;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: white;
+        
+        &:focus {
+          outline: none;
+          border-color: vars.$utilsPrimary;
+          box-shadow: 0 0 0 3px rgba(38, 208, 206, 0.1);
+        }
+        
+        &::placeholder {
+          color: vars.$fontColorSecondary;
+        }
+      }
+      
+      textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+    }
+
+    .uploadZone {
+      border: 2px dashed vars.$borderColor;
+      border-radius: 10px; // Mobile first
+      padding: 2rem 1rem; // Mobile first
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: vars.$greyBackground;
+
+      // Responsive tablette
+      @media (min-width: vars.$tabletWidth) {
+        border-radius: 12px;
+        padding: 3rem 2rem;
+      }
+      
+      &:hover {
+        border-color: vars.$utilsPrimary;
+        background: rgba(38, 208, 206, 0.05);
+      }
+      
+      &.dragActive {
+        border-color: vars.$utilsPrimary;
+        background: rgba(38, 208, 206, 0.1);
+        transform: scale(1.02);
+      }
+      
+      &.hasFile {
+        border-color: vars.$successColor;
+        background: rgba(39, 174, 96, 0.05);
+      }
+
+      .fileInfo {
+        display: flex;
+        flex-direction: column; // Mobile: stack vertically
+        align-items: center;
+        gap: 1rem; // Mobile gap
+        padding: 1rem;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid vars.$borderColor;
+
+        // Responsive tablette
+        @media (min-width: vars.$tabletWidth) {
+          flex-direction: row; // Horizontal on larger screens
+          text-align: left;
+        }
+
+        .fileIcon {
+          font-size: 2rem;
+          color: vars.$successColor;
+          flex-shrink: 0;
+        }
+
+        .fileDetails {
+          flex: 1;
+
+          .fileName {
+            display: block;
+            font-weight: 600;
+            color: vars.$fontColorPrimary;
+            margin: 0 0 0.25rem; // Only bottom margin
+          }
+
+          .fileSize {
+            display: block;
+            font-size: 0.85rem;
+            color: vars.$fontColorSecondary;
+            margin: 0;
+          }
+        }
+
+        .removeFile {
+          background: none;
+          border: none;
+          color: vars.$errorColor;
+          font-size: 1.2rem;
+          cursor: pointer;
+          padding: 0.25rem;
+          border-radius: 4px;
+          transition: all 0.3s ease;
+          
+          &:hover {
+            background: rgba(231, 76, 60, 0.1);
+          }
+        }
+      }
+
+      .uploadPrompt {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+
+        .uploadIcon {
+          font-size: 2.5rem; // Mobile first
+          color: vars.$utilsPrimary;
+          opacity: 0.7;
+
+          // Responsive tablette
+          @media (min-width: vars.$tabletWidth) {
+            font-size: 3rem;
+          }
+        }
+
+        .uploadText {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+          text-align: center;
+
+          .primaryText {
+            font-size: 1rem; // Mobile first
+            font-weight: 600;
+            color: vars.$fontColorPrimary;
+
+            // Responsive tablette
+            @media (min-width: vars.$tabletWidth) {
+              font-size: 1.1rem;
+            }
+          }
+
+          .secondaryText {
+            font-size: 0.9rem; // Mobile first
+            color: vars.$fontColorSecondary;
+
+            // Responsive tablette
+            @media (min-width: vars.$tabletWidth) {
+              font-size: 0.95rem;
+            }
+          }
+
+          .formatText {
+            font-size: 0.75rem; // Mobile first
+            color: vars.$fontColorSecondary;
+
+            // Responsive tablette
+            @media (min-width: vars.$tabletWidth) {
+              font-size: 0.8rem;
+            }
+          }
+        }
+      }
+    }
+
+    .formActions {
+      padding: 1rem 1.5rem; // Mobile first
+      background: vars.$greyBackground;
+      display: flex;
+      flex-direction: column-reverse; // Mobile: cancel on top
+      gap: 1rem; // Mobile gap
+      border-top: 1px solid vars.$borderColor;
+
+      // Responsive tablette
+      @media (min-width: vars.$tabletWidth) {
+        flex-direction: row; // Horizontal on larger screens
+        justify-content: flex-end;
+        padding: 1.5rem 2rem;
+      }
+
+      .btnCancel, .btnSubmit {
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center; // Center on mobile
+        gap: 0.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        
+        // Responsive tablette
+        @media (min-width: vars.$tabletWidth) {
+          width: auto; // Auto width on larger screens
+        }
+        
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+
+      .btnCancel {
+        background: white;
+        color: vars.$fontColorPrimary;
+        border: 2px solid vars.$borderColor;
+        
+        &:hover:not(:disabled) {
+          border-color: vars.$errorColor;
+          color: vars.$errorColor;
+        }
+      }
+
+      .btnSubmit {
+        background: vars.$utilsGradient;
+        color: white;
+        border: none;
+        
+        &:hover:not(:disabled) {
+          transform: translateY(-1em);
+          box-shadow: 0 4em 12em rgba(38, 208, 206, 0.4);
+        }
+      }
+    }
+  }
+}

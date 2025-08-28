@@ -1,99 +1,129 @@
 # WhatATool
 
-Une application React moderne pour organiser et accéder à vos outils de développement et utilitaires du quotidien.
+Une application React moderne avec authentification et gestion d'utilitaires organisée en sections thématiques.
 
 ## 🎯 Description
 
-**WhatATool** est une plateforme web qui centralise vos outils de développement et utilitaires personnels dans une interface moderne et intuitive. L'application est organisée en deux sections principales :
+**WhatATool** est une application web qui centralise vos outils dans une interface moderne et responsive. L'application est organisée en deux sections principales :
 
-- **🧡 Web Développement** : Outils et ressources pour le développement web
-- **💙 Utilitaires** : Applications utilitaires pour la gestion quotidienne
+- **🧡 Web Développement** : Section pour les outils de développement web
+- **💙 Utilitaires** : Section pour les applications utilitaires (incluant la gestion des courriers)
 
 ## ✨ Fonctionnalités
 
+### Authentification
+- **Connexion et inscription** avec formulaires dédiés
+- **Gestion de session** avec contexte React
+- **Protection des routes** avec middleware d'authentification
+- **Interface utilisateur personnalisée** selon l'état de connexion
+
 ### Navigation Moderne
-- **Design Mobile-First** avec navigation responsive
-- **Menu hamburger** avec overlay pour mobile
-- **Couleurs thématiques** par section (orange pour Web Dev, vert d'eau pour Utils)
-- **Navigation contextuelle** avec sous-applications
+- **Header fixe** avec navigation responsive
+- **SubNav** contextuelle selon les sections
+- **Menu mobile** adaptatif
+- **Footer** qui apparaît uniquement au scroll
+- **Design Mobile-First** avec breakpoints responsive
+
+### Gestion des Courriers
+- **Interface de création** de nouveaux courriers
+- **Liste et gestion** des courriers existants
+- **Formulaires complets** avec upload de fichiers
+- **Navigation dédiée** dans la section Utilitaires
+
+### Architecture Moderne
+- **System de viewport** adaptatif (header + main = 100dvh minimum)  
+- **Couleurs thématiques** par section (orange pour Web Dev, teal pour Utils)
 - **Animations fluides** avec AOS (Animate On Scroll)
-
-### Système d'Authentification
-- Connexion et inscription sécurisées
-- Gestion des sessions utilisateur
-- Interface utilisateur personnalisée
-
-### Architecture Modulaire
-- **Sous-applications** intégrées dans chaque section
-- **Gestion des courriers** (première sous-app dans Utils)
-- Structure extensible pour ajouter facilement de nouvelles fonctionnalités
 
 ## 🚀 Technologies
 
 ### Frontend
-- **React 18** avec hooks
-- **TypeScript** pour la robustesse du code
-- **Vite** pour le bundling et le développement rapide
-- **React Router** pour la navigation
-- **Sass/SCSS** pour les styles avancés
+- **React 18** avec TypeScript
+- **Vite** pour le bundling et développement
+- **React Router Dom 7** pour la navigation
+- **Sass/SCSS** pour les styles modulaires
 
-### Bibliothèques UI/UX
-- **React Icons** pour les icônes
-- **AOS (Animate On Scroll)** pour les animations
-- Design system personnalisé avec variables CSS
+### Bibliothèques
+- **React Icons** pour l'iconographie
+- **AOS** pour les animations au scroll
+- **Axios** pour les appels API
 
-### Styling
-- **Architecture SCSS** modulaire
-- **Variables thématiques** pour les couleurs
-- **Mixins** pour les styles réutilisables
-- **Design responsive** avec breakpoints définis
+### Architecture CSS
+- **Variables SCSS** centralisées par thème
+- **Mixins** pour la cohérence des layouts
+- **Mobile-First** avec unités modernes (dvh, em)
+- **ID-based encapsulation** pour éviter les conflits CSS
 
 ## 📁 Structure du Projet
 
 ```
 src/
 ├── components/
-│   ├── navBar/           # Navigation principale
-│   ├── authForm/         # Formulaires d'authentification
+│   ├── authForm/         # Formulaire d'authentification
+│   ├── signInForm/       # Formulaire de connexion
+│   ├── signUpForm/       # Formulaire d'inscription
+│   ├── button/           # Composant bouton réutilisable
+│   ├── header/           # Navigation principale
+│   ├── subNav/           # Navigation secondaire
 │   └── footer/           # Pied de page
 ├── views/
 │   ├── home/             # Page d'accueil
 │   ├── authPage/         # Page d'authentification
 │   ├── webDevelopment/   # Section Web Dev
 │   ├── utils/            # Section Utilitaires
-│   └── courriers/        # Sous-app Gestion des courriers
-├── utils/
-│   ├── styles/           # Variables, mixins SCSS globaux
-│   ├── middleware/       # Middleware d'authentification
-│   └── services/         # Services API
-└── context/              # Contextes React (utilisateur, etc.)
+│   └── courriers/        # Gestion des courriers
+│       └── nouveauCourrier/  # Création de courrier
+├── context/
+│   └── user/             # Contexte utilisateur (UserContext, UserProvider)
+├── API/
+│   ├── services/         # Services d'API (auth, user)
+│   └── models/           # Modèles TypeScript
+└── utils/
+    ├── styles/           # Variables, mixins SCSS
+    ├── middleware/       # Protection des routes
+    ├── scripts/          # Utilitaires JavaScript
+    └── types/            # Types TypeScript
 ```
 
 ## 🎨 Design System
 
-### Couleurs
-- **Web Dev** : Palette orange/corail (#ff6b47, #ff8a65)
-- **Utils** : Palette vert d'eau (#26d0ce, #4dd0e1)
-- **Neutrals** : Gris modernes pour les textes et backgrounds
+### Couleurs par Section
+**Web Development (Orange/Corail)**
+```scss
+$webdevPrimary: #ff6b47;
+$webdevSecondary: #ff8a65;
+$webdevGradient: linear-gradient(135deg, #ff6b47, #ff8a65);
+```
 
-### Typographie
-- **Ubuntu** comme police principale
-- Hiérarchie claire avec tailles responsives
-- Contraste optimisé pour la lisibilité
+**Utilitaires (Vert d'eau/Teal)**
+```scss
+$utilsPrimary: #26d0ce;
+$utilsSecondary: #4dd0e1;  
+$utilsGradient: linear-gradient(135deg, #26d0ce, #4dd0e1);
+```
 
-### Animations
-- Transitions fluides avec `cubic-bezier`
-- Animations d'entrée avec AOS
-- Micro-interactions sur les éléments interactifs
+### Responsive Design
+- **Mobile** : Base de développement (< 768px)
+- **Tablet** : 1024px+ avec `@media (min-width: $tabletWidth)`
+- **Desktop** : 1440px+ avec `@media (min-width: $desktopWidth)`
+
+### Unités Modernes
+- **Layouts** : `em` pour les dimensions des blocs
+- **Viewport** : `dvh`/`dvw` au lieu de `vh`/`vw`
+- **Bordures** : `px` pour borders et border-radius
+- **Header fixe** : 6dvh, **SubNav** : 4dvh
 
 ## 🛠️ Installation et Développement
 
 ### Prérequis
 - Node.js (version 18+)
-- npm ou yarn
+- npm
 
 ### Installation
 ```bash
+# Cloner le projet
+git clone [repository-url]
+
 # Installer les dépendances
 npm install
 
@@ -106,24 +136,29 @@ npm run build
 
 ### Scripts Disponibles
 - `npm run dev` : Serveur de développement avec HMR
-- `npm run build` : Build optimisé pour la production  
-- `npm run lint` : Linting du code avec ESLint
-- `npm run preview` : Prévisualisation du build de production
+- `npm run build` : Build TypeScript + Vite optimisé
+- `npm run lint` : Linting ESLint
+- `npm run preview` : Prévisualisation du build
 
-## 🔧 Configuration
+## 🔧 Architecture Technique
 
-### Customisation des Couleurs
-Les couleurs sont définies dans `src/utils/styles/variables.scss` :
-```scss
-// Section Web Dev
-$webdevPrimary: #ff6b47;
-$webdevSecondary: #ff8a65;
+### Règles de Développement
+- **TypeScript strict** : Pas de `any`, typage explicite
+- **SCSS modulaire** : Chaque composant a son fichier SCSS avec ID unique
+- **Flexbox only** : Pas de CSS Grid, uniquement Flexbox
+- **Mobile-First** : Développement smartphone d'abord
+- **Gap-based spacing** : Éviter margin-top/bottom, privilégier gap
 
-// Section Utils  
-$utilsPrimary: #26d0ce;
-$utilsSecondary: #4dd0e1;
-```
+### Gestion d'État
+- **UserContext** pour l'authentification globale
+- **UserProvider** pour l'injection des données utilisateur
+- **WithAuth** middleware pour protéger les routes
+
+### Structure des Fichiers
+Chaque composant suit la convention :
+- `ComponentName.tsx` avec `id="componentName"`
+- `componentName.scss` avec `#componentName { ... }`
 
 ---
 
-**WhatATool** - Centralisez et organisez tous vos outils en un seul endroit ! 🛠️
+**WhatATool** - Une application React moderne avec authentification et gestion d'utilitaires ! 🛠️

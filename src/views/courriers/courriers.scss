@@ -1,0 +1,298 @@
+@use "../../utils/styles/mixins" as mixins;
+@use "../../utils/styles/variables" as vars;
+
+// Structure: Header + SubNav (fixe) + Main 
+#courriers {
+  min-height: calc(100dvh - 6dvh - 4dvh); // 100dvh - header - subnav
+  background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 50%, #f0f3f7 100%);
+  padding: 1em 0.5em;
+  margin-top: calc(6dvh + 4dvh); // Compenser header + subnav fixe
+
+  // Responsive tablette
+  @media (min-width: vars.$tabletWidth) {
+    padding: 1.5em 1em;
+  }
+
+  // Responsive desktop
+  @media (min-width: vars.$desktopWidth) {
+    padding: 2em 1em;
+  }
+
+  .courriersContainer {
+    max-width: 75em;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2em; // Mobile first gap
+    flex: 1; // Prend tout l'espace disponible
+
+    // Responsive tablette
+    @media (min-width: vars.$tabletWidth) {
+      gap: 2.5em;
+    }
+
+    // Responsive desktop
+    @media (min-width: vars.$desktopWidth) {
+      gap: 3em;
+    }
+  }
+
+  .courriersHeader {
+    text-align: center;
+    color: vars.$fontColorPrimary;
+
+    .courriersTitle {
+      font-size: 2em; // Mobile first
+      font-weight: 700;
+      background: vars.$utilsGradient;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      // Responsive tablette
+      @media (min-width: vars.$tabletWidth) {
+        font-size: 2.3em;
+      }
+
+      // Responsive desktop
+      @media (min-width: vars.$desktopWidth) {
+        font-size: 2.5em;
+      }
+    }
+
+    .courriersSubtitle {
+      font-size: 1em; // Mobile first
+      opacity: 0.9;
+      margin: 0.5em 0 0;
+
+      // Responsive tablette
+      @media (min-width: vars.$tabletWidth) {
+        font-size: 1.1em;
+      }
+    }
+  }
+
+  .courriersActions {
+    .actionsGrid {
+      display: flex;
+      flex-direction: column; // Mobile: stack vertically
+      gap: 1em; // Mobile gap
+      max-width: 50em;
+      margin: 0 auto;
+
+      // Responsive tablette
+      @media (min-width: vars.$tabletWidth) {
+        flex-direction: row; // Tablet: horizontal
+        flex-wrap: wrap;
+        gap: 1.5em;
+      }
+
+      .actionBtn {
+        background: white;
+        border: none;
+        border-radius: 10px; // Mobile first
+        padding: 1.5em 1em; // Mobile first
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75em; // Mobile gap
+        flex: 1; // Equal distribution
+        min-width: 0; // Prevent flex overflow
+        
+        // Responsive tablette
+        @media (min-width: vars.$tabletWidth) {
+          border-radius: 12px;
+          padding: 2em 1.5em;
+          gap: 1em;
+          flex: 1 1 calc(50% - 0.75em); // 2 per row on tablet
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        // Responsive desktop
+        @media (min-width: vars.$desktopWidth) {
+          flex: 1 1 calc(25% - 1.125em); // 4 per row on desktop
+        }
+        
+        &:hover {
+          transform: translateY(-0.125em);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        &.primary {
+          background: vars.$utilsGradient;
+          color: white;
+        }
+        
+        &.active {
+          background: vars.$utilsGradientReverse;
+          color: white;
+        }
+
+        .actionIcon {
+          font-size: 1.75em; // Mobile first
+          color: vars.$utilsPrimary;
+
+          // Responsive tablette
+          @media (min-width: vars.$tabletWidth) {
+            font-size: 2em;
+          }
+
+          .primary & {
+            color: white;
+          }
+
+          .active & {
+            color: white;
+          }
+        }
+
+        .actionText {
+          font-size: 1em; // Mobile first
+          font-weight: 600;
+          text-align: center;
+
+          // Responsive tablette
+          @media (min-width: vars.$tabletWidth) {
+            font-size: 1.1em;
+          }
+        }
+      }
+    }
+  }
+
+  .courriersStats {
+    .statsTitle {
+      text-align: center;
+      color: vars.$fontColorPrimary;
+      font-size: 1.75em; // Mobile first
+      
+      // Responsive tablette
+      @media (min-width: vars.$tabletWidth) {
+        font-size: 2em;
+      }
+    }
+
+    .statsGrid {
+      display: flex;
+      flex-direction: column; // Mobile: stack vertically
+      gap: 1em; // Mobile gap
+      max-width: 62.5em;
+      margin: 1.5em auto 0; // Using margin-top here for spacing after title
+
+      // Responsive tablette
+      @media (min-width: vars.$tabletWidth) {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 1.5em;
+        margin-top: 2em;
+      }
+
+      .statCard {
+        background: white;
+        border-radius: 10px; // Mobile first
+        padding: 1.5em 1em; // Mobile first
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        display: flex;
+        align-items: center;
+        gap: 1em; // Mobile gap
+        transition: transform 0.3s ease;
+        flex: 1;
+        
+        // Responsive tablette
+        @media (min-width: vars.$tabletWidth) {
+          border-radius: 12px;
+          padding: 2em 1.5em;
+          gap: 1.5em;
+          flex: 1 1 calc(50% - 0.75em); // 2 per row on tablet
+        }
+
+        // Responsive desktop
+        @media (min-width: vars.$desktopWidth) {
+          flex: 1 1 calc(25% - 1.125em); // 4 per row on desktop
+        }
+        
+        &:hover {
+          transform: translateY(-0.125em);
+        }
+
+        .statIcon {
+          width: 50px; // Mobile first
+          height: 50px;
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.25em; // Mobile first
+          color: white;
+          flex-shrink: 0;
+          background: vars.$utilsGradient;
+
+          // Responsive tablette
+          @media (min-width: vars.$tabletWidth) {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            font-size: 1.5em;
+          }
+        }
+
+        .statContent {
+          flex: 1;
+
+          .statValue {
+            font-size: 1.75em; // Mobile first
+            font-weight: 700;
+            color: vars.$fontColorPrimary;
+            line-height: 1;
+
+            // Responsive tablette
+            @media (min-width: vars.$tabletWidth) {
+              font-size: 2em;
+            }
+          }
+
+          .statLabel {
+            font-size: 0.85em; // Mobile first
+            color: vars.$fontColorSecondary;
+            margin: 0.25em 0 0; // Only top margin
+
+            // Responsive tablette
+            @media (min-width: vars.$tabletWidth) {
+              font-size: 0.9em;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .courriersContent {
+    .contentCard {
+      background: white;
+      border-radius: 10px; // Mobile first
+      padding: 1.5em; // Mobile first
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      text-align: center;
+
+      // Responsive tablette
+      @media (min-width: vars.$tabletWidth) {
+        border-radius: 12px;
+        padding: 2em;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      
+      h3 {
+        color: vars.$utilsPrimary;
+        margin: 0 0 1em; // Only bottom margin
+      }
+      
+      p {
+        color: vars.$fontColorSecondary;
+        margin: 0;
+      }
+    }
+  }
+}

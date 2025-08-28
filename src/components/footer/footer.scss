@@ -1,17 +1,20 @@
-footer {
+@use "../../utils/styles/variables" as vars;
+
+#footer {
   min-height: 10dvh;
-  background: #36395a;
-  color: #ffffff;
+  background: vars.$fontColorPrimary;
+  color: vars.$whiteBackground;
   display: flex;
   align-items: center;
   justify-content: center;
 
   .textWrapper {
-    width: 280px;
+    width: 17.5em;
     text-align: center;
+    
     p {
-      color: #ffffff;
-      font-size: 14px;
+      color: vars.$whiteBackground;
+      font-size: 0.875em;
     }
   }
 }

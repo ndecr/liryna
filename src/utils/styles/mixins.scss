@@ -1,9 +1,135 @@
+// ===================
+// VIEWPORT HEIGHT MIXINS
+// ===================
+
+// Heights constants en dvh
+$header-height: 6dvh;    // ~60px
+$subnav-height: 4dvh;    // ~40px
+
+// Mixin pour main avec header seulement
+@mixin fullViewportWithHeader {
+  min-height: calc(100dvh - #{$header-height});
+  padding-top: $header-height;
+}
+
+// Mixin pour main avec header + subnav  
+@mixin fullViewportWithHeaderSubnav {
+  min-height: calc(100dvh - #{$header-height} - #{$subnav-height});
+  padding-top: calc(#{$header-height} + #{$subnav-height});
+}
+
+// Mixin générique qui détecte automatiquement si subnav existe
+@mixin fullViewport {
+  // Par défaut, assume header + subnav
+  min-height: calc(100dvh - #{$header-height} - #{$subnav-height});
+  padding-top: calc(#{$header-height} + #{$subnav-height});
+  
+  // Si pas de subnav dans la page, utiliser cette classe sur le main
+  &.no-subnav {
+    min-height: calc(100dvh - #{$header-height});
+    padding-top: $header-height;
+  }
+}
+
+// ===================
+// LAYOUT MIXINS POUR POUSSER LE FOOTER
+// ===================
+
+// Mixin pour conteneur de page complète (body ou page wrapper)
+@mixin pageContainer {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+// Mixin pour main qui pousse le footer vers le bas
+@mixin mainContentExpanding {
+  flex: 1; // Prend tout l'espace disponible
+  display: flex;
+  flex-direction: column;
+}
+
+// Mixin pour main avec header + subnav qui pousse le footer
+@mixin mainContentExpandingWithSubnav {
+  flex: 1; // Prend tout l'espace disponible
+  display: flex;
+  flex-direction: column;
+  padding-top: calc(#{$header-height} + #{$subnav-height}); // Header + SubNav
+}
+
+// ===================
+// LEGACY SUPPORT (À SUPPRIMER PROGRESSIVEMENT)
+// ===================
 @mixin main {
-  margin-top: 105px; // header + subnav
-  min-height: calc(100dvh - 105px);
+  @include fullViewportWithHeaderSubnav;
   display: flex;
   flex-flow: column;
   align-items: center;
   justify-content: center;
   position: relative;
+}
+
+// ===================
+// LAYOUT HELPERS
+// ===================
+
+// Flex container standard
+@mixin flexContainer($direction: column, $gap: 1em) {
+  display: flex;
+  flex-direction: $direction;
+  gap: $gap;
+}
+
+// Flex container responsive
+@mixin flexContainerResponsive($mobile-direction: column, $tablet-direction: row, $gap: 1em) {
+  @include flexContainer($mobile-direction, $gap);
+  
+  @media (min-width: 1024px) { // $tabletWidth
+    flex-direction: $tablet-direction;
+    gap: calc(#{$gap} * 1.5);
+  }
+  
+  @media (min-width: 1440px) { // $desktopWidth  
+    gap: calc(#{$gap} * 2);
+  }
+}
+
+// Container avec padding responsive
+@mixin responsivePadding($mobile: 1em, $tablet: 1.5em, $desktop: 2em) {
+  padding: $mobile 0.5em; // Mobile first
+  
+  @media (min-width: 1024px) { // $tabletWidth
+    padding: $tablet 1em;
+  }
+  
+  @media (min-width: 1440px) { // $desktopWidth
+    padding: $desktop 1.5em;
+  }
+}
+
+// Card standard
+@mixin card($radius: 0.75em, $shadow: light) {
+  background: white;
+  border-radius: $radius;
+  
+  @if $shadow == light {
+    box-shadow: 0 0.125em 0.5em rgba(0, 0, 0, 0.08);
+  } @else if $shadow == medium {
+    box-shadow: 0 0.25em 1em rgba(0, 0, 0, 0.1);
+  } @else if $shadow == heavy {
+    box-shadow: 0 0.5em 2em rgba(0, 0, 0, 0.15);
+  }
+  
+  // Responsive
+  @media (min-width: 1024px) { // $tabletWidth
+    border-radius: calc(#{$radius} * 1.2);
+    
+    @if $shadow == light {
+      box-shadow: 0 0.25em 1em rgba(0, 0, 0, 0.1);
+    } @else if $shadow == medium {
+      box-shadow: 0 0.5em 1.5em rgba(0, 0, 0, 0.12);
+    } @else if $shadow == heavy {
+      box-shadow: 0 1em 3em rgba(0, 0, 0, 0.18);
+    }
+  }
 }

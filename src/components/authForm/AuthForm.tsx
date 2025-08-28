@@ -42,7 +42,7 @@ export default function AuthForm({
   } = props;
 
   return (
-    <>
+    <div id="authFormWrapper">
       {isSignIn ? (
         <SignInForm
           email={email}
@@ -64,6 +64,6 @@ export default function AuthForm({
           setLastName={setLastName}
         />
       )}
-    </>
+    </div>
   );
 }

@@ -35,7 +35,7 @@ export default function AuthPage(): ReactElement {
   };
 
   return (
-    <div className="authPageContainer">
+    <div id="authPage" className="authPageContainer">
       <Header />
       <main>
         <AuthForm

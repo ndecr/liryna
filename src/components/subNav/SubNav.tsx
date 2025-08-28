@@ -73,7 +73,7 @@ export default function SubNav(): ReactElement | null {
   }
 
   return (
-    <div className="subNav">
+    <div id="subNav" className="subNav">
       <div className="subNavContainer">
         {currentSection.subApps.map((subApp) => (
           <button

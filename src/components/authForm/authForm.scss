@@ -4,13 +4,13 @@
   background: #f2f2f2f2;
   border: 2px solid #36395a;
   border-radius: 4px;
-  padding: 1rem;
+  padding: 1em;
   gap:2em;
-  width: 260px;
+  width: 16.25em;
 
 
   h2 {
-    font-size: 18px;
+    font-size: 1.125em;
     font-weight: 700;
     position: relative;
 
@@ -29,11 +29,11 @@
   .inputContainer {
     label {
       width: 100%;
-      font-size: 14px;
+      font-size: 0.875em;
     }
     input {
       width: 100%;
-      font-size: 14px;
+      font-size: 0.875em;
       border: 1px solid #36395a;
       border-radius: 4px;
       padding: .5em;

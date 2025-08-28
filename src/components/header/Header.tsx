@@ -100,7 +100,7 @@ export default function Header(): ReactElement {
 
   return (
     <>
-      <header className={`header ${currentSection?.color || 'utils'}`}>
+      <header id="header" className={`header ${currentSection?.color || 'utils'}`}>
         <div className="headerContainer">
           {/* Logo/Brand */}
           <Link 

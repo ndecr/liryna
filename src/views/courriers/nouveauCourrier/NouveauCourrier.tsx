@@ -104,33 +104,33 @@ function NouveauCourrier(): ReactElement {
     <>
       <Header />
       <SubNav />
-      <main className="nouveau-courrier-main">
-        <div className="nouveau-courrier-container">
+      <main id="nouveauCourrier" className="nouveauCourrierMain">
+        <div className="nouveauCourrierContainer">
           {/* Header */}
-          <header className="nouveau-courrier-header" data-aos="fade-down">
+          <header className="nouveauCourrierHeader" data-aos="fade-down">
             <button 
-              className="back-button"
+              className="backButton"
               onClick={handleCancel}
               type="button"
             >
               <MdArrowBack />
               <span>Retour</span>
             </button>
-            <h1 className="page-title">Nouveau courrier</h1>
+            <h1 className="pageTitle">Nouveau courrier</h1>
           </header>
 
           {/* Form */}
-          <form className="courrier-form" onSubmit={handleSubmit} data-aos="fade-up" data-aos-delay="100">
-            <div className="form-grid">
+          <form className="courrierForm" onSubmit={handleSubmit} data-aos="fade-up" data-aos-delay="100">
+            <div className="formGrid">
               {/* Informations principales */}
-              <section className="form-section">
-                <h2 className="section-title">
+              <section className="formSection">
+                <h2 className="sectionTitle">
                   <FiMail />
                   Informations principales
                 </h2>
                 
-                <div className="form-row">
-                  <div className="form-group">
+                <div className="formRow">
+                  <div className="formGroup">
                     <label htmlFor="direction">Direction *</label>
                     <select
                       id="direction"
@@ -144,7 +144,7 @@ function NouveauCourrier(): ReactElement {
                       <option value="interne">Interne</option>
                     </select>
                   </div>
-                  <div className="form-group">
+                  <div className="formGroup">
                     <label htmlFor="kind">Type de courrier</label>
                     <input
                       type="text"
@@ -157,8 +157,8 @@ function NouveauCourrier(): ReactElement {
                   </div>
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
+                <div className="formRow">
+                  <div className="formGroup">
                     <label htmlFor="emitter">
                       <FiUser />
                       Expéditeur
@@ -172,7 +172,7 @@ function NouveauCourrier(): ReactElement {
                       placeholder="Nom de l'expéditeur"
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="formGroup">
                     <label htmlFor="recipient">
                       <FiUser />
                       Destinataire
@@ -188,8 +188,8 @@ function NouveauCourrier(): ReactElement {
                   </div>
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group">
+                <div className="formRow">
+                  <div className="formGroup">
                     <label htmlFor="department">
                       <FiTag />
                       Service/Département
@@ -203,7 +203,7 @@ function NouveauCourrier(): ReactElement {
                       placeholder="Service concerné"
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="formGroup">
                     <label htmlFor="priority">
                       <FiTag />
                       Priorité
@@ -224,14 +224,14 @@ function NouveauCourrier(): ReactElement {
               </section>
 
               {/* Dates */}
-              <section className="form-section">
-                <h2 className="section-title">
+              <section className="formSection">
+                <h2 className="sectionTitle">
                   <FiCalendar />
                   Dates
                 </h2>
                 
-                <div className="form-row">
-                  <div className="form-group">
+                <div className="formRow">
+                  <div className="formGroup">
                     <label htmlFor="receptionDate">Date de réception</label>
                     <input
                       type="date"
@@ -241,7 +241,7 @@ function NouveauCourrier(): ReactElement {
                       onChange={handleInputChange}
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="formGroup">
                     <label htmlFor="courrierDate">Date du courrier</label>
                     <input
                       type="date"
@@ -255,13 +255,13 @@ function NouveauCourrier(): ReactElement {
               </section>
 
               {/* Description */}
-              <section className="form-section fullWidth">
-                <h2 className="section-title">
+              <section className="formSection fullWidth">
+                <h2 className="sectionTitle">
                   <FiFileText />
                   Description
                 </h2>
                 
-                <div className="form-group">
+                <div className="formGroup">
                   <label htmlFor="description">Notes et observations</label>
                   <textarea
                     id="description"
@@ -275,14 +275,14 @@ function NouveauCourrier(): ReactElement {
               </section>
 
               {/* Upload de fichier */}
-              <section className="form-section fullWidth">
-                <h2 className="section-title">
+              <section className="formSection fullWidth">
+                <h2 className="sectionTitle">
                   <MdUploadFile />
                   Document joint
                 </h2>
                 
                 <div 
-                  className={`upload-zone ${dragActive ? 'drag-active' : ''} ${formData.fichierJoint ? 'has-file' : ''}`}
+                  className={`uploadZone ${dragActive ? 'dragActive' : ''} ${formData.fichierJoint ? 'hasFile' : ''}`}
                   onDragEnter={handleDrag}
                   onDragLeave={handleDrag}
                   onDragOver={handleDrag}
@@ -298,17 +298,17 @@ function NouveauCourrier(): ReactElement {
                   />
                   
                   {formData.fichierJoint ? (
-                    <div className="file-info">
-                      <MdUploadFile className="file-icon" />
-                      <div className="file-details">
-                        <span className="file-name">{formData.fichierJoint.name}</span>
-                        <span className="file-size">
+                    <div className="fileInfo">
+                      <MdUploadFile className="fileIcon" />
+                      <div className="fileDetails">
+                        <span className="fileName">{formData.fichierJoint.name}</span>
+                        <span className="fileSize">
                           {(formData.fichierJoint.size / 1024 / 1024).toFixed(2)} MB
                         </span>
                       </div>
                       <button
                         type="button"
-                        className="remove-file"
+                        className="removeFile"
                         onClick={(e) => {
                           e.stopPropagation();
                           setFormData(prev => ({ ...prev, fichierJoint: undefined }));
@@ -318,12 +318,12 @@ function NouveauCourrier(): ReactElement {
                       </button>
                     </div>
                   ) : (
-                    <div className="upload-prompt">
-                      <MdUploadFile className="upload-icon" />
-                      <div className="upload-text">
-                        <span className="primary-text">Cliquez pour sélectionner</span>
-                        <span className="secondary-text">ou glissez-déposez votre fichier ici</span>
-                        <span className="format-text">PDF, DOC, DOCX, JPG, PNG (max 10MB)</span>
+                    <div className="uploadPrompt">
+                      <MdUploadFile className="uploadIcon" />
+                      <div className="uploadText">
+                        <span className="primaryText">Cliquez pour sélectionner</span>
+                        <span className="secondaryText">ou glissez-déposez votre fichier ici</span>
+                        <span className="formatText">PDF, DOC, DOCX, JPG, PNG (max 10MB)</span>
                       </div>
                     </div>
                   )}
@@ -332,10 +332,10 @@ function NouveauCourrier(): ReactElement {
             </div>
 
             {/* Actions */}
-            <div className="form-actions" data-aos="fade-up" data-aos-delay="200">
+            <div className="formActions" data-aos="fade-up" data-aos-delay="200">
               <button
                 type="button"
-                className="btn-cancel"
+                className="btnCancel"
                 onClick={handleCancel}
                 disabled={isSubmitting}
               >

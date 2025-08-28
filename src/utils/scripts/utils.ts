@@ -9,6 +9,7 @@ export const getApiBaseUrl = (): string => {
     return "https://ndecrolympe.duckdns.org/api";
   } else {
     // En développement local, utiliser IP locale
-    return "http://192.168.1.56:8800/api";
+    return "https://ndecrolympe.duckdns.org/api";
+    // return "http://192.168.1.56:8800/api";
   }
 };

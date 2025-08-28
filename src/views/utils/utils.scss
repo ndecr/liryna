@@ -1,0 +1,78 @@
+@use "../../utils/styles/mixins" as mixins;
+@use "../../utils/styles/variables" as vars;
+
+// Structure: Header + SubNav (fixe) + Main
+#utils {
+  min-height: calc(100dvh - 6dvh - 4dvh); // 100dvh - header - subnav  
+  background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 50%, #f0f3f7 100%);
+  padding: 1em 0.5em;
+  margin-top: calc(6dvh + 4dvh); // Compenser header + subnav fixe
+
+  .utilsContent {
+    max-width: 50em;
+    margin: 0 auto;
+    text-align: center;
+    color: vars.$fontColorPrimary;
+    padding: 2em 0; // Mobile first
+    flex: 1; // Prend tout l'espace disponible
+
+    .utilsTitle {
+      font-size: 2em; // Mobile first
+      font-weight: 700;
+      margin: 0 0 1.5em; // Only bottom margin
+      background: vars.$utilsGradient;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .utilsWelcome {
+      background: white;
+      border: 1px solid vars.$borderColor;
+      border-radius: 12px; // Mobile first
+      padding: 1.5em; // Mobile first
+      box-shadow: 0 0.25em 1.25em rgba(0, 0, 0, 0.08);
+      margin: 0 1em; // Mobile first
+      
+      p {
+        font-size: 1em; // Mobile first
+        line-height: 1.6;
+        margin: 0;
+        color: vars.$fontColorSecondary;
+      }
+    }
+  }
+}
+
+// Styles mobile first already applied above
+// Responsive tablette et desktop
+@media (min-width: vars.$tabletWidth) {
+  #utils {
+    padding: 1.5em 1em;
+
+    .utilsContent {
+      .utilsTitle {
+        font-size: 2.3em;
+      }
+
+      .utilsWelcome {
+        padding: 2em;
+        margin: 0;
+        
+        p {
+          font-size: 1.1em;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: vars.$desktopWidth) {
+  #utils {
+    padding: 2em 1em;
+
+    .utilsContent .utilsTitle {
+      font-size: 2.5em;
+    }
+  }
+}

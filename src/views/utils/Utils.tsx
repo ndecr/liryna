@@ -15,10 +15,10 @@ function Utils(): ReactElement {
     <>
       <Header />
       <SubNav />
-      <main className="utilsMain">
-        <section className="utils-content">
-          <h1 className="utils-title">Outils utilitaires</h1>
-          <div className="utils-welcome">
+      <main id="utils" className="utilsMain">
+        <section className="utilsContent">
+          <h1 className="utilsTitle">Outils utilitaires</h1>
+          <div className="utilsWelcome">
             <p>Bienvenue dans la section utilitaires. Utilisez la navigation pour accéder aux différents outils disponibles.</p>
           </div>
         </section>

@@ -17,7 +17,7 @@ import Footer from "../../components/footer/Footer";
 
 function Home(): ReactElement {
   return (
-    <div className="homeContainer">
+    <div id="home" className="homeContainer">
       <Header />
       <SubNav />
       <main>

@@ -88,46 +88,46 @@ function Courriers(): ReactElement {
     <>
       <Header />
       <SubNav />
-      <main className="courriers-main">
-        <div className="courriers-container">
-          <section className="courriers-header" data-aos="fade-down">
-            <h1 className="courriers-title">Gestion des courriers</h1>
-            <p className="courriers-subtitle">Organisez et suivez vos courriers efficacement</p>
+      <main id="courriers" className="courriersMain">
+        <div className="courriersContainer">
+          <section className="courriersHeader" data-aos="fade-down">
+            <h1 className="courriersTitle">Gestion des courriers</h1>
+            <p className="courriersSubtitle">Organisez et suivez vos courriers efficacement</p>
           </section>
 
-          <section className="courriers-actions" data-aos="fade-up" data-aos-delay="100">
-            <div className="actions-grid">
+          <section className="courriersActions" data-aos="fade-up" data-aos-delay="100">
+            <div className="actionsGrid">
               {actions.map((action, index) => (
                 <button
                   key={action.id}
-                  className={`action-btn ${action.primary ? 'primary' : ''} ${activeAction === action.id ? 'active' : ''}`}
+                  className={`actionBtn ${action.primary ? 'primary' : ''} ${activeAction === action.id ? 'active' : ''}`}
                   onClick={() => handleActionClick(action.id)}
                   data-aos="fade-up"
                   data-aos-delay={150 + index * 50}
                 >
-                  <span className="action-icon">{action.icon}</span>
-                  <span className="action-text">{action.label}</span>
+                  <span className="actionIcon">{action.icon}</span>
+                  <span className="actionText">{action.label}</span>
                 </button>
               ))}
             </div>
           </section>
 
-          <section className="courriers-stats" data-aos="fade-up" data-aos-delay="200">
-            <h2 className="stats-title">Statistiques</h2>
-            <div className="stats-grid">
+          <section className="courriersStats" data-aos="fade-up" data-aos-delay="200">
+            <h2 className="statsTitle">Statistiques</h2>
+            <div className="statsGrid">
               {stats.map((stat, index) => (
                 <div
                   key={stat.id}
-                  className={`stat-card ${stat.color}`}
+                  className={`statCard ${stat.color}`}
                   data-aos="zoom-in"
                   data-aos-delay={250 + index * 100}
                 >
-                  <div className="stat-icon">
+                  <div className="statIcon">
                     {stat.icon}
                   </div>
-                  <div className="stat-content">
-                    <div className="stat-value">{stat.value}</div>
-                    <div className="stat-label">{stat.label}</div>
+                  <div className="statContent">
+                    <div className="statValue">{stat.value}</div>
+                    <div className="statLabel">{stat.label}</div>
                   </div>
                 </div>
               ))}
@@ -135,7 +135,7 @@ function Courriers(): ReactElement {
           </section>
 
           {activeAction && (
-            <section className="courriers-content" data-aos="fade-up" data-aos-delay="300">
+            <section className="courriersContent" data-aos="fade-up" data-aos-delay="300">
               <div className="contentCard">
                 <h3>Section: {actions.find(a => a.id === activeAction)?.label}</h3>
                 <p>Le contenu de cette section sera développé selon vos besoins spécifiques.</p>

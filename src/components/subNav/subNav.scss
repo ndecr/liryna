@@ -1,64 +1,52 @@
-@import "../../utils/styles/variables.scss";
+@use "../../utils/styles/variables" as vars;
 
 // ===================
 // SUB-NAVIGATION
 // ===================
-.subNav {
+#subNav {
   position: fixed;
-  top: 60px; /* Height of the header */
+  top: 6dvh; /* Collé au header */
   width: 100%;
+  height: 4dvh;
   z-index: 99; /* Slightly lower than header's z-index (100) */
   background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: $blurLight;
-  -webkit-backdrop-filter: $blurLight;
-  border-bottom: 1px solid $borderColor;
+  backdrop-filter: vars.$blurLight;
+  -webkit-backdrop-filter: vars.$blurLight;
+  border-bottom: 1px solid vars.$borderColor;
   
-  .header.utils & {
+  #header.utils & {
     background: rgba(38, 208, 206, 0.08);
   }
   
-  .header.webdev & {
+  #header.webdev & {
     background: rgba(255, 107, 71, 0.08);
   }
 }
 
 .subNavContainer {
-  max-width: 1200px;
+  max-width: 75em;
   margin: 0 auto;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0 1rem;
-  min-height: 45px;
-  overflow-x: auto;
-  
-  &::-webkit-scrollbar {
-    height: 3px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
-  }
+  gap: 1em;
+  padding: 0 1em;
+  height: 4dvh;
+  overflow: hidden;
 }
 
 .subNavItem {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5em 1em;
   border: none;
   background: transparent;
-  color: $fontColorSecondary;
+  color: vars.$fontColorSecondary;
   font-size: 0.85rem;
   font-weight: 500;
   border-radius: 20px;
   cursor: pointer;
-  transition: all $transitionFast;
+  transition: all vars.$transitionFast;
   white-space: nowrap;
   flex-shrink: 0;
   
@@ -68,14 +56,14 @@
   }
   
   &.active {
-    color: $whiteBackground;
+    color: vars.$whiteBackground;
     
-    .header.utils & {
-      background: $utilsPrimary;
+    #header.utils & {
+      background: vars.$utilsPrimary;
     }
     
-    .header.webdev & {
-      background: $webdevPrimary;
+    #header.webdev & {
+      background: vars.$webdevPrimary;
     }
   }
   
