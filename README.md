@@ -25,10 +25,11 @@ Une application React moderne avec authentification et gestion d'utilitaires org
 - **Design Mobile-First** avec breakpoints responsive
 
 ### Gestion des Courriers
-- **Interface de création** de nouveaux courriers
-- **Liste et gestion** des courriers existants
-- **Formulaires complets** avec upload de fichiers
-- **Navigation dédiée** dans la section Utilitaires
+- **Interface de création** de nouveaux courriers avec React-Select
+- **Upload de fichiers** avec drag & drop et validation
+- **Intégration API** complète avec l'API Olympe
+- **Workflow complet** : modèle, service, contexte React
+- **Types TypeScript** stricts pour toutes les données
 
 ### Architecture Moderne
 - **System de viewport** adaptatif (header + main = 100dvh minimum)  
@@ -45,6 +46,7 @@ Une application React moderne avec authentification et gestion d'utilitaires org
 
 ### Bibliothèques
 - **React Icons** pour l'iconographie
+- **React Select** pour les sélecteurs avancés
 - **AOS** pour les animations au scroll
 - **Axios** pour les appels API
 
@@ -74,10 +76,11 @@ src/
 │   └── courriers/        # Gestion des courriers
 │       └── nouveauCourrier/  # Création de courrier
 ├── context/
-│   └── user/             # Contexte utilisateur (UserContext, UserProvider)
+│   ├── user/             # Contexte utilisateur (UserContext, UserProvider)
+│   └── courrier/         # Contexte courrier (CourrierContext, CourrierProvider)
 ├── API/
-│   ├── services/         # Services d'API (auth, user)
-│   └── models/           # Modèles TypeScript
+│   ├── services/         # Services d'API (auth, user, courrier)
+│   └── models/           # Modèles TypeScript (user, courrier)
 └── utils/
     ├── styles/           # Variables, mixins SCSS
     ├── middleware/       # Protection des routes
@@ -151,7 +154,8 @@ npm run build
 
 ### Gestion d'État
 - **UserContext** pour l'authentification globale
-- **UserProvider** pour l'injection des données utilisateur
+- **CourrierContext** pour la gestion des courriers
+- **Providers React** pour l'injection des données
 - **WithAuth** middleware pour protéger les routes
 
 ### Structure des Fichiers

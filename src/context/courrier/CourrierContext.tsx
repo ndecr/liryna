@@ -1,16 +1,11 @@
-import { ICourrier, ICourrierUploadData, ICourrierSearchParams } from "../../utils/types/courrier.types.ts";
+import { ICourrier, ICourrierUploadData, ICourrierSearchParams, IPagination } from "../../utils/types/courrier.types.ts";
 import { createContext, Context } from "react";
 
 interface ICourrierContext {
   courriers: ICourrier[];
   currentCourrier: ICourrier | null;
   isLoading: boolean;
-  pagination: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  } | null;
+  pagination: IPagination | null;
   setCourriers: (courriers: ICourrier[]) => void;
   setCurrentCourrier: (courrier: ICourrier | null) => void;
   uploadCourrier: (file: File, metadata: ICourrierUploadData) => Promise<ICourrier>;

@@ -1,6 +1,6 @@
 import { getRequest, postRequest, patchRequest, deleteRequest } from "../APICalls.ts";
 import { AxiosResponse } from "axios";
-import { ICourrier, ICourrierUploadData, IApiResponse, ICourrierSearchParams } from "../../utils/types/courrier.types.ts";
+import { ICourrier, ICourrierUploadData, IApiResponse, ICourrierSearchParams, IPagination } from "../../utils/types/courrier.types.ts";
 import { courrierModel } from "../models/courrier.model.ts";
 
 export const uploadCourrierService = async (
@@ -28,7 +28,7 @@ export const uploadCourrierService = async (
 export const getAllCourriersService = async (
   page: number = 1, 
   limit: number = 10
-): Promise<{ courriers: ICourrier[], pagination: any }> => {
+): Promise<{ courriers: ICourrier[], pagination: IPagination | null }> => {
   const response: AxiosResponse<IApiResponse<ICourrier[]>> = await getRequest(`/courriers?page=${page}&limit=${limit}`);
   
   if (response.data.success && response.data.data) {
@@ -72,7 +72,7 @@ export const deleteCourrierService = async (id: number): Promise<void> => {
   }
 };
 
-export const searchCourriersService = async (params: ICourrierSearchParams): Promise<{ courriers: ICourrier[], pagination: any }> => {
+export const searchCourriersService = async (params: ICourrierSearchParams): Promise<{ courriers: ICourrier[], pagination: IPagination | null }> => {
   let url = '/courriers/search/';
   const queryParams = new URLSearchParams();
 

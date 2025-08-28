@@ -1,6 +1,6 @@
 import { useState, useMemo, ReactElement } from "react";
 import { CourrierContext } from "./CourrierContext.tsx";
-import { ICourrier, ICourrierUploadData, ICourrierSearchParams } from "../../utils/types/courrier.types.ts";
+import { ICourrier, ICourrierUploadData, ICourrierSearchParams, IPagination } from "../../utils/types/courrier.types.ts";
 import {
   uploadCourrierService,
   getAllCourriersService,
@@ -20,12 +20,7 @@ export const CourrierProvider = ({
   const [courriers, setCourriers] = useState<ICourrier[]>([]);
   const [currentCourrier, setCurrentCourrier] = useState<ICourrier | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [pagination, setPagination] = useState<{
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  } | null>(null);
+  const [pagination, setPagination] = useState<IPagination | null>(null);
 
   const uploadCourrier = async (file: File, metadata: ICourrierUploadData): Promise<ICourrier> => {
     setIsLoading(true);
