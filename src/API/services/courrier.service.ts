@@ -34,7 +34,7 @@ export const getAllCourriersService = async (
   if (response.data.success && response.data.data) {
     return {
       courriers: response.data.data.map(courrier => courrierModel(courrier)),
-      pagination: response.data.pagination
+      pagination: response.data.pagination || null
     };
   }
   
@@ -96,7 +96,7 @@ export const searchCourriersService = async (params: ICourrierSearchParams): Pro
   if (response.data.success && response.data.data) {
     return {
       courriers: response.data.data.map(courrier => courrierModel(courrier)),
-      pagination: response.data.pagination
+      pagination: response.data.pagination || null
     };
   }
   
