@@ -4,6 +4,7 @@ import "./nouveauCourrier.scss";
 // hooks | libraries
 import { ReactElement, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Select from "react-select";
 import { MdArrowBack, MdUploadFile, MdSave, MdCancel } from "react-icons/md";
 import { FiMail, FiUser, FiCalendar, FiFileText, FiTag } from "react-icons/fi";
 
@@ -26,6 +27,11 @@ interface CourrierFormData {
   fichierJoint?: File;
 }
 
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
 function NouveauCourrier(): ReactElement {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<CourrierFormData>({
@@ -42,12 +48,34 @@ function NouveauCourrier(): ReactElement {
   const [dragActive, setDragActive] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const directionOptions: SelectOption[] = [
+    { value: 'entrant', label: 'Entrant' },
+    { value: 'sortant', label: 'Sortant' },
+    { value: 'interne', label: 'Interne' }
+  ];
+
+  const priorityOptions: SelectOption[] = [
+    { value: 'low', label: 'Basse' },
+    { value: 'normal', label: 'Normale' },
+    { value: 'high', label: 'Haute' },
+    { value: 'urgent', label: 'Urgente' }
+  ];
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+  };
+
+  const handleSelectChange = (selectedOption: SelectOption | null, name: string) => {
+    if (selectedOption) {
+      setFormData(prev => ({
+        ...prev,
+        [name]: selectedOption.value
+      }));
+    }
   };
 
   const handleFileUpload = (file: File) => {
@@ -132,17 +160,16 @@ function NouveauCourrier(): ReactElement {
                 <div className="formRow">
                   <div className="formGroup">
                     <label htmlFor="direction">Direction *</label>
-                    <select
-                      id="direction"
-                      name="direction"
-                      value={formData.direction}
-                      onChange={handleInputChange}
-                      required
-                    >
-                      <option value="entrant">Entrant</option>
-                      <option value="sortant">Sortant</option>
-                      <option value="interne">Interne</option>
-                    </select>
+                    <Select
+                      inputId="direction"
+                      value={directionOptions.find(option => option.value === formData.direction)}
+                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'direction')}
+                      options={directionOptions}
+                      className="react-select-container"
+                      classNamePrefix="react-select"
+                      placeholder="Sélectionner..."
+                      isSearchable={false}
+                    />
                   </div>
                   <div className="formGroup">
                     <label htmlFor="kind">Type de courrier</label>
@@ -208,17 +235,16 @@ function NouveauCourrier(): ReactElement {
                       <FiTag />
                       Priorité
                     </label>
-                    <select
-                      id="priority"
-                      name="priority"
-                      value={formData.priority}
-                      onChange={handleInputChange}
-                    >
-                      <option value="low">Basse</option>
-                      <option value="normal">Normale</option>
-                      <option value="high">Haute</option>
-                      <option value="urgent">Urgente</option>
-                    </select>
+                    <Select
+                      inputId="priority"
+                      value={priorityOptions.find(option => option.value === formData.priority)}
+                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'priority')}
+                      options={priorityOptions}
+                      className="react-select-container"
+                      classNamePrefix="react-select"
+                      placeholder="Sélectionner..."
+                      isSearchable={false}
+                    />
                   </div>
                 </div>
               </section>

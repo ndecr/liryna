@@ -104,16 +104,25 @@
       padding: 1.5rem; // Mobile first
       display: flex;
       flex-direction: column;
-      gap: 1.5rem; // Mobile gap
+      gap: 1.2em; // Mobile gap uniformisé
 
       // Responsive tablette
       @media (min-width: vars.$tabletWidth) {
         padding: 2rem;
-        gap: 2rem;
+        gap: 1.5em; // Tablette gap uniformisé
+      }
+
+      // Responsive desktop
+      @media (min-width: vars.$desktopWidth) {
+        gap: 1.8em; // Desktop gap uniformisé
       }
     }
 
     .formSection {
+      display: flex;
+      flex-direction: column;
+      gap: 1em; // Espacement uniforme entre titre et contenu
+
       .sectionTitle {
         display: flex;
         align-items: center;
@@ -123,6 +132,7 @@
         color: vars.$utilsPrimary;
         padding: 0 0 0.5rem; // Only bottom padding
         border-bottom: 2px solid vars.$borderColor;
+        margin: 0; // Remove default margins
         
         // Responsive tablette
         @media (min-width: vars.$tabletWidth) {
@@ -137,6 +147,10 @@
             font-size: 1.4rem;
           }
         }
+      }
+
+      .formRow:not(:last-child) {
+        margin-bottom: 0.5em; // Espacement entre les lignes dans une section
       }
     }
 
@@ -172,7 +186,7 @@
         }
       }
       
-      input, select, textarea {
+      input, textarea {
         padding: 0.75rem 1rem;
         border: 2px solid vars.$borderColor;
         border-radius: 8px;
@@ -188,6 +202,92 @@
         
         &::placeholder {
           color: vars.$fontColorSecondary;
+        }
+      }
+
+      // React-Select styling
+      .react-select-container {
+        .react-select__control {
+          border: 2px solid vars.$borderColor;
+          border-radius: 8px;
+          font-size: 0.95rem;
+          min-height: 38px;
+          height: 50px; // Même hauteur que les inputs normaux
+          transition: all 0.3s ease;
+          box-shadow: none;
+
+          &:hover {
+            border-color: vars.$borderColor;
+          }
+
+          &--is-focused {
+            border-color: vars.$utilsPrimary;
+            box-shadow: 0 0 0 3px rgba(38, 208, 206, 0.1);
+
+            &:hover {
+              border-color: vars.$utilsPrimary;
+            }
+          }
+        }
+
+        .react-select__value-container {
+          padding: 0 1rem; // Supprimer le padding vertical
+          height: 50px; // Même hauteur que le control
+          display: flex;
+          align-items: center; // Centrer verticalement le contenu
+        }
+
+        .react-select__single-value {
+          color: vars.$fontColorPrimary;
+          font-size: 0.95rem;
+        }
+
+        .react-select__placeholder {
+          color: vars.$fontColorSecondary;
+          font-size: 0.95rem;
+        }
+
+        .react-select__indicator-separator {
+          display: none;
+        }
+
+        .react-select__dropdown-indicator {
+          color: vars.$fontColorSecondary;
+          padding: 0.5rem;
+
+          &:hover {
+            color: vars.$utilsPrimary;
+          }
+        }
+
+        .react-select__indicators {
+          height: 46px; // Ajuster la hauteur des indicateurs
+        }
+
+        .react-select__menu {
+          border: 2px solid vars.$borderColor;
+          border-radius: 8px;
+          box-shadow: 0 0.25em 1.25em rgba(0, 0, 0, 0.08);
+          margin-top: 0.25rem;
+        }
+
+        .react-select__option {
+          font-size: 0.95rem;
+          color: vars.$fontColorPrimary;
+
+          &--is-selected {
+            background-color: vars.$utilsPrimary;
+            color: white;
+          }
+
+          &--is-focused {
+            background-color: rgba(38, 208, 206, 0.1);
+            color: vars.$fontColorPrimary;
+          }
+
+          &:hover {
+            background-color: rgba(38, 208, 206, 0.1);
+          }
         }
       }
       
