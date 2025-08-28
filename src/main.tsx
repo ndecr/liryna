@@ -3,9 +3,12 @@ import App from "./App.tsx";
 
 // context
 import { UserProvider } from "./context/user/UserProvider.tsx";
+import { CourrierProvider } from "./context/courrier/CourrierProvider.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <UserProvider>
-    <App />
+    <CourrierProvider>
+      <App />
+    </CourrierProvider>
   </UserProvider>,
 );

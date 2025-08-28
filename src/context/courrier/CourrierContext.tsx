@@ -1,0 +1,41 @@
+import { ICourrier, ICourrierUploadData, ICourrierSearchParams } from "../../utils/types/courrier.types.ts";
+import { createContext, Context } from "react";
+
+interface ICourrierContext {
+  courriers: ICourrier[];
+  currentCourrier: ICourrier | null;
+  isLoading: boolean;
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  } | null;
+  setCourriers: (courriers: ICourrier[]) => void;
+  setCurrentCourrier: (courrier: ICourrier | null) => void;
+  uploadCourrier: (file: File, metadata: ICourrierUploadData) => Promise<ICourrier>;
+  getAllCourriers: (page?: number, limit?: number) => Promise<void>;
+  getCourrierById: (id: number) => Promise<void>;
+  updateCourrier: (id: number, metadata: Partial<ICourrierUploadData>) => Promise<ICourrier>;
+  deleteCourrier: (id: number) => Promise<void>;
+  searchCourriers: (params: ICourrierSearchParams) => Promise<void>;
+  downloadCourrier: (id: number) => Promise<Blob>;
+  sendCourrierEmail: (id: number, emailData: { to: string; subject: string; message: string }) => Promise<void>;
+}
+
+export const CourrierContext: Context<ICourrierContext> = createContext<ICourrierContext>({
+  courriers: [],
+  currentCourrier: null,
+  isLoading: false,
+  pagination: null,
+  setCourriers: (): void => {},
+  setCurrentCourrier: (): void => {},
+  uploadCourrier: async (): Promise<ICourrier> => { throw new Error("Context not initialized"); },
+  getAllCourriers: async (): Promise<void> => {},
+  getCourrierById: async (): Promise<void> => {},
+  updateCourrier: async (): Promise<ICourrier> => { throw new Error("Context not initialized"); },
+  deleteCourrier: async (): Promise<void> => {},
+  searchCourriers: async (): Promise<void> => {},
+  downloadCourrier: async (): Promise<Blob> => { throw new Error("Context not initialized"); },
+  sendCourrierEmail: async (): Promise<void> => {},
+});

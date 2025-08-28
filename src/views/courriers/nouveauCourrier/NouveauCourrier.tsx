@@ -2,11 +2,14 @@
 import "./nouveauCourrier.scss";
 
 // hooks | libraries
-import { ReactElement, useState } from "react";
+import { ReactElement, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { MdArrowBack, MdUploadFile, MdSave, MdCancel } from "react-icons/md";
 import { FiMail, FiUser, FiCalendar, FiFileText, FiTag } from "react-icons/fi";
+
+// context
+import { CourrierContext } from "../../../context/courrier/CourrierContext.tsx";
 
 // components
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
@@ -14,18 +17,8 @@ import Header from "../../../components/header/Header.tsx";
 import SubNav from "../../../components/subNav/SubNav.tsx";
 import Footer from "../../../components/footer/Footer.tsx";
 
-interface CourrierFormData {
-  direction: 'entrant' | 'sortant' | 'interne';
-  emitter: string;
-  recipient: string;
-  receptionDate: string;
-  courrierDate: string;
-  priority: 'low' | 'normal' | 'high' | 'urgent';
-  department: string;
-  kind: string;
-  description: string;
-  fichierJoint?: File;
-}
+// types
+import { ICourrierFormData } from "../../../utils/types/courrier.types.ts";
 
 interface SelectOption {
   value: string;
@@ -34,7 +27,8 @@ interface SelectOption {
 
 function NouveauCourrier(): ReactElement {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<CourrierFormData>({
+  const { uploadCourrier, isLoading } = useContext(CourrierContext);
+  const [formData, setFormData] = useState<ICourrierFormData>({
     direction: "entrant",
     emitter: "",
     recipient: "",
@@ -46,7 +40,6 @@ function NouveauCourrier(): ReactElement {
     description: ""
   });
   const [dragActive, setDragActive] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const directionOptions: SelectOption[] = [
     { value: 'entrant', label: 'Entrant' },
@@ -113,15 +106,31 @@ function NouveauCourrier(): ReactElement {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
     
-    // Simulation de l'envoi
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    if (!formData.fichierJoint) {
+      alert("Veuillez sélectionner un fichier");
+      return;
+    }
     
-    console.log("Données du courrier:", formData);
-    
-    setIsSubmitting(false);
-    navigate("/utils/mail");
+    try {
+      const uploadData = {
+        direction: formData.direction,
+        emitter: formData.emitter || undefined,
+        recipient: formData.recipient || undefined,
+        receptionDate: formData.receptionDate || undefined,
+        courrierDate: formData.courrierDate || undefined,
+        priority: formData.priority,
+        department: formData.department || undefined,
+        kind: formData.kind || undefined,
+        description: formData.description || undefined,
+      };
+
+      await uploadCourrier(formData.fichierJoint, uploadData);
+      navigate("/utils/mail");
+    } catch (error) {
+      console.error("Erreur lors de la création du courrier:", error);
+      alert("Erreur lors de la création du courrier");
+    }
   };
 
   const handleCancel = () => {
@@ -363,7 +372,7 @@ function NouveauCourrier(): ReactElement {
                 type="button"
                 className="btnCancel"
                 onClick={handleCancel}
-                disabled={isSubmitting}
+                disabled={isLoading}
               >
                 <MdCancel />
                 Annuler
@@ -372,10 +381,10 @@ function NouveauCourrier(): ReactElement {
               <button
                 type="submit"
                 className="btnSubmit"
-                disabled={isSubmitting || !formData.direction}
+                disabled={isLoading || !formData.direction || !formData.fichierJoint}
               >
                 <MdSave />
-                {isSubmitting ? 'Enregistrement...' : 'Enregistrer'}
+                {isLoading ? 'Enregistrement...' : 'Enregistrer'}
               </button>
             </div>
           </form>
