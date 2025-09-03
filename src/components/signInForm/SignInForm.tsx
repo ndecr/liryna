@@ -21,6 +21,9 @@ interface ISignInFormProps {
 import { UserContext } from "../../context/user/UserContext.tsx";
 import { IUserCredentials } from "../../utils/types/user.types.ts";
 
+// utils
+import { handleAuthError } from "../../utils/scripts/authErrorHandling.ts";
+
 // components
 import Button from "../button/Button.tsx";
 
@@ -43,9 +46,10 @@ export default function SignInForm({
     
     try {
       await login(credentials);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Login error:", error);
-      setError("Identifiants invalides. Veuillez réessayer.");
+      const errorMessage = handleAuthError(error);
+      setError(errorMessage);
     }
   };
 

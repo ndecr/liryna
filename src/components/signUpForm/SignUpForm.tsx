@@ -20,6 +20,9 @@ interface ISignUpFormProps {
 import { UserContext } from "../../context/user/UserContext.tsx";
 import { IUserRegistration } from "../../utils/types/user.types.ts";
 
+// utils
+import { handleRegistrationError } from "../../utils/scripts/authErrorHandling.ts";
+
 // components
 import Button from "../button/Button";
 
@@ -79,21 +82,8 @@ export default function SignUpForm({
       await register(userData);
     } catch (error: unknown) {
       console.error("Registration error:", error);
-      
-      // Gestion spécifique des erreurs HTTP avec type guard
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 409) {
-          setError("Un compte avec cet email existe déjà. Vous pouvez vous connecter avec cet email.");
-        } else if (error.response?.data?.message) {
-          setError(error.response.data.message);
-        } else {
-          setError("Erreur lors de l'inscription. Veuillez réessayer.");
-        }
-      } else if (error instanceof Error) {
-        setError(error.message);
-      } else {
-        setError("Erreur lors de l'inscription. Veuillez réessayer.");
-      }
+      const errorMessage = handleRegistrationError(error);
+      setError(errorMessage);
     }
   };
   

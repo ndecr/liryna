@@ -12,14 +12,7 @@ axios.defaults.withCredentials = false;
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem('authToken');
   if (token) {
-    // S'assurer que headers existe
-    if (!config.headers) {
-      config.headers = {};
-    }
-    // Convertir en objet simple si c'est une instance AxiosHeaders
-    if (typeof config.headers === 'object' && config.headers.constructor.name === 'AxiosHeaders') {
-      config.headers = { ...config.headers };
-    }
+    config.headers = config.headers || {};
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
@@ -60,7 +53,7 @@ export const postFormDataRequest = async <R>(
   try {
     const token = localStorage.getItem('authToken');
     const config: Record<string, unknown> = {
-      headers: {}
+      headers: {} as Record<string, string>
     };
     
     // Ajouter le token d'auth manuellement pour éviter les conflits

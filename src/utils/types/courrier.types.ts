@@ -12,6 +12,7 @@ export interface ICourrier {
   priority: string;
   receptionDate?: string;
   courrierDate?: string;
+  description?: string;
   created_at?: string;
   updated_at?: string;
   addByUser: number;
