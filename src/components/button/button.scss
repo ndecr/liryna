@@ -1,3 +1,5 @@
+@use "../../utils/styles/variables" as vars;
+
 .orangeButton {
   display: flex;
   flex-direction: column;
@@ -230,6 +232,35 @@
 
   @media (max-width: 25em) {
     font-size: 0.875em;
+  }
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  background: vars.$utilsSecondary;
+  color: white;
+  border: none;
+  padding: 0.75em 1em;
+  border-radius: 8px;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: vars.$transitionMedium;
+  font-family: -apple-system, BlinkMacSystemFont, "Roboto", sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  
+  &:hover {
+    background: vars.$utilsPrimary;
+    transform: translateY(-2px);
+  }
+  
+  &:disabled {
+    background: #6e6d70;
+    cursor: not-allowed;
+    transform: none;
   }
 }
 

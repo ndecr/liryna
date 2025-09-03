@@ -179,7 +179,7 @@ export default function SignUpForm({
       <div className={"buttonContainer"}>
         <Button 
           style={"orange"} 
-          text={isLoading ? "Inscription..." : "S'enregistrer"} 
+          children={isLoading ? "Inscription..." : "S'enregistrer"} 
           type={"submit"} 
           disabled={isLoading}
         />

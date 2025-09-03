@@ -2,33 +2,35 @@
 import "./button.scss";
 
 // types
-import { ReactElement, MouseEvent } from "react";
+import { ReactElement, ReactNode, MouseEvent } from "react";
 
 interface IButtonProps {
-  style: "orange" | "white" | "grey" | "green" | "red";
-  text: string | undefined;
-  type: "submit" | "reset" | "button" | undefined;
+  style: "orange" | "white" | "grey" | "green" | "red" | "back";
+  children: ReactNode;
+  type?: "submit" | "reset" | "button";
   disabled?: boolean;
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
+  className?: string;
 }
 
 export default function Button({
   style,
-  text,
-  type,
-  disabled,
+  children,
+  type = "button",
+  disabled = false,
   onClick,
-}: Readonly<IButtonProps>): ReactElement | null {
-  const className = `${style}Button`;
+  className = ""
+}: Readonly<IButtonProps>): ReactElement {
+  const buttonClassName = `${style}Button ${className}`.trim();
 
   return (
     <button
-      className={className}
+      className={buttonClassName}
       onClick={onClick}
       type={type}
       disabled={disabled}
     >
-      {text}
+      {children}
     </button>
   );
 }

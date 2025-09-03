@@ -76,10 +76,19 @@ function Courriers(): ReactElement {
     }
   ];
 
-  const handleActionClick = (actionId: string) => {
+  const handleActionClick = (event: React.MouseEvent, actionId: string) => {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log("Action clicked:", actionId); // Debug
+    console.log("Current location:", window.location.pathname); // Debug
     if (actionId === 'new') {
+      console.log("Navigating to new courrier"); // Debug
       navigate("/utils/mail/new");
+    } else if (actionId === 'list') {
+      console.log("Navigating to list courriers"); // Debug
+      navigate("/utils/mail/list");
     } else {
+      console.log("Setting active action:", actionId); // Debug
       setActiveAction(actionId);
     }
   };
@@ -100,8 +109,9 @@ function Courriers(): ReactElement {
               {actions.map((action, index) => (
                 <button
                   key={action.id}
+                  type="button"
                   className={`actionBtn ${action.primary ? 'primary' : ''} ${activeAction === action.id ? 'active' : ''}`}
-                  onClick={() => handleActionClick(action.id)}
+                  onClick={(event) => handleActionClick(event, action.id)}
                   data-aos="fade-up"
                   data-aos-delay={150 + index * 50}
                 >

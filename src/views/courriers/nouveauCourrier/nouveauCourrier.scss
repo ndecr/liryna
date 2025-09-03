@@ -45,25 +45,6 @@
       gap: 2em;
     }
 
-    .backButton {
-      background: rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: white;
-      padding: 0.75em 1.5em;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5em;
-      font-size: 0.9em;
-      transition: all 0.3s ease;
-      align-self: flex-start; // Don't stretch on mobile
-      
-      &:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: translateX(-2em);
-      }
-    }
 
     .pageTitle {
       font-size: 2em; // Mobile first

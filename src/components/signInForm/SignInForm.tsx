@@ -109,7 +109,7 @@ export default function SignInForm({
       <div className={"buttonContainer"}>
         <Button 
           style="orange" 
-          text={isLoading ? "Connexion..." : "Connexion"} 
+          children={isLoading ? "Connexion..." : "Connexion"} 
           type="submit" 
           disabled={isLoading}
         />

@@ -16,6 +16,7 @@ import WithAuth from "../../../utils/middleware/WithAuth.tsx";
 import Header from "../../../components/header/Header.tsx";
 import SubNav from "../../../components/subNav/SubNav.tsx";
 import Footer from "../../../components/footer/Footer.tsx";
+import Button from "../../../components/button/Button.tsx";
 
 // types
 import { ICourrierFormData } from "../../../utils/types/courrier.types.ts";
@@ -156,14 +157,14 @@ function NouveauCourrier(): ReactElement {
         <div className="nouveauCourrierContainer">
           {/* Header */}
           <header className="nouveauCourrierHeader" data-aos="fade-down">
-            <button 
-              className="backButton"
+            <Button 
+              style="back"
               onClick={handleCancel}
               type="button"
             >
               <MdArrowBack />
               <span>Retour</span>
-            </button>
+            </Button>
             <h1 className="pageTitle">Nouveau courrier</h1>
           </header>
 

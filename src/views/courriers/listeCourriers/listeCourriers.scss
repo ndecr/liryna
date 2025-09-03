@@ -1,0 +1,483 @@
+@use "../../../utils/styles/variables" as vars;
+@use "../../../utils/styles/mixins" as mixins;
+
+#listeCourriers {
+  min-height: calc(100dvh - 6dvh - 4dvh); // 100dvh - header - subnav
+  background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 50%, #f0f3f7 100%);
+  padding: 1em 0;
+  margin-top: calc(6dvh + 4dvh); // Compenser header + subnav fixe
+  
+  // Styles mobile d'abord
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  
+  .listeCourrierContainer {
+    max-width: 75em;
+    margin: 0 auto;
+    padding: 0 0.5em; // Mobile first
+    flex: 1; // Prend tout l'espace disponible
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+
+    // Responsive tablette
+    @media (min-width: vars.$tabletWidth) {
+      padding: 0 1em;
+      gap: 2em;
+    }
+  }
+
+  .listeCourrierHeader {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    
+    
+    .pageTitle {
+      color: vars.$utilsPrimary;
+      font-size: 1.8em;
+      font-weight: 700;
+      margin: 0;
+    }
+  }
+
+  .searchSection {
+    .searchContainer {
+      position: relative;
+      max-width: 25em;
+      
+      .searchIcon {
+        position: absolute;
+        left: 1em;
+        top: 50%;
+        transform: translateY(-50%);
+        color: vars.$fontColorSecondary;
+        font-size: 1.2em;
+      }
+      
+      .searchInput {
+        width: 100%;
+        padding: 0.875em 1em 0.875em 2.5em;
+        border: 2px solid vars.$borderColor;
+        border-radius: 8px;
+        font-size: 1em;
+        transition: vars.$transitionMedium;
+        
+        &:focus {
+          outline: none;
+          border-color: vars.$utilsPrimary;
+          box-shadow: 0 0 0 3px rgba(38, 208, 206, 0.2);
+        }
+        
+        &::placeholder {
+          color: vars.$fontColorSecondary;
+        }
+      }
+    }
+  }
+
+  .courriersSection {
+    .loadingState, .emptyState {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3em 1em;
+      color: vars.$fontColorSecondary;
+      
+      .emptyIcon {
+        font-size: 3em;
+        margin-bottom: 1em;
+        color: vars.$fontColorSecondary;
+        opacity: 0.5;
+      }
+      
+      p {
+        font-size: 1.1em;
+        margin: 0;
+      }
+    }
+    
+    .courriersTable {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      overflow-x: auto; // Permettre le scroll horizontal sur mobile
+      overflow-y: visible; // Permettre aux tooltips d'être visibles
+      border: 1px solid vars.$borderColor;
+      
+      .courriersGrid {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9em;
+        
+        thead {
+          background: vars.$greyBackground;
+          
+          th {
+            padding: 1em 0.75em;
+            text-align: left;
+            font-weight: 600;
+            color: vars.$fontColorPrimary;
+            border-bottom: 2px solid vars.$borderColor;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            
+            &.dateColumn {
+              min-width: 8em;
+            }
+          }
+        }
+        
+        tbody {
+          .courrierRow {
+            transition: vars.$transitionMedium;
+            border-bottom: 1px solid vars.$borderColor;
+            
+            &:hover {
+              background: rgba(38, 208, 206, 0.02);
+            }
+            
+            &:last-child {
+              border-bottom: none;
+            }
+            
+            td {
+              padding: 0.875em 0.75em;
+              vertical-align: middle;
+              
+              &.fileName {
+                .fileNameWrapper {
+                  display: flex;
+                  align-items: center;
+                  gap: 0.5em;
+                  position: relative;
+                  
+                  .fileIcon {
+                    color: vars.$utilsPrimary;
+                    font-size: 1.1em;
+                    flex-shrink: 0;
+                  }
+                  
+                  .fileNameText {
+                    font-weight: 500;
+                    color: vars.$fontColorPrimary;
+                    max-width: 12em;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    position: relative;
+                    cursor: help;
+                    
+                    &::after {
+                      content: attr(title);
+                      position: fixed;
+                      bottom: auto;
+                      top: auto;
+                      left: 50%;
+                      transform: translateX(-50%) translateY(-100%);
+                      background: rgba(44, 62, 80, 0.95);
+                      color: white;
+                      padding: 0.6em 0.8em;
+                      border-radius: 8px;
+                      font-size: 0.75em;
+                      white-space: nowrap;
+                      opacity: 0;
+                      visibility: hidden;
+                      transition: all 0.2s ease;
+                      z-index: 9999;
+                      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+                      pointer-events: none;
+                      max-width: 20em;
+                      word-break: break-word;
+                      backdrop-filter: blur(4px);
+                    }
+                    
+                    &:hover::after {
+                      opacity: 1;
+                      visibility: visible;
+                      transform: translateX(-50%) translateY(-120%);
+                    }
+                    
+                    // Version mobile : pas de tooltip custom, on utilise le title natif
+                    @media (max-width: vars.$tabletWidth) {
+                      &::after {
+                        display: none;
+                      }
+                    }
+                  }
+                }
+              }
+              
+              &.direction {
+                .directionBadge {
+                  padding: 0.25em 0.625em;
+                  border-radius: 16px;
+                  font-size: 0.75em;
+                  font-weight: 600;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                  
+                  &.badge-entrant {
+                    background: rgba(39, 174, 96, 0.1);
+                    color: vars.$successColor;
+                  }
+                  
+                  &.badge-sortant {
+                    background: rgba(38, 208, 206, 0.1);
+                    color: vars.$utilsPrimary;
+                  }
+                  
+                  &.badge-interne {
+                    background: rgba(243, 156, 18, 0.1);
+                    color: vars.$warningColor;
+                  }
+                }
+              }
+              
+              &.kind, &.department, &.emitter {
+                color: vars.$fontColorSecondary;
+                max-width: 8em;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                position: relative;
+                cursor: help;
+                
+                &::after {
+                  content: attr(title);
+                  position: fixed;
+                  bottom: auto;
+                  top: auto;
+                  left: 50%;
+                  transform: translateX(-50%) translateY(-100%);
+                  background: rgba(44, 62, 80, 0.95);
+                  color: white;
+                  padding: 0.6em 0.8em;
+                  border-radius: 8px;
+                  font-size: 0.75em;
+                  white-space: nowrap;
+                  opacity: 0;
+                  visibility: hidden;
+                  transition: all 0.2s ease;
+                  z-index: 9999;
+                  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+                  pointer-events: none;
+                  max-width: 15em;
+                  word-break: break-word;
+                  backdrop-filter: blur(4px);
+                }
+                
+                &:hover::after {
+                  opacity: 1;
+                  visibility: visible;
+                  transform: translateX(-50%) translateY(-120%);
+                }
+                
+                // Version mobile : pas de tooltip custom, on utilise le title natif
+                @media (max-width: vars.$tabletWidth) {
+                  &::after {
+                    display: none;
+                  }
+                }
+              }
+              
+              &.receptionDate {
+                color: vars.$fontColorSecondary;
+                font-size: 0.85em;
+                min-width: 7em;
+              }
+              
+              &.actions {
+                .actionButtons {
+                  display: flex;
+                  gap: 0.375em;
+                  
+                  .actionBtn {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 2em;
+                    height: 2em;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    transition: vars.$transitionMedium;
+                    font-size: 1em;
+                    
+                    &.download {
+                      background: rgba(38, 208, 206, 0.1);
+                      color: vars.$utilsPrimary;
+                      
+                      &:hover {
+                        background: vars.$utilsPrimary;
+                        color: white;
+                        transform: translateY(-1px);
+                      }
+                    }
+                    
+                    &.edit {
+                      background: rgba(243, 156, 18, 0.1);
+                      color: vars.$warningColor;
+                      
+                      &:hover {
+                        background: vars.$warningColor;
+                        color: white;
+                        transform: translateY(-1px);
+                      }
+                    }
+                    
+                    &.email {
+                      background: rgba(77, 208, 225, 0.1);
+                      color: vars.$utilsSecondary;
+                      
+                      &:hover {
+                        background: vars.$utilsSecondary;
+                        color: white;
+                        transform: translateY(-1px);
+                      }
+                    }
+                    
+                    &.delete {
+                      background: rgba(231, 76, 60, 0.1);
+                      color: vars.$errorColor;
+                      
+                      &:hover {
+                        background: vars.$errorColor;
+                        color: white;
+                        transform: translateY(-1px);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .paginationSection {
+    .paginationContainer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5em 0;
+      
+      .paginationBtn {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+        background: vars.$utilsPrimary;
+        color: white;
+        border: none;
+        padding: 0.75em 1.5em;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: vars.$transitionMedium;
+        font-size: 0.95em;
+        
+        &:hover:not(:disabled) {
+          background: vars.$utilsSecondary;
+          transform: translateY(-1px);
+        }
+        
+        &:disabled {
+          background: vars.$borderColor;
+          color: vars.$fontColorSecondary;
+          cursor: not-allowed;
+          transform: none;
+        }
+      }
+      
+      .paginationInfo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25em;
+        text-align: center;
+        
+        .totalItems {
+          font-size: 0.85em;
+          color: vars.$fontColorSecondary;
+        }
+      }
+    }
+  }
+
+  // Responsive tablette
+  @media (min-width: vars.$tabletWidth) {
+    padding: 1.5em 0;
+    
+    .listeCourrierHeader {
+      .pageTitle {
+        font-size: 2.2em;
+      }
+    }
+    
+    .searchSection {
+      .searchContainer {
+        max-width: 30em;
+      }
+    }
+    
+    .courriersSection {
+      .courriersTable {
+        .courriersGrid {
+          font-size: 0.95em;
+          
+          thead th {
+            padding: 1.25em 1em;
+          }
+          
+          tbody td {
+            padding: 1em;
+            
+            &.fileName .fileNameWrapper .fileNameText {
+              max-width: 15em;
+            }
+            
+            &.kind, &.department, &.emitter {
+              max-width: 10em;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Responsive desktop  
+  @media (min-width: vars.$desktopWidth) {
+    padding: 2em 0;
+    
+    .courriersSection {
+      .courriersTable {
+        .courriersGrid {
+          font-size: 1em;
+          
+          tbody td {
+            &.fileName .fileNameWrapper .fileNameText {
+              max-width: 18em;
+            }
+            
+            &.kind, &.department, &.emitter {
+              max-width: 12em;
+            }
+          }
+        }
+      }
+    }
+    
+    .paginationSection {
+      .paginationContainer {
+        .paginationInfo {
+          flex-direction: row;
+          gap: 1em;
+        }
+      }
+    }
+  }
+}
