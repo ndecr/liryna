@@ -15,6 +15,7 @@ export const courrierModel = (fetchedCourrier: ICourrier): ICourrier => {
     priority: fetchedCourrier.priority,
     receptionDate: fetchedCourrier.receptionDate,
     courrierDate: fetchedCourrier.courrierDate,
+    description: fetchedCourrier.description,
     created_at: fetchedCourrier.created_at,
     updated_at: fetchedCourrier.updated_at,
     addByUser: fetchedCourrier.addByUser,

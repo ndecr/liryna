@@ -10,21 +10,28 @@
   // Styles mobile d'abord
   display: flex;
   flex-direction: column;
-  gap: 1.5em;
+  gap: 0.75em; // Gap réduit pour optimiser l'espace vertical
   
   .listeCourrierContainer {
-    max-width: 75em;
+    max-width: 95%; // Utiliser 95% de la largeur disponible
     margin: 0 auto;
-    padding: 0 0.5em; // Mobile first
+    padding: 0 0.25em; // Padding réduit sur mobile
     flex: 1; // Prend tout l'espace disponible
     display: flex;
     flex-direction: column;
-    gap: 1.5em;
+    gap: 0.75em; // Gap réduit entre les sections
 
     // Responsive tablette
     @media (min-width: vars.$tabletWidth) {
-      padding: 0 1em;
-      gap: 2em;
+      max-width: 98%; // Encore plus large sur tablette
+      padding: 0 0.5em; // Padding réduit sur tablette
+      gap: 1em; // Gap réduit sur tablette
+    }
+
+    // Responsive desktop
+    @media (min-width: vars.$desktopWidth) {
+      max-width: 99%; // Quasi pleine largeur sur desktop
+      padding: 0 0.75em; // Padding minimal sur desktop
     }
   }
 
@@ -43,9 +50,15 @@
   }
 
   .searchSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1em;
+    
     .searchContainer {
       position: relative;
       max-width: 25em;
+      flex: 1; // Prend l'espace disponible
       
       .searchIcon {
         position: absolute;
@@ -75,9 +88,86 @@
         }
       }
     }
+    
+    .paginationControls {
+      display: flex;
+      align-items: center;
+      gap: 1em;
+      flex-shrink: 0; // Ne se réduit pas
+      
+      .paginationBtn {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+        background: vars.$utilsPrimary;
+        color: white;
+        border: none;
+        padding: 0.5em 1em;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: vars.$transitionMedium;
+        font-size: 0.85em;
+        font-weight: 500;
+        white-space: nowrap;
+        
+        &:hover:not(:disabled) {
+          background: vars.$utilsSecondary;
+          transform: translateY(-1px);
+        }
+        
+        &:disabled {
+          background: vars.$borderColor;
+          color: vars.$fontColorSecondary;
+          cursor: not-allowed;
+          transform: none;
+        }
+      }
+      
+      .paginationInfo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25em;
+        text-align: center;
+        font-size: 0.85em;
+        color: vars.$fontColorSecondary;
+        min-width: 10em; // Largeur minimum pour éviter le saut
+        
+        .totalItems {
+          font-size: 0.8em;
+          opacity: 0.8;
+        }
+      }
+    }
+    
+    // Version mobile : pagination sous la recherche
+    @media (max-width: vars.$tabletWidth) {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1em;
+      
+      .paginationControls {
+        justify-content: center;
+        
+        .paginationBtn {
+          font-size: 0.85em;
+          padding: 0.6em 0.8em;
+        }
+        
+        .paginationInfo {
+          min-width: 8em;
+          font-size: 0.8em;
+        }
+      }
+    }
   }
 
   .courriersSection {
+    flex: 1; // Prend tout l'espace disponible
+    display: flex;
+    flex-direction: column;
+    min-height: 0; // Permet au flex child de se réduire
+    
     .loadingState, .emptyState {
       display: flex;
       flex-direction: column;
@@ -103,9 +193,17 @@
       background: white;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      overflow-x: auto; // Permettre le scroll horizontal sur mobile
-      overflow-y: visible; // Permettre aux tooltips d'être visibles
       border: 1px solid vars.$borderColor;
+      max-height: calc(100dvh - 6dvh - 4dvh - 12em); // Hauteur max pour laisser place header + search + pagination
+      overflow: hidden; // Container sans scroll
+      display: flex;
+      flex-direction: column;
+      
+      .tableWrapper {
+        flex: 1;
+        overflow-x: auto;
+        overflow-y: auto;
+      }
       
       .courriersGrid {
         width: 100%;
@@ -114,9 +212,12 @@
         
         thead {
           background: vars.$greyBackground;
+          position: sticky; // Header fixe pendant le scroll
+          top: 0;
+          z-index: 10;
           
           th {
-            padding: 1em 0.75em;
+            padding: 1em 0.5em; // Padding réduit pour cohérence
             text-align: left;
             font-weight: 600;
             color: vars.$fontColorPrimary;
@@ -124,6 +225,7 @@
             font-size: 0.85em;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            background: vars.$greyBackground; // Background pour le sticky
             
             &.dateColumn {
               min-width: 8em;
@@ -145,7 +247,7 @@
             }
             
             td {
-              padding: 0.875em 0.75em;
+              padding: 0.75em 0.5em; // Padding réduit pour gagner de la place
               vertical-align: middle;
               
               &.fileName {
@@ -164,49 +266,13 @@
                   .fileNameText {
                     font-weight: 500;
                     color: vars.$fontColorPrimary;
-                    max-width: 12em;
+                    max-width: 12em; // Réduit pour éviter le scroll
                     overflow: hidden;
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     position: relative;
                     cursor: help;
                     
-                    &::after {
-                      content: attr(title);
-                      position: fixed;
-                      bottom: auto;
-                      top: auto;
-                      left: 50%;
-                      transform: translateX(-50%) translateY(-100%);
-                      background: rgba(44, 62, 80, 0.95);
-                      color: white;
-                      padding: 0.6em 0.8em;
-                      border-radius: 8px;
-                      font-size: 0.75em;
-                      white-space: nowrap;
-                      opacity: 0;
-                      visibility: hidden;
-                      transition: all 0.2s ease;
-                      z-index: 9999;
-                      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-                      pointer-events: none;
-                      max-width: 20em;
-                      word-break: break-word;
-                      backdrop-filter: blur(4px);
-                    }
-                    
-                    &:hover::after {
-                      opacity: 1;
-                      visibility: visible;
-                      transform: translateX(-50%) translateY(-120%);
-                    }
-                    
-                    // Version mobile : pas de tooltip custom, on utilise le title natif
-                    @media (max-width: vars.$tabletWidth) {
-                      &::after {
-                        display: none;
-                      }
-                    }
                   }
                 }
               }
@@ -239,49 +305,26 @@
               
               &.kind, &.department, &.emitter {
                 color: vars.$fontColorSecondary;
-                max-width: 8em;
+                max-width: 10em; // Augmenté légèrement
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
-                position: relative;
                 cursor: help;
-                
-                &::after {
-                  content: attr(title);
-                  position: fixed;
-                  bottom: auto;
-                  top: auto;
-                  left: 50%;
-                  transform: translateX(-50%) translateY(-100%);
-                  background: rgba(44, 62, 80, 0.95);
-                  color: white;
-                  padding: 0.6em 0.8em;
-                  border-radius: 8px;
-                  font-size: 0.75em;
-                  white-space: nowrap;
-                  opacity: 0;
-                  visibility: hidden;
-                  transition: all 0.2s ease;
-                  z-index: 9999;
-                  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-                  pointer-events: none;
-                  max-width: 15em;
-                  word-break: break-word;
-                  backdrop-filter: blur(4px);
-                }
-                
-                &:hover::after {
-                  opacity: 1;
-                  visibility: visible;
-                  transform: translateX(-50%) translateY(-120%);
-                }
-                
-                // Version mobile : pas de tooltip custom, on utilise le title natif
-                @media (max-width: vars.$tabletWidth) {
-                  &::after {
-                    display: none;
-                  }
-                }
+              }
+              
+              &.description {
+                color: vars.$fontColorSecondary;
+                max-width: 14em; // Réduit pour éviter le scroll
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                cursor: help;
+              }
+              
+              &.courrierDate {
+                color: vars.$fontColorSecondary;
+                font-size: 0.85em;
+                min-width: 7em;
               }
               
               &.receptionDate {
@@ -340,6 +383,17 @@
                       }
                     }
                     
+                    &.view {
+                      background: rgba(155, 89, 182, 0.1);
+                      color: #9b59b6;
+                      
+                      &:hover {
+                        background: #9b59b6;
+                        color: white;
+                        transform: translateY(-1px);
+                      }
+                    }
+                    
                     &.delete {
                       background: rgba(231, 76, 60, 0.1);
                       color: vars.$errorColor;
@@ -360,53 +414,6 @@
     }
   }
 
-  .paginationSection {
-    .paginationContainer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.5em 0;
-      
-      .paginationBtn {
-        display: flex;
-        align-items: center;
-        gap: 0.5em;
-        background: vars.$utilsPrimary;
-        color: white;
-        border: none;
-        padding: 0.75em 1.5em;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: vars.$transitionMedium;
-        font-size: 0.95em;
-        
-        &:hover:not(:disabled) {
-          background: vars.$utilsSecondary;
-          transform: translateY(-1px);
-        }
-        
-        &:disabled {
-          background: vars.$borderColor;
-          color: vars.$fontColorSecondary;
-          cursor: not-allowed;
-          transform: none;
-        }
-      }
-      
-      .paginationInfo {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.25em;
-        text-align: center;
-        
-        .totalItems {
-          font-size: 0.85em;
-          color: vars.$fontColorSecondary;
-        }
-      }
-    }
-  }
 
   // Responsive tablette
   @media (min-width: vars.$tabletWidth) {
@@ -443,6 +450,10 @@
             &.kind, &.department, &.emitter {
               max-width: 10em;
             }
+            
+            &.description {
+              max-width: 15em;
+            }
           }
         }
       }
@@ -465,6 +476,10 @@
             
             &.kind, &.department, &.emitter {
               max-width: 12em;
+            }
+            
+            &.description {
+              max-width: 20em;
             }
           }
         }

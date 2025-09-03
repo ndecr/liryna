@@ -18,10 +18,11 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
-export const getRequest: (url: string) => Promise<AxiosResponse> = async (
+export const getRequest: (url: string, config?: Record<string, unknown>) => Promise<AxiosResponse> = async (
   url: string,
+  config?: Record<string, unknown>
 ): Promise<AxiosResponse> => {
-  return await axios.get(url);
+  return await axios.get(url, config);
 };
 
 export const postRequest = async <T, R>(

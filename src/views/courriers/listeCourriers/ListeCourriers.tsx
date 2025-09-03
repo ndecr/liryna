@@ -12,7 +12,8 @@ import {
   MdEmail, 
   MdSearch,
   MdNavigateNext,
-  MdNavigateBefore
+  MdNavigateBefore,
+  MdVisibility
 } from "react-icons/md";
 import { FiFileText } from "react-icons/fi";
 
@@ -22,6 +23,7 @@ import Header from "../../../components/header/Header.tsx";
 import SubNav from "../../../components/subNav/SubNav.tsx";
 import Footer from "../../../components/footer/Footer.tsx";
 import Button from "../../../components/button/Button.tsx";
+import Modal from "../../../components/modal/Modal.tsx";
 
 // context
 import { CourrierContext } from "../../../context/courrier/CourrierContext.tsx";
@@ -34,6 +36,17 @@ function ListeCourriers(): ReactElement {
   const { courriers, pagination, getAllCourriers, downloadCourrier, deleteCourrier, isLoading } = useContext(CourrierContext);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [tooltip, setTooltip] = useState<{ visible: boolean; content: string; x: number; y: number }>({
+    visible: false,
+    content: "",
+    x: 0,
+    y: 0
+  });
+  const [pdfModal, setPdfModal] = useState<{ visible: boolean; pdfUrl: string; fileName: string }>({
+    visible: false,
+    pdfUrl: "",
+    fileName: ""
+  });
 
   useEffect(() => {
     loadCourriers(currentPage);
@@ -43,7 +56,7 @@ function ListeCourriers(): ReactElement {
     try {
       await getAllCourriers(page, 10);
     } catch (error) {
-      console.error("Error loading courriers:", error);
+      // Error handling via context
     }
   };
 
@@ -81,19 +94,18 @@ function ListeCourriers(): ReactElement {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch (error) {
-      console.error('Erreur lors du téléchargement:', error);
       alert('Erreur lors du téléchargement du courrier');
     }
   };
 
   const handleEdit = (courrierid: number) => {
     // TODO: Rediriger vers la page d'édition du courrier
-    console.log('Édition du courrier:', courrierid);
+    // courrierid will be used for navigation
   };
 
   const handleEmail = (courrierid: number) => {
     // TODO: Ouvrir une modal pour envoyer par email
-    console.log('Envoi par email du courrier:', courrierid);
+    // courrierid will be used for email functionality
   };
 
   const handleDelete = async (courrierid: number) => {
@@ -102,10 +114,66 @@ function ListeCourriers(): ReactElement {
         await deleteCourrier(courrierid);
         loadCourriers(currentPage);
       } catch (error) {
-        console.error('Erreur lors de la suppression:', error);
         alert('Erreur lors de la suppression du courrier');
       }
     }
+  };
+
+  const handleViewPdf = async (courrier: ICourrier) => {
+    try {
+      // Utiliser l'endpoint de téléchargement pour récupérer le blob
+      const blob = await downloadCourrier(courrier.id);
+      const pdfUrl = URL.createObjectURL(blob);
+      setPdfModal({
+        visible: true,
+        pdfUrl: pdfUrl,
+        fileName: courrier.fileName
+      });
+    } catch (error) {
+      alert('Erreur lors du chargement du PDF pour visualisation');
+    }
+  };
+
+  const closePdfModal = () => {
+    // Nettoyer l'URL du blob pour éviter les fuites mémoire
+    if (pdfModal.pdfUrl && pdfModal.pdfUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(pdfModal.pdfUrl);
+    }
+    setPdfModal({
+      visible: false,
+      pdfUrl: "",
+      fileName: ""
+    });
+  };
+
+  const handleMouseEnter = (event: React.MouseEvent, content: string) => {
+    if (content && content !== "N/A" && content.length > 20) {
+      setTooltip({
+        visible: true,
+        content: content,
+        x: event.clientX + 10,
+        y: event.clientY - 10
+      });
+    }
+  };
+
+  const handleMouseMove = (event: React.MouseEvent) => {
+    if (tooltip.visible) {
+      setTooltip(prev => ({
+        ...prev,
+        x: event.clientX + 10,
+        y: event.clientY - 10
+      }));
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setTooltip({
+      visible: false,
+      content: "",
+      x: 0,
+      y: 0
+    });
   };
 
   const filteredCourriers = courriers.filter(courrier =>
@@ -134,7 +202,7 @@ function ListeCourriers(): ReactElement {
             <h1 className="pageTitle">Liste des courriers</h1>
           </header>
 
-          {/* Search */}
+          {/* Search and Pagination */}
           <section className="searchSection" data-aos="fade-up" data-aos-delay="100">
             <div className="searchContainer">
               <MdSearch className="searchIcon" />
@@ -146,6 +214,34 @@ function ListeCourriers(): ReactElement {
                 className="searchInput"
               />
             </div>
+            
+            {/* Pagination Controls */}
+            {pagination && pagination.totalPages > 1 && (
+              <div className="paginationControls">
+                <button
+                  className="paginationBtn"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  <MdNavigateBefore /> 
+                  Précédent
+                </button>
+                
+                <div className="paginationInfo">
+                  <span>Page {currentPage} sur {pagination.totalPages}</span>
+                  <span className="totalItems">{pagination.total} courrier{pagination.total > 1 ? 's' : ''}</span>
+                </div>
+                
+                <button
+                  className="paginationBtn"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === pagination.totalPages}
+                >
+                  Suivant
+                  <MdNavigateNext />
+                </button>
+              </div>
+            )}
           </section>
 
           {/* Courriers List */}
@@ -161,7 +257,8 @@ function ListeCourriers(): ReactElement {
               </div>
             ) : (
               <div className="courriersTable">
-                <table className="courriersGrid">
+                <div className="tableWrapper">
+                  <table className="courriersGrid">
                   <thead>
                     <tr>
                       <th>Nom du fichier</th>
@@ -170,16 +267,23 @@ function ListeCourriers(): ReactElement {
                       <th>Service</th>
                       <th>Expéditeur</th>
                       <th className="dateColumn">Date réception</th>
+                      <th className="dateColumn">Date courrier</th>
+                      <th>Description</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredCourriers.map((courrier: ICourrier) => (
-                      <tr key={courrier.id} className="courrierRow" data-aos="fade-up" data-aos-delay="100">
+                      <tr key={courrier.id} className="courrierRow">
                         <td className="fileName">
                           <div className="fileNameWrapper">
                             <FiFileText className="fileIcon" />
-                            <span className="fileNameText" title={courrier.fileName}>
+                            <span 
+                              className="fileNameText"
+                              onMouseEnter={(e) => handleMouseEnter(e, courrier.fileName)}
+                              onMouseMove={handleMouseMove}
+                              onMouseLeave={handleMouseLeave}
+                            >
                               {courrier.fileName}
                             </span>
                           </div>
@@ -189,12 +293,49 @@ function ListeCourriers(): ReactElement {
                             {courrier.direction}
                           </span>
                         </td>
-                        <td className="kind" title={courrier.kind || "N/A"}>{courrier.kind || "N/A"}</td>
-                        <td className="department" title={courrier.department || "N/A"}>{courrier.department || "N/A"}</td>
-                        <td className="emitter" title={courrier.emitter || "N/A"}>{courrier.emitter || "N/A"}</td>
+                        <td 
+                          className="kind"
+                          onMouseEnter={(e) => handleMouseEnter(e, courrier.kind || "N/A")}
+                          onMouseMove={handleMouseMove}
+                          onMouseLeave={handleMouseLeave}
+                        >
+                          {courrier.kind || "N/A"}
+                        </td>
+                        <td 
+                          className="department"
+                          onMouseEnter={(e) => handleMouseEnter(e, courrier.department || "N/A")}
+                          onMouseMove={handleMouseMove}
+                          onMouseLeave={handleMouseLeave}
+                        >
+                          {courrier.department || "N/A"}
+                        </td>
+                        <td 
+                          className="emitter"
+                          onMouseEnter={(e) => handleMouseEnter(e, courrier.emitter || "N/A")}
+                          onMouseMove={handleMouseMove}
+                          onMouseLeave={handleMouseLeave}
+                        >
+                          {courrier.emitter || "N/A"}
+                        </td>
                         <td className="receptionDate">{formatDate(courrier.receptionDate)}</td>
+                        <td className="courrierDate">{formatDate(courrier.courrierDate)}</td>
+                        <td 
+                          className="description"
+                          onMouseEnter={(e) => handleMouseEnter(e, courrier.description || "N/A")}
+                          onMouseMove={handleMouseMove}
+                          onMouseLeave={handleMouseLeave}
+                        >
+                          {courrier.description || "N/A"}
+                        </td>
                         <td className="actions">
                           <div className="actionButtons">
+                            <button 
+                              className="actionBtn view"
+                              onClick={() => handleViewPdf(courrier)}
+                              title="Visualiser"
+                            >
+                              <MdVisibility />
+                            </button>
                             <button 
                               className="actionBtn download"
                               onClick={() => handleDownload(courrier.id)}
@@ -228,42 +369,56 @@ function ListeCourriers(): ReactElement {
                       </tr>
                     ))}
                   </tbody>
-                </table>
+                  </table>
+                </div>
               </div>
             )}
           </section>
 
-          {/* Pagination */}
-          {pagination && pagination.totalPages > 1 && (
-            <section className="paginationSection" data-aos="fade-up" data-aos-delay="300">
-              <div className="paginationContainer">
-                <button
-                  className="paginationBtn"
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  <MdNavigateBefore />
-                  Précédent
-                </button>
-                
-                <div className="paginationInfo">
-                  <span>Page {currentPage} sur {pagination.totalPages}</span>
-                  <span className="totalItems">({pagination.total} courriers au total)</span>
-                </div>
-                
-                <button
-                  className="paginationBtn"
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === pagination.totalPages}
-                >
-                  Suivant
-                  <MdNavigateNext />
-                </button>
-              </div>
-            </section>
-          )}
         </div>
       </main>
+      
+      {/* Tooltip personnalisé */}
+      {tooltip.visible && (
+        <div 
+          className="customTooltip"
+          style={{
+            position: 'fixed',
+            left: tooltip.x,
+            top: tooltip.y,
+            zIndex: 10000,
+            backgroundColor: 'rgba(44, 62, 80, 0.95)',
+            color: 'white',
+            padding: '0.75em 1em',
+            borderRadius: '8px',
+            fontSize: '0.8em',
+            maxWidth: '25em',
+            wordWrap: 'break-word',
+            whiteSpace: 'pre-wrap',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)',
+            backdropFilter: 'blur(4px)',
+            pointerEvents: 'none'
+          }}
+        >
+          {tooltip.content}
+        </div>
+      )}
+
+      {/* Modale PDF */}
+      <Modal 
+        isVisible={pdfModal.visible}
+        onClose={closePdfModal}
+        title={pdfModal.fileName || "Visualisation PDF"}
+      >
+        <iframe
+          src={pdfModal.pdfUrl}
+          width="100%"
+          height="100%"
+          style={{ border: 'none' }}
+          title="Visualisation PDF"
+        />
+      </Modal>
+      
       <Footer />
     </>
   );

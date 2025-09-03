@@ -105,7 +105,7 @@ export const searchCourriersService = async (params: ICourrierSearchParams): Pro
 };
 
 export const downloadCourrierService = async (id: number): Promise<Blob> => {
-  const response = await getRequest(`/courriers/${id}/download`);
+  const response = await getRequest(`/courriers/${id}/download`, { responseType: 'blob' });
   return response.data;
 };
 
