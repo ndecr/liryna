@@ -25,21 +25,40 @@
       background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+  }
 
-    .utilsWelcome {
-      background: white;
-      border: 1px solid vars.$borderColor;
-      border-radius: 12px; // Mobile first
-      padding: 1.5em; // Mobile first
-      box-shadow: 0 0.25em 1.25em rgba(0, 0, 0, 0.08);
-      margin: 0 1em; // Mobile first
-      
-      p {
-        font-size: 1em; // Mobile first
-        line-height: 1.6;
-        margin: 0;
-        color: vars.$fontColorSecondary;
+  #viewCard {
+    @include mixins.card(0.75em, dark);
+    width: 200px;
+    height: 200px;
+
+    a {
+      .cardContent {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        text-decoration: none;
+        color: vars.$fontColorPrimary;
+
+        .sectionCardTitle {
+          font-size: 1.5em;
+          margin-bottom: 0.5em;
+        }
+
+        .sectionCardDescription {
+          font-size: 1em;
+          color: vars.$fontColorSecondary;
+          padding: 0 1em;
+        }
+
       }
+    }
+
+    &:hover {
+      box-shadow: 0 0.5em 1.5em rgba(0, 0, 0, 0.1);
+
     }
   }
 }
@@ -53,15 +72,6 @@
     .utilsContent {
       .utilsTitle {
         font-size: 2.3em;
-      }
-
-      .utilsWelcome {
-        padding: 2em;
-        margin: 0;
-        
-        p {
-          font-size: 1.1em;
-        }
       }
     }
   }

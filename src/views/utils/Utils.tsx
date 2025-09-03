@@ -1,8 +1,15 @@
 // styles
 import "./utils.scss";
 
+interface IViewCard {
+  title: string;
+  description: string;
+  url: string;
+}
+
 // hooks | libraries
 import { ReactElement } from "react";
+import { Link } from "react-router-dom";
 
 // components
 import WithAuth from "../../utils/middleware/WithAuth.tsx";
@@ -11,6 +18,27 @@ import SubNav from "../../components/subNav/SubNav.tsx";
 import Footer from "../../components/footer/Footer.tsx";
 
 function Utils(): ReactElement {
+  const subApps: IViewCard[] = [
+    {
+      title: "Courrier",
+      description: "Gérez vos courriers",
+      url: "/utils/mail",
+    },
+  ];
+
+  const ViewCard = ({ title, description, url }: IViewCard): ReactElement => {
+    return (
+      <article id="viewCard">
+        <Link to={url}>
+          <div className="cardContent">
+            <h2 className="sectionCardTitle">{title}</h2>
+            <p className="sectionCardDescription">{description}</p>
+          </div>
+        </Link>
+      </article>
+    );
+  };
+
   return (
     <>
       <Header />
@@ -19,7 +47,9 @@ function Utils(): ReactElement {
         <section className="utilsContent">
           <h1 className="utilsTitle">Outils utilitaires</h1>
           <div className="utilsWelcome">
-            <p>Bienvenue dans la section utilitaires. Utilisez la navigation pour accéder aux différents outils disponibles.</p>
+            {subApps.map((app) => (
+              <ViewCard key={app.title} {...app} />
+            ))}
           </div>
         </section>
       </main>
