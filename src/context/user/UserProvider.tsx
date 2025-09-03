@@ -59,8 +59,12 @@ export const UserProvider = ({
     setIsLoading(true);
     try {
       const response = await registerService(userData);
-      if (response.user) {
-        setUser(response.user);
+      
+      // Gestion de la réponse avec structure différente (data au lieu de user)
+      const user = response.user || (response as any).data;
+      
+      if (user) {
+        setUser(user);
       }
     } catch (error) {
       console.error("Error while registering:", error);

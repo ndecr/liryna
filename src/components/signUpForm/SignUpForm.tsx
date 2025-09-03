@@ -77,9 +77,17 @@ export default function SignUpForm({
     
     try {
       await register(userData);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Registration error:", error);
-      setError("Erreur lors de l'inscription. Veuillez réessayer.");
+      
+      // Gestion spécifique des erreurs HTTP
+      if (error?.response?.status === 409) {
+        setError("Un compte avec cet email existe déjà. Vous pouvez vous connecter avec cet email.");
+      } else if (error?.response?.data?.message) {
+        setError(error.response.data.message);
+      } else {
+        setError("Erreur lors de l'inscription. Veuillez réessayer.");
+      }
     }
   };
   

@@ -37,6 +37,7 @@ export interface ICourrierFormData {
   department: string;
   kind: string;
   description: string;
+  customFileName: string;
   fichierJoint?: File;
 }
 
@@ -50,6 +51,7 @@ export interface ICourrierUploadData {
   department?: string;
   kind?: string;
   description?: string;
+  customFileName?: string;
 }
 
 export interface IPagination {

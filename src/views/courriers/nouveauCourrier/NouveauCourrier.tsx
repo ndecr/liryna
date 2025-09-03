@@ -20,6 +20,10 @@ import Footer from "../../../components/footer/Footer.tsx";
 // types
 import { ICourrierFormData } from "../../../utils/types/courrier.types.ts";
 
+// utils
+import { handleCourrierUploadError } from "../../../utils/scripts/errorHandling.ts";
+import { validateCourrierForm } from "../../../utils/scripts/courrierValidation.ts";
+
 interface SelectOption {
   value: string;
   label: string;
@@ -37,7 +41,8 @@ function NouveauCourrier(): ReactElement {
     priority: "normal",
     department: "",
     kind: "",
-    description: ""
+    description: "",
+    customFileName: ""
   });
   const [dragActive, setDragActive] = useState(false);
 
@@ -72,9 +77,11 @@ function NouveauCourrier(): ReactElement {
   };
 
   const handleFileUpload = (file: File) => {
+    const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
     setFormData(prev => ({
       ...prev,
-      fichierJoint: file
+      fichierJoint: file,
+      customFileName: prev.customFileName || nameWithoutExt // Ne remplace que si vide
     }));
   };
 
@@ -107,8 +114,10 @@ function NouveauCourrier(): ReactElement {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.fichierJoint) {
-      alert("Veuillez sélectionner un fichier");
+    // Validation
+    const validation = validateCourrierForm(formData);
+    if (!validation.isValid) {
+      alert(validation.errorMessage);
       return;
     }
     
@@ -123,13 +132,15 @@ function NouveauCourrier(): ReactElement {
         department: formData.department || undefined,
         kind: formData.kind || undefined,
         description: formData.description || undefined,
+        customFileName: formData.customFileName || undefined,
       };
 
-      await uploadCourrier(formData.fichierJoint, uploadData);
+      await uploadCourrier(formData.fichierJoint!, uploadData);
       navigate("/utils/mail");
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Erreur lors de la création du courrier:", error);
-      alert("Erreur lors de la création du courrier");
+      const errorMessage = handleCourrierUploadError(error);
+      alert(errorMessage);
     }
   };
 
@@ -189,6 +200,23 @@ function NouveauCourrier(): ReactElement {
                       value={formData.kind}
                       onChange={handleInputChange}
                       placeholder="Facture, Contrat, Note de service..."
+                    />
+                  </div>
+                </div>
+
+                <div className="formRow">
+                  <div className="formGroup">
+                    <label htmlFor="customFileName">
+                      <MdUploadFile />
+                      Nom du fichier *
+                    </label>
+                    <input
+                      type="text"
+                      id="customFileName"
+                      name="customFileName"
+                      value={formData.customFileName}
+                      onChange={handleInputChange}
+                      placeholder="Nom personnalisé du fichier (sans extension)"
                     />
                   </div>
                 </div>
@@ -381,7 +409,7 @@ function NouveauCourrier(): ReactElement {
               <button
                 type="submit"
                 className="btnSubmit"
-                disabled={isLoading || !formData.direction || !formData.fichierJoint}
+                disabled={isLoading || !formData.direction || !formData.fichierJoint || !formData.customFileName.trim()}
               >
                 <MdSave />
                 {isLoading ? 'Enregistrement...' : 'Enregistrer'}

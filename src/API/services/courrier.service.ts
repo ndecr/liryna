@@ -1,4 +1,4 @@
-import { getRequest, postRequest, patchRequest, deleteRequest } from "../APICalls.ts";
+import { getRequest, postRequest, postFormDataRequest, patchRequest, deleteRequest } from "../APICalls.ts";
 import { AxiosResponse } from "axios";
 import { ICourrier, ICourrierUploadData, IApiResponse, ICourrierSearchParams, IPagination } from "../../utils/types/courrier.types.ts";
 import { courrierModel } from "../models/courrier.model.ts";
@@ -16,7 +16,8 @@ export const uploadCourrierService = async (
     }
   });
 
-  const response: AxiosResponse<IApiResponse<ICourrier>> = await postRequest("/courriers/upload", formData);
+
+  const response: AxiosResponse<IApiResponse<ICourrier>> = await postFormDataRequest("/courriers/upload", formData);
   
   if (response.data.success && response.data.data) {
     return courrierModel(response.data.data);
