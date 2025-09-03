@@ -61,7 +61,7 @@ export const UserProvider = ({
       const response = await registerService(userData);
       
       // Gestion de la réponse avec structure différente (data au lieu de user)
-      const user = response.user || (response as any).data;
+      const user = response.user || (response as { data?: IUser }).data;
       
       if (user) {
         setUser(user);
