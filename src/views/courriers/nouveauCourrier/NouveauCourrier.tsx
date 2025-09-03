@@ -192,7 +192,7 @@ function NouveauCourrier(): ReactElement {
                     />
                   </div>
                   <div className="formGroup">
-                    <label htmlFor="kind">Type de courrier</label>
+                    <label htmlFor="kind">Type de courrier *</label>
                     <input
                       type="text"
                       id="kind"
@@ -200,6 +200,7 @@ function NouveauCourrier(): ReactElement {
                       value={formData.kind}
                       onChange={handleInputChange}
                       placeholder="Facture, Contrat, Note de service..."
+                      required
                     />
                   </div>
                 </div>
@@ -256,7 +257,7 @@ function NouveauCourrier(): ReactElement {
                   <div className="formGroup">
                     <label htmlFor="department">
                       <FiTag />
-                      Service/Département
+                      Service/Département *
                     </label>
                     <input
                       type="text"
@@ -265,6 +266,7 @@ function NouveauCourrier(): ReactElement {
                       value={formData.department}
                       onChange={handleInputChange}
                       placeholder="Service concerné"
+                      required
                     />
                   </div>
                   <div className="formGroup">
@@ -409,7 +411,7 @@ function NouveauCourrier(): ReactElement {
               <button
                 type="submit"
                 className="btnSubmit"
-                disabled={isLoading || !formData.direction || !formData.fichierJoint || !formData.customFileName.trim()}
+                disabled={isLoading || !formData.direction || !formData.fichierJoint || !formData.customFileName.trim() || !formData.kind.trim() || !formData.department.trim()}
               >
                 <MdSave />
                 {isLoading ? 'Enregistrement...' : 'Enregistrer'}
