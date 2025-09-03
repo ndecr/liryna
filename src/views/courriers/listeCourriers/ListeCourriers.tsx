@@ -98,14 +98,12 @@ function ListeCourriers(): ReactElement {
     }
   };
 
-  const handleEdit = (courrierid: number) => {
+  const handleEdit = (_courrierid: number) => {
     // TODO: Rediriger vers la page d'édition du courrier
-    // courrierid will be used for navigation
   };
 
-  const handleEmail = (courrierid: number) => {
+  const handleEmail = (_courrierid: number) => {
     // TODO: Ouvrir une modal pour envoyer par email
-    // courrierid will be used for email functionality
   };
 
   const handleDelete = async (courrierid: number) => {
