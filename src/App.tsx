@@ -15,6 +15,9 @@ import {
 } from "react-router-dom";
 import AOS from 'aos';
 
+// components
+import PWAStatus from "./components/pwaStatus/PWAStatus.tsx";
+
 // views
 import AuthPage from "./views/authPage/AuthPage";
 import HomeWithAuth from "./views/home/Home.tsx";
@@ -64,6 +67,7 @@ function App(): ReactElement {
   return (
     <Router>
       <BodyClassManager />
+      <PWAStatus />
       <Routes>
         <Route path="/" element={<Navigate to="/auth" />}></Route>
         <Route path={"auth"} element={<AuthPage />}></Route>
@@ -75,6 +79,11 @@ function App(): ReactElement {
         <Route path={"utils/mail/new"} element={<NouveauCourrierWithAuth />}></Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      
+      {/* Notification hors ligne globale */}
+      <div className="offline-notice">
+        📱 Mode hors ligne - Fonctionnalités limitées
+      </div>
     </Router>
   );
 }

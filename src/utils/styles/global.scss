@@ -2,6 +2,9 @@
 @use "../../utils/styles/mixins" as mixins;
 @use "../../utils/styles/variables" as vars;
 
+// Import component styles
+@use "../../components/pwaStatus/pwaStatus.scss";
+
 // import Ubuntu font from google cdn
 @import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap");
 

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test PWA - What a tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #26d0ce;
+        }
+        .success { border-left-color: #27ae60; }
+        .warning { border-left-color: #f39c12; }
+        .error { border-left-color: #e74c3c; }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .pass { background: #d4edda; color: #155724; }
+        .fail { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button {
+            background: #26d0ce;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1ba69b;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test PWA - What a tool</h1>
+    
+    <div class="test-section">
+        <h2>1. Support des PWA</h2>
+        <div id="pwa-support-test"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Service Worker</h2>
+        <div id="sw-test"></div>
+        <button onclick="testServiceWorker()">Tester Service Worker</button>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Manifeste PWA</h2>
+        <div id="manifest-test"></div>
+        <button onclick="testManifest()">Tester Manifeste</button>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Installation PWA</h2>
+        <div id="install-test"></div>
+        <button onclick="testInstall()">Simuler Installation</button>
+    </div>
+
+    <div class="test-section">
+        <h2>5. Cache et Offline</h2>
+        <div id="cache-test"></div>
+        <button onclick="testCache()">Tester Cache</button>
+    </div>
+
+    <div class="test-section">
+        <h2>6. Audit automatique</h2>
+        <div id="audit-results"></div>
+        <button onclick="runAudit()">Lancer l'audit</button>
+    </div>
+
+    <script>
+        // Test du support PWA
+        function testPWASupport() {
+            const supportTests = {
+                'Service Worker': 'serviceWorker' in navigator,
+                'Cache API': 'caches' in window,
+                'Fetch API': 'fetch' in window,
+                'Push Manager': 'PushManager' in window,
+                'Notifications': 'Notification' in window,
+                'Background Sync': 'serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype
+            };
+
+            let html = '';
+            Object.entries(supportTests).forEach(([test, result]) => {
+                html += `<div class="test-result ${result ? 'pass' : 'fail'}">
+                    ${test}: ${result ? '✅ Supporté' : '❌ Non supporté'}
+                </div>`;
+            });
+
+            document.getElementById('pwa-support-test').innerHTML = html;
+        }
+
+        // Test du Service Worker
+        async function testServiceWorker() {
+            const resultDiv = document.getElementById('sw-test');
+            
+            if (!('serviceWorker' in navigator)) {
+                resultDiv.innerHTML = '<div class="test-result fail">❌ Service Workers non supportés</div>';
+                return;
+            }
+
+            try {
+                const registration = await navigator.serviceWorker.getRegistration();
+                if (registration) {
+                    resultDiv.innerHTML = `
+                        <div class="test-result pass">✅ Service Worker enregistré</div>
+                        <div class="test-result info">Scope: ${registration.scope}</div>
+                        <div class="test-result info">État: ${registration.active ? 'Actif' : 'Inactif'}</div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = '<div class="test-result warning">⚠️ Aucun Service Worker enregistré</div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="test-result fail">❌ Erreur: ${error.message}</div>`;
+            }
+        }
+
+        // Test du manifeste
+        async function testManifest() {
+            const resultDiv = document.getElementById('manifest-test');
+            
+            try {
+                const response = await fetch('/manifest.json');
+                if (response.ok) {
+                    const manifest = await response.json();
+                    resultDiv.innerHTML = `
+                        <div class="test-result pass">✅ Manifeste chargé</div>
+                        <div class="test-result info">Nom: ${manifest.name || 'Non défini'}</div>
+                        <div class="test-result info">Mode d'affichage: ${manifest.display || 'Non défini'}</div>
+                        <div class="test-result info">Icônes: ${manifest.icons ? manifest.icons.length : 0}</div>
+                        <div class="test-result info">Start URL: ${manifest.start_url || 'Non défini'}</div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = '<div class="test-result fail">❌ Impossible de charger le manifeste</div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="test-result fail">❌ Erreur: ${error.message}</div>`;
+            }
+        }
+
+        // Test d'installation
+        function testInstall() {
+            const resultDiv = document.getElementById('install-test');
+            
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+            const isFullscreen = window.matchMedia('(display-mode: fullscreen)').matches;
+            const isSafariStandalone = (window.navigator && window.navigator.standalone);
+            
+            const isInstalled = isStandalone || isFullscreen || isSafariStandalone;
+            
+            let html = '';
+            
+            if (isInstalled) {
+                html += '<div class="test-result pass">✅ PWA déjà installée</div>';
+            } else {
+                html += '<div class="test-result info">ℹ️ PWA non installée</div>';
+            }
+            
+            html += `<div class="test-result info">Display mode: ${isStandalone ? 'Standalone' : isFullscreen ? 'Fullscreen' : 'Browser'}</div>`;
+            
+            // Test de l'événement beforeinstallprompt
+            if (window.deferredPrompt) {
+                html += '<div class="test-result pass">✅ Prompt d\'installation disponible</div>';
+            } else {
+                html += '<div class="test-result warning">⚠️ Prompt d\'installation non disponible</div>';
+            }
+            
+            resultDiv.innerHTML = html;
+        }
+
+        // Test du cache
+        async function testCache() {
+            const resultDiv = document.getElementById('cache-test');
+            
+            if (!('caches' in window)) {
+                resultDiv.innerHTML = '<div class="test-result fail">❌ Cache API non supporté</div>';
+                return;
+            }
+
+            try {
+                const cacheNames = await caches.keys();
+                let html = `<div class="test-result pass">✅ Cache API disponible</div>`;
+                html += `<div class="test-result info">Nombre de caches: ${cacheNames.length}</div>`;
+                
+                for (const cacheName of cacheNames) {
+                    const cache = await caches.open(cacheName);
+                    const requests = await cache.keys();
+                    html += `<div class="test-result info">Cache "${cacheName}": ${requests.length} entrées</div>`;
+                }
+                
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="test-result fail">❌ Erreur: ${error.message}</div>`;
+            }
+        }
+
+        // Audit automatique
+        function runAudit() {
+            const resultDiv = document.getElementById('audit-results');
+            const checks = [];
+            
+            // Vérifications basiques PWA
+            checks.push({
+                name: 'HTTPS ou localhost',
+                pass: location.protocol === 'https:' || location.hostname === 'localhost',
+                message: 'PWA nécessite HTTPS en production'
+            });
+            
+            checks.push({
+                name: 'Service Worker',
+                pass: 'serviceWorker' in navigator,
+                message: 'Service Worker requis pour PWA'
+            });
+            
+            checks.push({
+                name: 'Manifeste',
+                pass: document.querySelector('link[rel="manifest"]') !== null,
+                message: 'Manifeste lié dans le HTML'
+            });
+            
+            checks.push({
+                name: 'Viewport meta',
+                pass: document.querySelector('meta[name="viewport"]') !== null,
+                message: 'Meta viewport requis pour mobile'
+            });
+            
+            checks.push({
+                name: 'Theme color',
+                pass: document.querySelector('meta[name="theme-color"]') !== null,
+                message: 'Theme color pour l\'interface système'
+            });
+
+            let html = '';
+            let passCount = 0;
+            
+            checks.forEach(check => {
+                if (check.pass) passCount++;
+                html += `<div class="test-result ${check.pass ? 'pass' : 'fail'}">
+                    ${check.pass ? '✅' : '❌'} ${check.name}: ${check.message}
+                </div>`;
+            });
+            
+            const score = Math.round((passCount / checks.length) * 100);
+            html = `<div class="test-result ${score >= 80 ? 'pass' : score >= 60 ? 'warning' : 'fail'}">
+                Score PWA: ${score}% (${passCount}/${checks.length})
+            </div>` + html;
+            
+            resultDiv.innerHTML = html;
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            testPWASupport();
+            runAudit();
+        });
+
+        // Écouter l'événement d'installation
+        window.addEventListener('beforeinstallprompt', (e) => {
+            window.deferredPrompt = e;
+            console.log('PWA install prompt available');
+        });
+    </script>
+</body>
+</html>

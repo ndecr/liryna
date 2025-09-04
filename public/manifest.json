@@ -1,0 +1,91 @@
+{
+  "name": "What a tool !",
+  "short_name": "WhaT",
+  "description": "Application de gestion de courriers et outils web",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#26d0ce",
+  "background_color": "#ffffff",
+  "scope": "/",
+  "lang": "fr",
+  "categories": ["productivity", "business", "office"],
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Nouveau courrier",
+      "short_name": "Nouveau",
+      "description": "Créer un nouveau courrier",
+      "url": "/courriers/nouveau",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Liste des courriers",
+      "short_name": "Liste",
+      "description": "Voir tous les courriers",
+      "url": "/courriers/liste",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "platform": "mobile",
+      "label": "Vue mobile de l'application"
+    },
+    {
+      "src": "/screenshot-desktop.png", 
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "platform": "wide",
+      "label": "Vue desktop de l'application"
+    }
+  ]
+}
