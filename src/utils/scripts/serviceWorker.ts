@@ -1,7 +1,14 @@
 // Service Worker registration et gestion pour What a tool PWA
 
 const SW_URL = '/sw.js';
-const isProduction = import.meta.env.PROD;
+const isProduction = (() => {
+  try {
+    return import.meta.env?.PROD || false;
+  } catch {
+    // Fallback: considérer comme production si on ne peut pas détecter
+    return true;
+  }
+})();
 
 // Types pour les messages du Service Worker
 interface ServiceWorkerMessage {

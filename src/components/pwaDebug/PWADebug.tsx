@@ -16,7 +16,15 @@ function PWADebug({ className = "" }: PWADebugProps): ReactElement | null {
   const isOnline = useOnlineStatus();
 
   // Seulement en mode développement
-  if (!import.meta.env.DEV) {
+  const isDev = (() => {
+    try {
+      return import.meta.env?.DEV || false;
+    } catch {
+      return false;
+    }
+  })();
+  
+  if (!isDev) {
     return null;
   }
 

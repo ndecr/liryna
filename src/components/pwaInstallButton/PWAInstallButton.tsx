@@ -63,7 +63,13 @@ function PWAInstallButton({
   };
 
   // Mode debug - afficher toujours en développement pour tester
-  const debugMode = import.meta.env.DEV;
+  const debugMode = (() => {
+    try {
+      return import.meta.env?.DEV || false;
+    } catch {
+      return false;
+    }
+  })();
   
   // Ne pas afficher si déjà installé ou pas installable (sauf en mode debug)
   if (!debugMode && (isInstalled || !showButton || !deferredPrompt)) {
