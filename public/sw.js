@@ -4,7 +4,7 @@ const STATIC_CACHE = 'whatatool-static-v1.0.0';
 const DYNAMIC_CACHE = 'whatatool-dynamic-v1.0.0';
 
 // Vérifier si nous sommes en mode développement
-const isDevelopment = self.location.hostname === 'localhost' && self.location.port !== '4173';
+const isDevelopment = self.location.hostname === 'localhost' && self.location.port === '5173';
 
 // Si en développement, désactiver complètement le Service Worker
 if (isDevelopment) {

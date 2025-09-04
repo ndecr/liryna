@@ -16,7 +16,6 @@ import {
 import AOS from 'aos';
 
 // components
-import PWAStatus from "./components/pwaStatus/PWAStatus.tsx";
 
 // views
 import AuthPage from "./views/authPage/AuthPage";
@@ -67,7 +66,6 @@ function App(): ReactElement {
   return (
     <Router>
       <BodyClassManager />
-      <PWAStatus />
       <Routes>
         <Route path="/" element={<Navigate to="/auth" />}></Route>
         <Route path={"auth"} element={<AuthPage />}></Route>

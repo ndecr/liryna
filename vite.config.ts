@@ -24,7 +24,7 @@ export default defineConfig({
   server: {
     // HTTPS nécessaire pour certaines fonctionnalités PWA en dev
     // https: true, // Décommenter si besoin
-    port: 3000,
+    port: 5173,
   },
   // Optimisations
   define: {

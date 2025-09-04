@@ -173,11 +173,7 @@ function NouveauCourrier(): ReactElement {
         <div className="nouveauCourrierContainer">
           {/* Header */}
           <header className="nouveauCourrierHeader" data-aos="fade-down">
-            <Button 
-              style="back"
-              onClick={handleCancel}
-              type="button"
-            >
+            <Button style="back" onClick={handleCancel} type="button">
               <MdArrowBack />
               <span>Retour</span>
             </Button>
@@ -185,7 +181,12 @@ function NouveauCourrier(): ReactElement {
           </header>
 
           {/* Form */}
-          <form className="courrierForm" onSubmit={handleSubmit} data-aos="fade-up" data-aos-delay="100">
+          <form
+            className="courrierForm"
+            onSubmit={handleSubmit}
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
             <div className="formGrid">
               {/* Informations principales */}
               <section className="formSection">
@@ -193,14 +194,18 @@ function NouveauCourrier(): ReactElement {
                   <FiMail />
                   Informations principales
                 </h2>
-                
+
                 <div className="formRow">
                   <div className="formGroup">
                     <label htmlFor="direction">Direction *</label>
                     <Select
                       inputId="direction"
-                      value={directionOptions.find(option => option.value === formData.direction)}
-                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'direction')}
+                      value={directionOptions.find(
+                        (option) => option.value === formData.direction
+                      )}
+                      onChange={(selectedOption) =>
+                        handleSelectChange(selectedOption, "direction")
+                      }
                       options={directionOptions}
                       className="react-select-container"
                       classNamePrefix="react-select"
@@ -214,7 +219,9 @@ function NouveauCourrier(): ReactElement {
                       id="kind"
                       name="kind"
                       value={formData.kind}
-                      onChange={(value) => setFormData(prev => ({ ...prev, kind: value }))}
+                      onChange={(value) =>
+                        setFormData((prev) => ({ ...prev, kind: value }))
+                      }
                       options={kindOptions.options}
                       placeholder="Sélectionner ou créer un type de courrier..."
                       isLoading={kindOptions.isLoading}
@@ -250,7 +257,9 @@ function NouveauCourrier(): ReactElement {
                       id="emitter"
                       name="emitter"
                       value={formData.emitter}
-                      onChange={(value) => setFormData(prev => ({ ...prev, emitter: value }))}
+                      onChange={(value) =>
+                        setFormData((prev) => ({ ...prev, emitter: value }))
+                      }
                       options={emitterOptions.options}
                       placeholder="Sélectionner ou créer un expéditeur..."
                       isLoading={emitterOptions.isLoading}
@@ -265,7 +274,9 @@ function NouveauCourrier(): ReactElement {
                       id="recipient"
                       name="recipient"
                       value={formData.recipient}
-                      onChange={(value) => setFormData(prev => ({ ...prev, recipient: value }))}
+                      onChange={(value) =>
+                        setFormData((prev) => ({ ...prev, recipient: value }))
+                      }
                       options={recipientOptions.options}
                       placeholder="Sélectionner ou créer un destinataire..."
                       isLoading={recipientOptions.isLoading}
@@ -283,7 +294,9 @@ function NouveauCourrier(): ReactElement {
                       id="department"
                       name="department"
                       value={formData.department}
-                      onChange={(value) => setFormData(prev => ({ ...prev, department: value }))}
+                      onChange={(value) =>
+                        setFormData((prev) => ({ ...prev, department: value }))
+                      }
                       options={departmentOptions.options}
                       placeholder="Sélectionner ou créer un service/département..."
                       isLoading={departmentOptions.isLoading}
@@ -296,8 +309,12 @@ function NouveauCourrier(): ReactElement {
                     </label>
                     <Select
                       inputId="priority"
-                      value={priorityOptions.find(option => option.value === formData.priority)}
-                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'priority')}
+                      value={priorityOptions.find(
+                        (option) => option.value === formData.priority
+                      )}
+                      onChange={(selectedOption) =>
+                        handleSelectChange(selectedOption, "priority")
+                      }
                       options={priorityOptions}
                       className="react-select-container"
                       classNamePrefix="react-select"
@@ -314,7 +331,7 @@ function NouveauCourrier(): ReactElement {
                   <FiCalendar />
                   Dates
                 </h2>
-                
+
                 <div className="formRow">
                   <div className="formGroup">
                     <label htmlFor="receptionDate">Date de réception</label>
@@ -345,7 +362,7 @@ function NouveauCourrier(): ReactElement {
                   <FiFileText />
                   Description
                 </h2>
-                
+
                 <div className="formGroup">
                   <label htmlFor="description">Notes et observations</label>
                   <textarea
@@ -366,14 +383,16 @@ function NouveauCourrier(): ReactElement {
                   <MdUploadFile />
                   Document joint
                 </h2>
-                
-                <div 
-                  className={`uploadZone ${dragActive ? 'dragActive' : ''} ${formData.fichierJoint ? 'hasFile' : ''}`}
+
+                <div
+                  className={`uploadZone ${dragActive ? "dragActive" : ""} ${
+                    formData.fichierJoint ? "hasFile" : ""
+                  }`}
                   onDragEnter={handleDrag}
                   onDragLeave={handleDrag}
                   onDragOver={handleDrag}
                   onDrop={handleDrop}
-                  onClick={() => document.getElementById('file-input')?.click()}
+                  onClick={() => document.getElementById("file-input")?.click()}
                 >
                   <input
                     type="file"
@@ -382,14 +401,19 @@ function NouveauCourrier(): ReactElement {
                     accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                     hidden
                   />
-                  
+
                   {formData.fichierJoint ? (
                     <div className="fileInfo">
                       <MdUploadFile className="fileIcon" />
                       <div className="fileDetails">
-                        <span className="fileName">{formData.fichierJoint.name}</span>
+                        <span className="fileName">
+                          {formData.fichierJoint.name}
+                        </span>
                         <span className="fileSize">
-                          {(formData.fichierJoint.size / 1024 / 1024).toFixed(2)} MB
+                          {(formData.fichierJoint.size / 1024 / 1024).toFixed(
+                            2
+                          )}{" "}
+                          MB
                         </span>
                       </div>
                       <button
@@ -397,7 +421,10 @@ function NouveauCourrier(): ReactElement {
                         className="removeFile"
                         onClick={(e) => {
                           e.stopPropagation();
-                          setFormData(prev => ({ ...prev, fichierJoint: undefined }));
+                          setFormData((prev) => ({
+                            ...prev,
+                            fichierJoint: undefined,
+                          }));
                         }}
                       >
                         <MdCancel />
@@ -407,9 +434,15 @@ function NouveauCourrier(): ReactElement {
                     <div className="uploadPrompt">
                       <MdUploadFile className="uploadIcon" />
                       <div className="uploadText">
-                        <span className="primaryText">Cliquez pour sélectionner</span>
-                        <span className="secondaryText">ou glissez-déposez votre fichier ici</span>
-                        <span className="formatText">PDF, DOC, DOCX, JPG, PNG (max 10MB)</span>
+                        <span className="primaryText">
+                          Cliquez pour sélectionner
+                        </span>
+                        <span className="secondaryText">
+                          ou glissez-déposez votre fichier ici
+                        </span>
+                        <span className="formatText">
+                          PDF, DOC, DOCX, JPG, PNG (max 10MB)
+                        </span>
                       </div>
                     </div>
                   )}
@@ -418,7 +451,7 @@ function NouveauCourrier(): ReactElement {
             </div>
 
             {/* Actions */}
-            <div className="formActions" data-aos="fade-up" data-aos-delay="200">
+            <div className="formActions">
               <button
                 type="button"
                 className="btnCancel"
@@ -428,14 +461,21 @@ function NouveauCourrier(): ReactElement {
                 <MdCancel />
                 Annuler
               </button>
-              
+
               <button
                 type="submit"
                 className="btnSubmit"
-                disabled={isLoading || !formData.direction || !formData.fichierJoint || !formData.customFileName.trim() || !formData.kind.trim() || !formData.department.trim()}
+                disabled={
+                  isLoading ||
+                  !formData.direction ||
+                  !formData.fichierJoint ||
+                  !formData.customFileName.trim() ||
+                  !formData.kind.trim() ||
+                  !formData.department.trim()
+                }
               >
                 <MdSave />
-                {isLoading ? 'Enregistrement...' : 'Enregistrer'}
+                {isLoading ? "Enregistrement..." : "Enregistrer"}
               </button>
             </div>
           </form>

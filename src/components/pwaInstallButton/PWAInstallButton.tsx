@@ -48,31 +48,14 @@ function PWAInstallButton({
       
       const choiceResult = await deferredPrompt.userChoice;
       if (choiceResult.outcome === 'accepted') {
-        console.log('[PWA] User accepted the install prompt');
         setShowButton(false);
       }
       setDeferredPrompt(null);
-    } else if (debugMode) {
-      // En mode debug, afficher des infos utiles
-      console.log('[PWA Debug] Install button clicked but no prompt available');
-      console.log('[PWA Debug] isInstalled:', isInstalled);
-      console.log('[PWA Debug] showButton:', showButton);
-      console.log('[PWA Debug] deferredPrompt:', !!deferredPrompt);
-      alert('Mode debug: Bouton PWA visible mais pas de prompt disponible.\nVérifiez la console pour plus d\'infos.');
     }
   };
-
-  // Mode debug - afficher toujours en développement pour tester
-  const debugMode = (() => {
-    try {
-      return import.meta.env?.DEV || false;
-    } catch {
-      return false;
-    }
-  })();
   
-  // Ne pas afficher si déjà installé ou pas installable (sauf en mode debug)
-  if (!debugMode && (isInstalled || !showButton || !deferredPrompt)) {
+  // Ne pas afficher si déjà installé ou pas installable
+  if (isInstalled || !showButton || !deferredPrompt) {
     return null;
   }
 
@@ -84,12 +67,7 @@ function PWAInstallButton({
         title="Installer l'application"
       >
         <MdDownload />
-        {variant === "mobile" && (
-          <span>
-            Installer l'app
-            {debugMode && !deferredPrompt && " (Debug)"}
-          </span>
-        )}
+        {variant === "mobile" && <span>Installer l'app</span>}
       </button>
     );
   }
