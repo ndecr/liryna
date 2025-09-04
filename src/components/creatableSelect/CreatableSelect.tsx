@@ -16,7 +16,6 @@ interface CreatableSelectProps {
   placeholder?: string;
   id?: string;
   name?: string;
-  required?: boolean;
   isLoading?: boolean;
 }
 
@@ -28,7 +27,6 @@ function CreatableSelectComponent({
   placeholder = "Sélectionner ou créer...",
   id,
   name,
-  required = false,
   isLoading = false
 }: CreatableSelectProps): ReactElement {
   

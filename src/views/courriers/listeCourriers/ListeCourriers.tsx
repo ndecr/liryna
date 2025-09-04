@@ -2,7 +2,7 @@
 import "./listeCourriers.scss";
 
 // hooks | libraries
-import { ReactElement, useState, useEffect, useContext, useCallback } from "react";
+import { ReactElement, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   MdArrowBack, 
@@ -27,7 +27,6 @@ import Loader from "../../../components/loader/Loader.tsx";
 
 // context
 import { CourrierContext } from "../../../context/courrier/CourrierContext.tsx";
-import { LoaderContext } from "../../../context/loader/LoaderContext.tsx";
 
 // services
 import { downloadCourrierService } from "../../../API/services/courrier.service.ts";
@@ -38,7 +37,6 @@ import { ICourrier } from "../../../utils/types/courrier.types.ts";
 function ListeCourriers(): ReactElement {
   const navigate = useNavigate();
   const { courriers, pagination, getAllCourriers, downloadCourrier, deleteCourrier, isLoading } = useContext(CourrierContext);
-  const { showLoader, hideLoader } = useContext(LoaderContext);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [tooltip, setTooltip] = useState<{ visible: boolean; content: string; x: number; y: number }>({

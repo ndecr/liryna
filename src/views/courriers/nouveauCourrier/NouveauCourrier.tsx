@@ -218,7 +218,6 @@ function NouveauCourrier(): ReactElement {
                       options={kindOptions.options}
                       placeholder="Sélectionner ou créer un type de courrier..."
                       isLoading={kindOptions.isLoading}
-                      required
                     />
                   </div>
                 </div>
@@ -288,7 +287,6 @@ function NouveauCourrier(): ReactElement {
                       options={departmentOptions.options}
                       placeholder="Sélectionner ou créer un service/département..."
                       isLoading={departmentOptions.isLoading}
-                      required
                     />
                   </div>
                   <div className="formGroup">
