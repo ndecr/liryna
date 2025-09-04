@@ -2,7 +2,7 @@
 import "./listeCourriers.scss";
 
 // hooks | libraries
-import { ReactElement, useState, useEffect, useContext } from "react";
+import { ReactElement, useState, useEffect, useContext, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   MdArrowBack, 
@@ -21,12 +21,16 @@ import { FiFileText } from "react-icons/fi";
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
 import Header from "../../../components/header/Header.tsx";
 import SubNav from "../../../components/subNav/SubNav.tsx";
-import Footer from "../../../components/footer/Footer.tsx";
 import Button from "../../../components/button/Button.tsx";
 import Modal from "../../../components/modal/Modal.tsx";
+import Loader from "../../../components/loader/Loader.tsx";
 
 // context
 import { CourrierContext } from "../../../context/courrier/CourrierContext.tsx";
+import { LoaderContext } from "../../../context/loader/LoaderContext.tsx";
+
+// services
+import { downloadCourrierService } from "../../../API/services/courrier.service.ts";
 
 // types
 import { ICourrier } from "../../../utils/types/courrier.types.ts";
@@ -34,6 +38,7 @@ import { ICourrier } from "../../../utils/types/courrier.types.ts";
 function ListeCourriers(): ReactElement {
   const navigate = useNavigate();
   const { courriers, pagination, getAllCourriers, downloadCourrier, deleteCourrier, isLoading } = useContext(CourrierContext);
+  const { showLoader, hideLoader } = useContext(LoaderContext);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [tooltip, setTooltip] = useState<{ visible: boolean; content: string; x: number; y: number }>({
@@ -42,19 +47,37 @@ function ListeCourriers(): ReactElement {
     x: 0,
     y: 0
   });
-  const [pdfModal, setPdfModal] = useState<{ visible: boolean; pdfUrl: string; fileName: string }>({
+  const [pdfModal, setPdfModal] = useState<{ visible: boolean; pdfUrl: string; fileName: string; fileType: 'pdf' | 'image' }>({
     visible: false,
     pdfUrl: "",
-    fileName: ""
+    fileName: "",
+    fileType: 'pdf'
   });
 
   useEffect(() => {
-    loadCourriers(currentPage);
-  }, [currentPage]);
+    if (searchTerm.trim()) {
+      // Si recherche active, charger tous les courriers
+      loadCourriers(1, 1000); // Charge un grand nombre pour avoir tous les courriers
+    } else {
+      // Si pas de recherche, pagination normale - revenir à la page 1 si on était en recherche
+      loadCourriers(currentPage);
+    }
+  }, [currentPage, searchTerm]);
 
-  const loadCourriers = async (page: number) => {
+  // Gérer le changement de terme de recherche
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newSearchTerm = e.target.value;
+    setSearchTerm(newSearchTerm);
+    
+    // Si on passe de recherche à pas de recherche, revenir à la page 1
+    if (!newSearchTerm.trim() && currentPage !== 1) {
+      setCurrentPage(1);
+    }
+  };
+
+  const loadCourriers = async (page: number, limit: number = 10) => {
     try {
-      await getAllCourriers(page, 10);
+      await getAllCourriers(page, limit);
     } catch (error) {
       // Error handling via context
     }
@@ -119,13 +142,19 @@ function ListeCourriers(): ReactElement {
 
   const handleViewPdf = async (courrier: ICourrier) => {
     try {
-      // Utiliser l'endpoint de téléchargement pour récupérer le blob
-      const blob = await downloadCourrier(courrier.id);
+      // Utiliser directement le service au lieu du context pour éviter les re-renders
+      const blob = await downloadCourrierService(courrier.id);
       const pdfUrl = URL.createObjectURL(blob);
+      
+      // Détecter le type de fichier basé sur l'extension ou le type MIME du blob
+      const isImage = blob.type.startsWith('image/') || 
+                      courrier.fileName.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|webp)$/);
+      
       setPdfModal({
         visible: true,
         pdfUrl: pdfUrl,
-        fileName: courrier.fileName
+        fileName: courrier.fileName,
+        fileType: isImage ? 'image' : 'pdf'
       });
     } catch (error) {
       alert('Erreur lors du chargement du PDF pour visualisation');
@@ -140,7 +169,8 @@ function ListeCourriers(): ReactElement {
     setPdfModal({
       visible: false,
       pdfUrl: "",
-      fileName: ""
+      fileName: "",
+      fileType: 'pdf'
     });
   };
 
@@ -208,13 +238,22 @@ function ListeCourriers(): ReactElement {
                 type="text"
                 placeholder="Rechercher par nom de fichier, type, service..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={handleSearchChange}
                 className="searchInput"
               />
             </div>
             
-            {/* Pagination Controls */}
-            {pagination && pagination.totalPages > 1 && (
+            {/* Résultats de recherche */}
+            {searchTerm.trim() && (
+              <div className="searchResults">
+                <span className="resultsCount">
+                  {filteredCourriers.length} résultat{filteredCourriers.length > 1 ? 's' : ''} trouvé{filteredCourriers.length > 1 ? 's' : ''} pour "{searchTerm}"
+                </span>
+              </div>
+            )}
+            
+            {/* Pagination Controls - Masquée pendant la recherche */}
+            {!searchTerm.trim() && pagination && pagination.totalPages > 1 && (
               <div className="paginationControls">
                 <button
                   className="paginationBtn"
@@ -246,7 +285,10 @@ function ListeCourriers(): ReactElement {
           <section className="courriersSection" data-aos="fade-up" data-aos-delay="200">
             {isLoading ? (
               <div className="loadingState">
-                <p>Chargement des courriers...</p>
+                <Loader 
+                  size="large" 
+                  message="Chargement des courriers..."
+                />
               </div>
             ) : filteredCourriers.length === 0 ? (
               <div className="emptyState">
@@ -402,22 +444,33 @@ function ListeCourriers(): ReactElement {
         </div>
       )}
 
-      {/* Modale PDF */}
+      {/* Modale PDF/Image */}
       <Modal 
         isVisible={pdfModal.visible}
         onClose={closePdfModal}
-        title={pdfModal.fileName || "Visualisation PDF"}
+        title={pdfModal.fileName || `Visualisation ${pdfModal.fileType.toUpperCase()}`}
       >
-        <iframe
-          src={pdfModal.pdfUrl}
-          width="100%"
-          height="100%"
-          style={{ border: 'none' }}
-          title="Visualisation PDF"
-        />
+        {pdfModal.fileType === 'image' ? (
+          <img
+            src={pdfModal.pdfUrl}
+            alt={pdfModal.fileName}
+            style={{ 
+              width: '100%', 
+              height: '100%', 
+              objectFit: 'contain',
+              border: 'none'
+            }}
+          />
+        ) : (
+          <iframe
+            src={pdfModal.pdfUrl}
+            width="100%"
+            height="100%"
+            style={{ border: 'none' }}
+            title="Visualisation PDF"
+          />
+        )}
       </Modal>
-      
-      <Footer />
     </>
   );
 }

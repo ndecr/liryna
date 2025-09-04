@@ -26,7 +26,7 @@
 }
 
 .headerContainer {
-  max-width: 75em;
+  max-width: 1440px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -58,7 +58,7 @@
     content: "";
     position: absolute;
     inset: auto 0 0;
-    height: 0.25em;
+    height: 0.15em;
     border-radius: 8px;
     background: linear-gradient(135deg, vars.$webdevPrimary, vars.$fontColorPrimary);
     transform: scaleX(0.15);
@@ -118,7 +118,7 @@
   color: vars.$fontColorPrimary;
   border: none;
   padding: 0.25em 0.5em;
-  font-size: 0.8em;
+  font-size: 0.85em;
   font-weight: 400;
   cursor: pointer;
   text-decoration: underline;
@@ -146,7 +146,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
+  padding: 0.2em .5em;
   border: none;
   background: transparent;
   color: vars.$navTextColor;

@@ -8,7 +8,6 @@ import { ReactElement } from "react";
 import WithAuth from "../../utils/middleware/WithAuth.tsx";
 import Header from "../../components/header/Header.tsx";
 import SubNav from "../../components/subNav/SubNav.tsx";
-import Footer from "../../components/footer/Footer.tsx";
 
 function WebDevelopment(): ReactElement {
   return (
@@ -17,7 +16,6 @@ function WebDevelopment(): ReactElement {
       <SubNav />
       <main id={'webDevelopment'}>
       </main>
-      <Footer />
     </>
   );
 }

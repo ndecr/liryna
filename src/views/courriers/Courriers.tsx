@@ -2,7 +2,7 @@
 import "./courriers.scss";
 
 // hooks | libraries
-import { ReactElement, useState } from "react";
+import { ReactElement, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { MdAdd, MdList, MdSearch, MdArchive } from "react-icons/md";
 import { IoMail, IoMailOpen } from "react-icons/io5";
@@ -12,11 +12,30 @@ import { FiCalendar, FiFileText } from "react-icons/fi";
 import WithAuth from "../../utils/middleware/WithAuth.tsx";
 import Header from "../../components/header/Header.tsx";
 import SubNav from "../../components/subNav/SubNav.tsx";
-import Footer from "../../components/footer/Footer.tsx";
+
+// context
+import { CourrierContext } from "../../context/courrier/CourrierContext.tsx";
 
 function Courriers(): ReactElement {
   const navigate = useNavigate();
+  const { stats, getCourrierStats } = useContext(CourrierContext);
   const [activeAction, setActiveAction] = useState<string>("");
+  const [statsLoading, setStatsLoading] = useState<boolean>(true);
+  
+  useEffect(() => {
+    // Charger les statistiques au montage du composant
+    const loadStats = async () => {
+      try {
+        await getCourrierStats();
+      } catch (error) {
+        console.error('Error loading courrier stats:', error);
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+    
+    loadStats();
+  }, [getCourrierStats]);
 
   const actions = [
     {
@@ -45,32 +64,32 @@ function Courriers(): ReactElement {
     }
   ];
 
-  const stats = [
+  const statsDisplay = [
     {
       id: 'total',
       label: 'Total courriers',
-      value: '125',
+      value: statsLoading ? '...' : (stats?.total?.toString() || '0'),
       icon: <FiFileText />,
       color: 'primary'
     },
     {
       id: 'incoming',
       label: 'Entrants',
-      value: '78',
+      value: statsLoading ? '...' : (stats?.entrants?.toString() || '0'),
       icon: <IoMail />,
       color: 'info'
     },
     {
       id: 'outgoing',
       label: 'Sortants',
-      value: '47',
+      value: statsLoading ? '...' : (stats?.sortants?.toString() || '0'),
       icon: <IoMailOpen />,
       color: 'success'
     },
     {
       id: 'monthly',
       label: 'Ce mois',
-      value: '23',
+      value: statsLoading ? '...' : (stats?.thisMonth?.toString() || '0'),
       icon: <FiCalendar />,
       color: 'warning'
     }
@@ -125,7 +144,7 @@ function Courriers(): ReactElement {
           <section className="courriersStats" data-aos="fade-up" data-aos-delay="200">
             <h2 className="statsTitle">Statistiques</h2>
             <div className="statsGrid">
-              {stats.map((stat, index) => (
+              {statsDisplay.map((stat, index) => (
                 <div
                   key={stat.id}
                   className={`statCard ${stat.color}`}
@@ -154,7 +173,6 @@ function Courriers(): ReactElement {
           )}
         </div>
       </main>
-      <Footer />
     </>
   );
 }

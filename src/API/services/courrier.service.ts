@@ -1,6 +1,6 @@
 import { getRequest, postRequest, postFormDataRequest, patchRequest, deleteRequest } from "../APICalls.ts";
 import { AxiosResponse } from "axios";
-import { ICourrier, ICourrierUploadData, IApiResponse, ICourrierSearchParams, IPagination } from "../../utils/types/courrier.types.ts";
+import { ICourrier, ICourrierUploadData, IApiResponse, ICourrierSearchParams, IPagination, ICourrierStats } from "../../utils/types/courrier.types.ts";
 import { courrierModel } from "../models/courrier.model.ts";
 
 export const uploadCourrierService = async (
@@ -118,4 +118,24 @@ export const sendCourrierEmailService = async (
   if (!response.data.success) {
     throw new Error(response.data.message || "Failed to send courrier email");
   }
+};
+
+export const getCourrierStatsService = async (): Promise<ICourrierStats> => {
+  const response: AxiosResponse<IApiResponse<ICourrierStats>> = await getRequest("/courriers/stats");
+  
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+  
+  throw new Error(response.data.message || "Failed to get courrier stats");
+};
+
+export const getCourrierFieldOptionsService = async (field: 'kind' | 'department' | 'emitter' | 'recipient'): Promise<string[]> => {
+  const response: AxiosResponse<IApiResponse<{ field: string; options: string[] }>> = await getRequest(`/courriers/field-options/${field}`);
+  
+  if (response.data.success && response.data.data) {
+    return response.data.data.options;
+  }
+  
+  throw new Error(response.data.message || "Failed to get field options");
 };

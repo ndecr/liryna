@@ -14,6 +14,7 @@
   
   .listeCourrierContainer {
     max-width: 95%; // Utiliser 95% de la largeur disponible
+    min-width: 70em; // Forcer la largeur finale pour éviter le layout shift
     margin: 0 auto;
     padding: 0 0.25em; // Padding réduit sur mobile
     flex: 1; // Prend tout l'espace disponible
@@ -24,6 +25,7 @@
     // Responsive tablette
     @media (min-width: vars.$tabletWidth) {
       max-width: 98%; // Encore plus large sur tablette
+      min-width: 80em; // Largeur finale pour tablette
       padding: 0 0.5em; // Padding réduit sur tablette
       gap: 1em; // Gap réduit sur tablette
     }
@@ -31,7 +33,13 @@
     // Responsive desktop
     @media (min-width: vars.$desktopWidth) {
       max-width: 99%; // Quasi pleine largeur sur desktop
-      padding: 0 0.75em; // Padding minimal sur desktop
+      min-width: 90em; // Largeur finale pour desktop
+      // padding: 0 0.75em; // Padding minimal sur desktop
+    }
+    
+    // Mobile : pas de min-width pour éviter le scroll horizontal
+    @media (max-width: vars.$tabletWidth) {
+      min-width: auto;
     }
   }
 
@@ -86,6 +94,23 @@
         &::placeholder {
           color: vars.$fontColorSecondary;
         }
+      }
+    }
+    
+    .searchResults {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75em 1em;
+      
+      .resultsCount {
+        color: vars.$utilsPrimary;
+        font-size: 0.9em;
+        font-weight: 500;
+        background: rgba(38, 208, 206, 0.1);
+        padding: 0.5em 1em;
+        border-radius: 20px;
+        border: 1px solid rgba(38, 208, 206, 0.2);
       }
     }
     

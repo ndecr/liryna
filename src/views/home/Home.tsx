@@ -13,7 +13,6 @@ import { Link } from "react-router-dom";
 // component
 import Header from "../../components/header/Header";
 import SubNav from "../../components/subNav/SubNav";
-import Footer from "../../components/footer/Footer";
 
 function Home(): ReactElement {
   return (
@@ -40,7 +39,6 @@ function Home(): ReactElement {
           </section>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

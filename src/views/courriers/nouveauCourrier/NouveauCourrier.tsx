@@ -15,8 +15,8 @@ import { CourrierContext } from "../../../context/courrier/CourrierContext.tsx";
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
 import Header from "../../../components/header/Header.tsx";
 import SubNav from "../../../components/subNav/SubNav.tsx";
-import Footer from "../../../components/footer/Footer.tsx";
 import Button from "../../../components/button/Button.tsx";
+import CreatableSelectComponent from "../../../components/creatableSelect/CreatableSelect.tsx";
 
 // types
 import { ICourrierFormData } from "../../../utils/types/courrier.types.ts";
@@ -24,6 +24,7 @@ import { ICourrierFormData } from "../../../utils/types/courrier.types.ts";
 // utils
 import { handleCourrierUploadError } from "../../../utils/scripts/errorHandling.ts";
 import { validateCourrierForm } from "../../../utils/scripts/courrierValidation.ts";
+import { useCourrierFieldOptions } from "../../../utils/hooks/useCourrierFieldOptions.ts";
 
 interface SelectOption {
   value: string;
@@ -33,6 +34,13 @@ interface SelectOption {
 function NouveauCourrier(): ReactElement {
   const navigate = useNavigate();
   const { uploadCourrier, isLoading } = useContext(CourrierContext);
+  
+  // Charger les options pour les champs avec autocomplétion
+  const kindOptions = useCourrierFieldOptions('kind');
+  const departmentOptions = useCourrierFieldOptions('department');
+  const emitterOptions = useCourrierFieldOptions('emitter');
+  const recipientOptions = useCourrierFieldOptions('recipient');
+  
   const [formData, setFormData] = useState<ICourrierFormData>({
     direction: "entrant",
     emitter: "",
@@ -68,6 +76,14 @@ function NouveauCourrier(): ReactElement {
     }));
   };
 
+  const handleInputBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value.trim() // Trim quand l'utilisateur sort du champ
+    }));
+  };
+
   const handleSelectChange = (selectedOption: SelectOption | null, name: string) => {
     if (selectedOption) {
       setFormData(prev => ({
@@ -78,7 +94,7 @@ function NouveauCourrier(): ReactElement {
   };
 
   const handleFileUpload = (file: File) => {
-    const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
+    const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "").trim();
     setFormData(prev => ({
       ...prev,
       fichierJoint: file,
@@ -125,15 +141,15 @@ function NouveauCourrier(): ReactElement {
     try {
       const uploadData = {
         direction: formData.direction,
-        emitter: formData.emitter || undefined,
-        recipient: formData.recipient || undefined,
+        emitter: formData.emitter?.trim() || undefined,
+        recipient: formData.recipient?.trim() || undefined,
         receptionDate: formData.receptionDate || undefined,
         courrierDate: formData.courrierDate || undefined,
         priority: formData.priority,
-        department: formData.department || undefined,
-        kind: formData.kind || undefined,
-        description: formData.description || undefined,
-        customFileName: formData.customFileName || undefined,
+        department: formData.department?.trim() || undefined,
+        kind: formData.kind?.trim() || undefined,
+        description: formData.description?.trim() || undefined,
+        customFileName: formData.customFileName?.trim() || undefined,
       };
 
       await uploadCourrier(formData.fichierJoint!, uploadData);
@@ -194,13 +210,14 @@ function NouveauCourrier(): ReactElement {
                   </div>
                   <div className="formGroup">
                     <label htmlFor="kind">Type de courrier *</label>
-                    <input
-                      type="text"
+                    <CreatableSelectComponent
                       id="kind"
                       name="kind"
                       value={formData.kind}
-                      onChange={handleInputChange}
-                      placeholder="Facture, Contrat, Note de service..."
+                      onChange={(value) => setFormData(prev => ({ ...prev, kind: value }))}
+                      options={kindOptions.options}
+                      placeholder="Sélectionner ou créer un type de courrier..."
+                      isLoading={kindOptions.isLoading}
                       required
                     />
                   </div>
@@ -218,6 +235,7 @@ function NouveauCourrier(): ReactElement {
                       name="customFileName"
                       value={formData.customFileName}
                       onChange={handleInputChange}
+                      onBlur={handleInputBlur}
                       placeholder="Nom personnalisé du fichier (sans extension)"
                     />
                   </div>
@@ -229,13 +247,14 @@ function NouveauCourrier(): ReactElement {
                       <FiUser />
                       Expéditeur
                     </label>
-                    <input
-                      type="text"
+                    <CreatableSelectComponent
                       id="emitter"
                       name="emitter"
                       value={formData.emitter}
-                      onChange={handleInputChange}
-                      placeholder="Nom de l'expéditeur"
+                      onChange={(value) => setFormData(prev => ({ ...prev, emitter: value }))}
+                      options={emitterOptions.options}
+                      placeholder="Sélectionner ou créer un expéditeur..."
+                      isLoading={emitterOptions.isLoading}
                     />
                   </div>
                   <div className="formGroup">
@@ -243,13 +262,14 @@ function NouveauCourrier(): ReactElement {
                       <FiUser />
                       Destinataire
                     </label>
-                    <input
-                      type="text"
+                    <CreatableSelectComponent
                       id="recipient"
                       name="recipient"
                       value={formData.recipient}
-                      onChange={handleInputChange}
-                      placeholder="Nom du destinataire"
+                      onChange={(value) => setFormData(prev => ({ ...prev, recipient: value }))}
+                      options={recipientOptions.options}
+                      placeholder="Sélectionner ou créer un destinataire..."
+                      isLoading={recipientOptions.isLoading}
                     />
                   </div>
                 </div>
@@ -260,13 +280,14 @@ function NouveauCourrier(): ReactElement {
                       <FiTag />
                       Service/Département *
                     </label>
-                    <input
-                      type="text"
+                    <CreatableSelectComponent
                       id="department"
                       name="department"
                       value={formData.department}
-                      onChange={handleInputChange}
-                      placeholder="Service concerné"
+                      onChange={(value) => setFormData(prev => ({ ...prev, department: value }))}
+                      options={departmentOptions.options}
+                      placeholder="Sélectionner ou créer un service/département..."
+                      isLoading={departmentOptions.isLoading}
                       required
                     />
                   </div>
@@ -334,6 +355,7 @@ function NouveauCourrier(): ReactElement {
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
+                    onBlur={handleInputBlur}
                     placeholder="Décrivez le contenu du courrier, les actions à prendre..."
                     rows={4}
                   />
@@ -421,7 +443,6 @@ function NouveauCourrier(): ReactElement {
           </form>
         </div>
       </main>
-      <Footer />
     </>
   );
 }

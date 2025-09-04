@@ -15,7 +15,6 @@ import { Link } from "react-router-dom";
 import WithAuth from "../../utils/middleware/WithAuth.tsx";
 import Header from "../../components/header/Header.tsx";
 import SubNav from "../../components/subNav/SubNav.tsx";
-import Footer from "../../components/footer/Footer.tsx";
 
 function Utils(): ReactElement {
   const subApps: IViewCard[] = [
@@ -53,7 +52,6 @@ function Utils(): ReactElement {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

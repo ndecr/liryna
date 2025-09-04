@@ -76,3 +76,12 @@ export interface ICourrierSearchParams {
   page?: number;
   limit?: number;
 }
+
+export interface ICourrierStats {
+  total: number;
+  entrants: number;
+  sortants: number;
+  internes: number;
+  thisMonth: number;
+  thisYear: number;
+}

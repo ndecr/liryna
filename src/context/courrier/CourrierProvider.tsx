@@ -1,6 +1,6 @@
-import { useState, useMemo, ReactElement } from "react";
+import { useState, useMemo, useCallback, ReactElement } from "react";
 import { CourrierContext } from "./CourrierContext.tsx";
-import { ICourrier, ICourrierUploadData, ICourrierSearchParams, IPagination } from "../../utils/types/courrier.types.ts";
+import { ICourrier, ICourrierUploadData, ICourrierSearchParams, IPagination, ICourrierStats } from "../../utils/types/courrier.types.ts";
 import {
   uploadCourrierService,
   getAllCourriersService,
@@ -9,7 +9,8 @@ import {
   deleteCourrierService,
   searchCourriersService,
   downloadCourrierService,
-  sendCourrierEmailService
+  sendCourrierEmailService,
+  getCourrierStatsService
 } from "../../API/services/courrier.service.ts";
 
 export const CourrierProvider = ({
@@ -21,8 +22,9 @@ export const CourrierProvider = ({
   const [currentCourrier, setCurrentCourrier] = useState<ICourrier | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [pagination, setPagination] = useState<IPagination | null>(null);
+  const [stats, setStats] = useState<ICourrierStats | null>(null);
 
-  const uploadCourrier = async (file: File, metadata: ICourrierUploadData): Promise<ICourrier> => {
+  const uploadCourrier = useCallback(async (file: File, metadata: ICourrierUploadData): Promise<ICourrier> => {
     setIsLoading(true);
     try {
       const newCourrier = await uploadCourrierService(file, metadata);
@@ -34,9 +36,9 @@ export const CourrierProvider = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const getAllCourriers = async (page: number = 1, limit: number = 10): Promise<void> => {
+  const getAllCourriers = useCallback(async (page: number = 1, limit: number = 10): Promise<void> => {
     setIsLoading(true);
     try {
       const response = await getAllCourriersService(page, limit);
@@ -50,7 +52,7 @@ export const CourrierProvider = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   const getCourrierById = async (id: number): Promise<void> => {
     setIsLoading(true);
@@ -90,7 +92,7 @@ export const CourrierProvider = ({
     }
   };
 
-  const deleteCourrier = async (id: number): Promise<void> => {
+  const deleteCourrier = useCallback(async (id: number): Promise<void> => {
     setIsLoading(true);
     try {
       await deleteCourrierService(id);
@@ -106,7 +108,7 @@ export const CourrierProvider = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [currentCourrier]);
 
   const searchCourriers = async (params: ICourrierSearchParams): Promise<void> => {
     setIsLoading(true);
@@ -124,17 +126,18 @@ export const CourrierProvider = ({
     }
   };
 
-  const downloadCourrier = async (id: number): Promise<Blob> => {
+  const downloadCourrier = useCallback(async (id: number): Promise<Blob> => {
     setIsLoading(true);
     try {
-      return await downloadCourrierService(id);
+      const blob = await downloadCourrierService(id);
+      return blob;
     } catch (error) {
       console.error("Error while downloading courrier:", error);
       throw error;
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   const sendCourrierEmail = async (
     id: number, 
@@ -151,12 +154,24 @@ export const CourrierProvider = ({
     }
   };
 
+  const getCourrierStats = useCallback(async (): Promise<void> => {
+    try {
+      const statsData = await getCourrierStatsService();
+      setStats(statsData);
+    } catch (error) {
+      console.error("Error while getting courrier stats:", error);
+      setStats(null);
+      throw error;
+    }
+  }, []);
+
   const contextValue = useMemo(
     () => ({
       courriers,
       currentCourrier,
       isLoading,
       pagination,
+      stats,
       setCourriers,
       setCurrentCourrier,
       uploadCourrier,
@@ -167,8 +182,9 @@ export const CourrierProvider = ({
       searchCourriers,
       downloadCourrier,
       sendCourrierEmail,
+      getCourrierStats,
     }),
-    [courriers, currentCourrier, isLoading, pagination],
+    [courriers, currentCourrier, isLoading, pagination, stats, uploadCourrier, getAllCourriers, deleteCourrier, downloadCourrier, getCourrierStats],
   );
 
   return (
