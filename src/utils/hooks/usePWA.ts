@@ -39,6 +39,19 @@ export const usePWA = (): PWAState & PWAActions => {
       const isSupported = isServiceWorkerSupported();
       const isInstalled = isPWAInstalled();
       const isOnline = checkOnlineStatus();
+      
+      // En développement, ne pas enregistrer le Service Worker
+      if (import.meta.env.DEV) {
+        console.log('[PWA Hook] Development mode - limited PWA features');
+        setPWAState(prev => ({
+          ...prev,
+          isSupported,
+          isInstalled,
+          isOnline,
+          isRegistered: false
+        }));
+        return;
+      }
 
       setPWAState(prev => ({
         ...prev,

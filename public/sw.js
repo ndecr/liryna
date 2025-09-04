@@ -3,6 +3,9 @@ const CACHE_NAME = 'whatatool-v1.0.0';
 const STATIC_CACHE = 'whatatool-static-v1.0.0';
 const DYNAMIC_CACHE = 'whatatool-dynamic-v1.0.0';
 
+// Vérifier si nous sommes en mode développement
+const isDevelopment = self.location.hostname === 'localhost' && self.location.port !== '4173';
+
 // Fichiers à mettre en cache lors de l'installation
 const STATIC_FILES = [
   '/',
@@ -24,6 +27,13 @@ const STATIC_FILES = [
 // Installation du Service Worker
 self.addEventListener('install', (event) => {
   console.log('[SW] Installing service worker...');
+  
+  // En développement, ne pas mettre en cache
+  if (isDevelopment) {
+    console.log('[SW] Development mode - skipping cache');
+    self.skipWaiting();
+    return;
+  }
   
   event.waitUntil(
     caches.open(STATIC_CACHE)
@@ -67,6 +77,11 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
   
+  // En mode développement, ne pas intercepter les requêtes
+  if (isDevelopment) {
+    return;
+  }
+  
   // Ignorer les requêtes non-HTTP
   if (!request.url.startsWith('http')) {
     return;
@@ -74,6 +89,19 @@ self.addEventListener('fetch', (event) => {
   
   // Ignorer les requêtes POST, PUT, DELETE (API calls)
   if (request.method !== 'GET') {
+    return;
+  }
+  
+  // Ignorer les requêtes Vite en développement (sécurité supplémentaire)
+  if (url.pathname.includes('/@vite/') || 
+      url.pathname.includes('/@react-refresh') ||
+      url.pathname.includes('/src/') ||
+      url.search.includes('?t=') ||
+      url.search.includes('?import') ||
+      url.pathname.endsWith('.tsx') ||
+      url.pathname.endsWith('.ts') ||
+      url.pathname.endsWith('.jsx') ||
+      url.pathname.endsWith('.js') && url.search.includes('?t=')) {
     return;
   }
   
