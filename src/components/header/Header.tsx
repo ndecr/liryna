@@ -11,6 +11,7 @@ import { UserContext } from "../../context/user/UserContext.tsx";
 
 // components
 import PWAInstallButton from "../pwaInstallButton/PWAInstallButton.tsx";
+import PWADebug from "../pwaDebug/PWADebug.tsx";
 
 interface SubApp {
   id: string;
@@ -186,6 +187,7 @@ export default function Header(): ReactElement {
                     Bonjour {user.firstName}
                   </span>
                   <PWAInstallButton variant="mobile" compact={true} />
+                  <PWADebug />
                   <button onClick={handleLogout} className="mobileLogoutButton">
                     Déconnexion
                   </button>
