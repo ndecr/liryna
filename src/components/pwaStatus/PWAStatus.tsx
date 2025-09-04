@@ -1,9 +1,9 @@
 // hooks | libraries
-import { ReactElement, useState, useEffect } from "react";
-import { MdDownload, MdWifi, MdWifiOff, MdUpdate, MdClear } from "react-icons/md";
+import { ReactElement, useState } from "react";
+import { MdWifi, MdWifiOff, MdUpdate, MdClear } from "react-icons/md";
 
 // hooks
-import { usePWA, usePWAInstall, useOnlineStatus } from "../../utils/hooks/usePWA";
+import { usePWA, useOnlineStatus } from "../../utils/hooks/usePWA";
 
 // components
 import Button from "../button/Button";
@@ -21,37 +21,9 @@ function PWAStatus({ className = "" }: PWAStatusProps): ReactElement {
     clearAppCache
   } = usePWA();
   
-  const { isInstallable, isInstalled } = usePWAInstall();
   const isOnline = useOnlineStatus();
   
   const [showFullStatus, setShowFullStatus] = useState<boolean>(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-
-  // Écouter l'événement beforeinstallprompt
-  useEffect(() => {
-    const handleBeforeInstallPrompt = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    };
-  }, []);
-
-  const handleInstallClick = async () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      
-      const choiceResult = await deferredPrompt.userChoice;
-      if (choiceResult.outcome === 'accepted') {
-        console.log('[PWA] User accepted the install prompt');
-      }
-      setDeferredPrompt(null);
-    }
-  };
 
   const handleUpdateClick = async () => {
     await checkForUpdates();
@@ -90,20 +62,6 @@ function PWAStatus({ className = "" }: PWAStatusProps): ReactElement {
         )}
       </div>
 
-      {/* Bouton d'installation si disponible et pas encore installée */}
-      {deferredPrompt && !isInstalled && (
-        <div className="install-prompt">
-          <Button
-            style="green"
-            onClick={handleInstallClick}
-            type="button"
-          >
-            <MdDownload />
-            <span>Installer l'app</span>
-          </Button>
-        </div>
-      )}
-
       {/* Notification de mise à jour disponible */}
       {updateAvailable && (
         <div className="update-prompt">
@@ -125,9 +83,8 @@ function PWAStatus({ className = "" }: PWAStatusProps): ReactElement {
           <ul>
             <li>Supporté: {isSupported ? '✅' : '❌'}</li>
             <li>Service Worker: {isRegistered ? '✅' : '❌'}</li>
-            <li>Installé: {isInstalled ? '✅' : '❌'}</li>
-            <li>Installable: {isInstallable ? '✅' : '❌'}</li>
             <li>En ligne: {isOnline ? '✅' : '❌'}</li>
+            <li>Mise à jour: {updateAvailable ? '⚠️ Disponible' : '✅ À jour'}</li>
           </ul>
           
           <div className="pwa-actions">

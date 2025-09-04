@@ -9,6 +9,9 @@ import { MdDeveloperMode, MdBuild } from "react-icons/md";
 import { IoMail } from "react-icons/io5";
 import { UserContext } from "../../context/user/UserContext.tsx";
 
+// components
+import PWAInstallButton from "../pwaInstallButton/PWAInstallButton.tsx";
+
 interface SubApp {
   id: string;
   name: string;
@@ -140,6 +143,7 @@ export default function Header(): ReactElement {
             {user && !isAuthRoute && (
               <div className="userInfo">
                 <span className="userGreeting">Bonjour {user.firstName}</span>
+                <PWAInstallButton variant="desktop" compact={true} />
                 <button onClick={handleLogout} className="logoutButton">
                   Déconnexion
                 </button>
@@ -181,6 +185,7 @@ export default function Header(): ReactElement {
                   <span className="mobileUserGreeting">
                     Bonjour {user.firstName}
                   </span>
+                  <PWAInstallButton variant="mobile" compact={true} />
                   <button onClick={handleLogout} className="mobileLogoutButton">
                     Déconnexion
                   </button>

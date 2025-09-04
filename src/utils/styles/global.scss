@@ -4,6 +4,7 @@
 
 // Import component styles
 @use "../../components/pwaStatus/pwaStatus.scss";
+@use "../../components/pwaInstallButton/pwaInstallButton.scss";
 
 // import Ubuntu font from google cdn
 @import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap");

@@ -96,11 +96,18 @@
 .userInfo {
   display: none;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   
   @media (min-width: vars.$mobileWidth) {
     display: flex;
     gap: 1rem;
+  }
+  
+  // Style spécial pour le bouton PWA dans le header
+  .pwa-install-btn.compact.desktop {
+    font-size: 0.8em;
+    padding: 0.4em 0.6em;
+    border-radius: 6px;
   }
 }
 
@@ -329,13 +336,20 @@
   padding: 1rem;
   margin-bottom: 1rem;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 0.75rem;
   
   .mobileUserGreeting {
     font-size: 0.9rem;
     color: vars.$fontColorPrimary;
     font-weight: 500;
+    text-align: center;
+  }
+  
+  // Style spécial pour le bouton PWA dans le menu mobile
+  .pwa-install-btn.compact.mobile {
+    align-self: center;
+    min-width: 150px;
   }
   
   .mobileLogoutButton {

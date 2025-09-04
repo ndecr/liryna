@@ -6,6 +6,30 @@ const DYNAMIC_CACHE = 'whatatool-dynamic-v1.0.0';
 // Vérifier si nous sommes en mode développement
 const isDevelopment = self.location.hostname === 'localhost' && self.location.port !== '4173';
 
+// Si en développement, désactiver complètement le Service Worker
+if (isDevelopment) {
+  console.log('[SW] Development mode detected - Service Worker will self-destruct');
+  
+  // Auto-désinstallation
+  self.addEventListener('install', (event) => {
+    console.log('[SW] Self-unregistering in development mode');
+    self.registration.unregister().then(() => {
+      console.log('[SW] Successfully unregistered');
+    });
+    self.skipWaiting();
+  });
+  
+  self.addEventListener('activate', (event) => {
+    console.log('[SW] Activating only to unregister');
+    self.clients.claim();
+  });
+  
+  // Ne pas intercepter de requêtes
+  self.addEventListener('fetch', () => {});
+  
+} else {
+  // Code normal du Service Worker uniquement en production
+
 // Fichiers à mettre en cache lors de l'installation
 const STATIC_FILES = [
   '/',
@@ -265,3 +289,5 @@ self.addEventListener('notificationclick', (event) => {
     );
   }
 });
+
+} // Fin du bloc production
