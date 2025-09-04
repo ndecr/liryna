@@ -46,3 +46,31 @@ export const validateCourrierForm = (formData: ICourrierFormData): ValidationRes
     errorMessage: ""
   };
 };
+
+export const validateCourrierUpdateForm = (formData: ICourrierFormData): ValidationResult => {
+  if (!formData.kind.trim()) {
+    return {
+      isValid: false,
+      errorMessage: "Veuillez saisir le type de courrier"
+    };
+  }
+
+  if (!formData.department.trim()) {
+    return {
+      isValid: false,
+      errorMessage: "Veuillez saisir le service/département"
+    };
+  }
+
+  if (!formData.direction) {
+    return {
+      isValid: false,
+      errorMessage: "Veuillez sélectionner la direction"
+    };
+  }
+  
+  return {
+    isValid: true,
+    errorMessage: ""
+  };
+};

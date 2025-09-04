@@ -119,8 +119,8 @@ function ListeCourriers(): ReactElement {
     }
   };
 
-  const handleEdit = (_courrierid: number) => {
-    // TODO: Rediriger vers la page d'édition du courrier
+  const handleEdit = (courrierid: number) => {
+    navigate(`/utils/mail/update/${courrierid}`);
   };
 
   const handleEmail = (_courrierid: number) => {
