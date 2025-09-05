@@ -266,7 +266,12 @@ function ListeCourriers(): ReactElement {
     courrier.kind?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     courrier.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     courrier.emitter?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ).sort((a, b) => {
+    // Tri par date de réception (plus récent au plus ancien)
+    const dateA = new Date(a.receptionDate || a.created_at || 0);
+    const dateB = new Date(b.receptionDate || b.created_at || 0);
+    return dateB.getTime() - dateA.getTime();
+  });
 
   return (
     <>
