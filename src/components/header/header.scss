@@ -8,20 +8,18 @@
   inset: 0 0 auto;
   z-index: 100;
   height: 6dvh;
-  background: vars.$navBackground;
+  /* Force le même background que les autres composants */
+  background: rgba(vars.$utilsPrimary, 0.05); /* MÊME background que SubNav et SearchBar */
   backdrop-filter: vars.$blurMedium;
   -webkit-backdrop-filter: vars.$blurMedium;
-  border-bottom: 1px solid vars.$navBorderColor;
   transition: all vars.$transitionSmooth;
   
   &.webdev {
     background: rgba(vars.$webdevPrimary, 0.05);
-    border-bottom-color: rgba(vars.$webdevPrimary, 0.1);
   }
   
   &.utils {
-    background: rgba(vars.$utilsPrimary, 0.05);
-    border-bottom-color: rgba(vars.$utilsPrimary, 0.1);
+    background: rgba(vars.$utilsPrimary, 0.05); /* Renforce le style utils */
   }
 }
 

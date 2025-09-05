@@ -16,7 +16,8 @@ import {
   MdVisibility,
   MdArchive,
   MdOutlineMarkEmailRead,
-  MdSelectAll
+  MdSelectAll,
+  MdKeyboardArrowUp
 } from "react-icons/md";
 import { FiFileText } from "react-icons/fi";
 
@@ -77,6 +78,7 @@ function ListeCourriers(): ReactElement {
     courriers: [],
     isLoading: false
   });
+  const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
 
   useEffect(() => {
     if (searchTerm.trim()) {
@@ -87,6 +89,17 @@ function ListeCourriers(): ReactElement {
       loadCourriers(currentPage);
     }
   }, [currentPage, searchTerm]);
+
+  // Gérer l'affichage du bouton Back to Top
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      setShowBackToTop(scrollTop > 300); // Afficher après 300px de scroll
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Gérer le changement de terme de recherche
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,6 +128,13 @@ function ListeCourriers(): ReactElement {
 
   const handleBackClick = () => {
     navigate("/mail");
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   const formatDate = (dateString?: string): string => {
@@ -426,6 +446,20 @@ function ListeCourriers(): ReactElement {
       <Header />
       <SubNav />
       <main id="listeCourriers" className="listeCourrierMain">
+        {/* Barre de recherche mobile sticky - en dehors du container */}
+        <div className="mobileSearchContainer mobileOnly">
+          <div className="searchWrapper">
+            <MdSearch className="searchIcon" />
+            <input
+              type="text"
+              placeholder="Rechercher..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="searchInput"
+            />
+          </div>
+        </div>
+        
         <div className="listeCourrierContainer">
           {/* Header */}
           <header className="listeCourrierHeader" data-aos="fade-down">
@@ -442,7 +476,9 @@ function ListeCourriers(): ReactElement {
 
           {/* Search and Pagination */}
           <section className="searchSection" data-aos="fade-up" data-aos-delay="100">
-            <div className="searchContainer">
+
+            {/* Barre de recherche desktop */}
+            <div className="searchContainer desktopOnly">
               <MdSearch className="searchIcon" />
               <input
                 type="text"
@@ -507,151 +543,312 @@ function ListeCourriers(): ReactElement {
                 <p>Aucun courrier trouvé</p>
               </div>
             ) : (
-              <div className="courriersTable">
-                <div className="tableWrapper">
-                  <table className="courriersGrid">
-                  <thead>
-                    <tr>
-                      <th className="selectColumn">
-                        <label className="checkboxWrapper">
-                          <input
-                            type="checkbox"
-                            checked={selectedCourriers.size > 0 && selectedCourriers.size === filteredCourriers.length}
-                            onChange={(e) => handleSelectAll(e.target.checked)}
-                            className="selectAllCheckbox"
-                          />
-                          <span className="checkboxLabel">
-                            <MdSelectAll />
-                          </span>
-                        </label>
-                      </th>
-                      <th>Nom du fichier</th>
-                      <th>Direction</th>
-                      <th>Type</th>
-                      <th>Service</th>
-                      <th>Expéditeur</th>
-                      <th className="dateColumn">Date courrier</th>
-                      <th>Description</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+              <>
+                {/* Vue Mobile - Cartes */}
+                <div className="courriersCards mobileOnly">
+                  {/* Header de sélection globale mobile */}
+                  <div className="mobileSelectAll">
+                    <label className="checkboxWrapper">
+                      <input
+                        type="checkbox"
+                        checked={selectedCourriers.size > 0 && selectedCourriers.size === filteredCourriers.length}
+                        onChange={(e) => handleSelectAll(e.target.checked)}
+                        className="selectAllCheckbox"
+                      />
+                      <span className="checkboxLabel">
+                        <MdSelectAll />
+                      </span>
+                    </label>
+                    <span className="selectAllText">
+                      {selectedCourriers.size > 0 
+                        ? `${selectedCourriers.size} sélectionné${selectedCourriers.size > 1 ? 's' : ''}`
+                        : 'Tout sélectionner'
+                      }
+                    </span>
+                  </div>
+
+                  {/* Liste des cartes */}
+                  <div className="cardsList">
                     {filteredCourriers.map((courrier: ICourrier) => (
-                      <tr key={courrier.id} className={`courrierRow ${selectedCourriers.has(courrier.id) ? 'selected' : ''}`}>
-                        <td className="selectColumn">
+                      <div 
+                        key={courrier.id} 
+                        className={`courrierCard ${selectedCourriers.has(courrier.id) ? 'selected' : ''}`}
+                      >
+                        {/* En-tête de la carte */}
+                        <div className="cardHeader">
+                          <div className="cardSelect">
+                            <label className="checkboxWrapper">
+                              <input
+                                type="checkbox"
+                                checked={selectedCourriers.has(courrier.id)}
+                                onChange={(e) => handleSelectCourrier(courrier.id, e.target.checked)}
+                                className="selectCheckbox"
+                              />
+                              <span className="checkmark"></span>
+                            </label>
+                          </div>
+                          <div className="cardTitle">
+                            <FiFileText className="fileIcon" />
+                            <h3 className="fileName" title={courrier.fileName}>{courrier.fileName}</h3>
+                          </div>
+                          <div className="cardDirection">
+                            <span className={`directionBadge ${getDirectionBadge(courrier.direction)}`}>
+                              {courrier.direction}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Corps de la carte */}
+                        <div className="cardBody">
+                          <div className="cardInfo">
+                            <div className="infoRow">
+                              <span className="infoLabel">Type:</span>
+                              <span className="infoValue">{courrier.kind || "N/A"}</span>
+                            </div>
+                            <div className="infoRow">
+                              <span className="infoLabel">Service:</span>
+                              <span className="infoValue">{courrier.department || "N/A"}</span>
+                            </div>
+                            <div className="infoRow">
+                              <span className="infoLabel">Expéditeur:</span>
+                              <span className="infoValue">{courrier.emitter || "N/A"}</span>
+                            </div>
+                            <div className="infoRow">
+                              <span className="infoLabel">Date:</span>
+                              <span className="infoValue">{formatDate(courrier.courrierDate)}</span>
+                            </div>
+                            {courrier.description && (
+                              <div className="infoRow description">
+                                <span className="infoLabel">Description:</span>
+                                <span className="infoValue">{courrier.description}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Actions de la carte */}
+                        <div className="cardActions">
+                          <button 
+                            className={`actionBtn view ${selectedCourriers.size > 0 ? 'disabled' : ''}`}
+                            onClick={() => selectedCourriers.size === 0 && handleViewPdf(courrier)}
+                            title={selectedCourriers.size > 0 ? "Désactivé pendant la sélection" : "Visualiser"}
+                            disabled={selectedCourriers.size > 0}
+                          >
+                            <MdVisibility />
+                          </button>
+                          <button 
+                            className="actionBtn download"
+                            onClick={() => handleAdaptiveDownload(courrier.id)}
+                            title={getDownloadTooltip()}
+                          >
+                            {selectedCourriers.size > 1 ? <MdArchive /> : <MdDownload />}
+                          </button>
+                          <button 
+                            className={`actionBtn edit ${selectedCourriers.size > 0 ? 'disabled' : ''}`}
+                            onClick={() => selectedCourriers.size === 0 && handleEdit(courrier.id)}
+                            title={selectedCourriers.size > 0 ? "Désactivé pendant la sélection" : "Modifier"}
+                            disabled={selectedCourriers.size > 0}
+                          >
+                            <MdEdit />
+                          </button>
+                          <button 
+                            className="actionBtn email"
+                            onClick={() => handleAdaptiveEmail(courrier.id)}
+                            title={getEmailTooltip()}
+                          >
+                            {selectedCourriers.size > 1 ? <MdOutlineMarkEmailRead /> : <MdEmail />}
+                          </button>
+                          <button 
+                            className={`actionBtn delete ${selectedCourriers.size > 0 ? 'disabled' : ''}`}
+                            onClick={() => selectedCourriers.size === 0 && handleDelete(courrier.id)}
+                            title={selectedCourriers.size > 0 ? "Désactivé pendant la sélection" : "Supprimer"}
+                            disabled={selectedCourriers.size > 0}
+                          >
+                            <MdDelete />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Vue Desktop/Tablette - Tableau */}
+                <div className="courriersTable desktopOnly">
+                  <div className="tableWrapper">
+                    <table className="courriersGrid">
+                    <thead>
+                      <tr>
+                        <th className="selectColumn">
                           <label className="checkboxWrapper">
                             <input
                               type="checkbox"
-                              checked={selectedCourriers.has(courrier.id)}
-                              onChange={(e) => handleSelectCourrier(courrier.id, e.target.checked)}
-                              className="selectCheckbox"
+                              checked={selectedCourriers.size > 0 && selectedCourriers.size === filteredCourriers.length}
+                              onChange={(e) => handleSelectAll(e.target.checked)}
+                              className="selectAllCheckbox"
                             />
-                            <span className="checkmark"></span>
-                          </label>
-                        </td>
-                        <td className="fileName">
-                          <div className="fileNameWrapper">
-                            <FiFileText className="fileIcon" />
-                            <span 
-                              className="fileNameText"
-                              onMouseEnter={(e) => handleMouseEnter(e, courrier.fileName)}
-                              onMouseMove={handleMouseMove}
-                              onMouseLeave={handleMouseLeave}
-                            >
-                              {courrier.fileName}
+                            <span className="checkboxLabel">
+                              <MdSelectAll />
                             </span>
-                          </div>
-                        </td>
-                        <td className="direction">
-                          <span className={`directionBadge ${getDirectionBadge(courrier.direction)}`}>
-                            {courrier.direction}
-                          </span>
-                        </td>
-                        <td 
-                          className="kind"
-                          onMouseEnter={(e) => handleMouseEnter(e, courrier.kind || "N/A")}
-                          onMouseMove={handleMouseMove}
-                          onMouseLeave={handleMouseLeave}
-                        >
-                          {courrier.kind || "N/A"}
-                        </td>
-                        <td 
-                          className="department"
-                          onMouseEnter={(e) => handleMouseEnter(e, courrier.department || "N/A")}
-                          onMouseMove={handleMouseMove}
-                          onMouseLeave={handleMouseLeave}
-                        >
-                          {courrier.department || "N/A"}
-                        </td>
-                        <td 
-                          className="emitter"
-                          onMouseEnter={(e) => handleMouseEnter(e, courrier.emitter || "N/A")}
-                          onMouseMove={handleMouseMove}
-                          onMouseLeave={handleMouseLeave}
-                        >
-                          {courrier.emitter || "N/A"}
-                        </td>
-                        <td className="courrierDate">{formatDate(courrier.courrierDate)}</td>
-                        <td 
-                          className="description"
-                          onMouseEnter={(e) => handleMouseEnter(e, courrier.description || "N/A")}
-                          onMouseMove={handleMouseMove}
-                          onMouseLeave={handleMouseLeave}
-                        >
-                          {courrier.description || "N/A"}
-                        </td>
-                        <td className="actions">
-                          <div className="actionButtons">
-                            <button 
-                              className={`actionBtn view ${selectedCourriers.size > 0 ? 'disabled' : ''}`}
-                              onClick={() => selectedCourriers.size === 0 && handleViewPdf(courrier)}
-                              title={selectedCourriers.size > 0 ? "Désactivé pendant la sélection" : "Visualiser"}
-                              disabled={selectedCourriers.size > 0}
-                            >
-                              <MdVisibility />
-                            </button>
-                            <button 
-                              className="actionBtn download"
-                              onClick={() => handleAdaptiveDownload(courrier.id)}
-                              title={getDownloadTooltip()}
-                            >
-                              {selectedCourriers.size > 1 ? <MdArchive /> : <MdDownload />}
-                            </button>
-                            <button 
-                              className={`actionBtn edit ${selectedCourriers.size > 0 ? 'disabled' : ''}`}
-                              onClick={() => selectedCourriers.size === 0 && handleEdit(courrier.id)}
-                              title={selectedCourriers.size > 0 ? "Désactivé pendant la sélection" : "Modifier"}
-                              disabled={selectedCourriers.size > 0}
-                            >
-                              <MdEdit />
-                            </button>
-                            <button 
-                              className="actionBtn email"
-                              onClick={() => handleAdaptiveEmail(courrier.id)}
-                              title={getEmailTooltip()}
-                            >
-                              {selectedCourriers.size > 1 ? <MdOutlineMarkEmailRead /> : <MdEmail />}
-                            </button>
-                            <button 
-                              className={`actionBtn delete ${selectedCourriers.size > 0 ? 'disabled' : ''}`}
-                              onClick={() => selectedCourriers.size === 0 && handleDelete(courrier.id)}
-                              title={selectedCourriers.size > 0 ? "Désactivé pendant la sélection" : "Supprimer"}
-                              disabled={selectedCourriers.size > 0}
-                            >
-                              <MdDelete />
-                            </button>
-                          </div>
-                        </td>
+                          </label>
+                        </th>
+                        <th>Nom du fichier</th>
+                        <th>Direction</th>
+                        <th>Type</th>
+                        <th>Service</th>
+                        <th>Expéditeur</th>
+                        <th className="dateColumn">Date courrier</th>
+                        <th>Description</th>
+                        <th>Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                  </table>
+                    </thead>
+                    <tbody>
+                      {filteredCourriers.map((courrier: ICourrier) => (
+                        <tr key={courrier.id} className={`courrierRow ${selectedCourriers.has(courrier.id) ? 'selected' : ''}`}>
+                          <td className="selectColumn">
+                            <label className="checkboxWrapper">
+                              <input
+                                type="checkbox"
+                                checked={selectedCourriers.has(courrier.id)}
+                                onChange={(e) => handleSelectCourrier(courrier.id, e.target.checked)}
+                                className="selectCheckbox"
+                              />
+                              <span className="checkmark"></span>
+                            </label>
+                          </td>
+                          <td className="fileName">
+                            <div className="fileNameWrapper">
+                              <FiFileText className="fileIcon" />
+                              <span 
+                                className="fileNameText"
+                                onMouseEnter={(e) => handleMouseEnter(e, courrier.fileName)}
+                                onMouseMove={handleMouseMove}
+                                onMouseLeave={handleMouseLeave}
+                              >
+                                {courrier.fileName}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="direction">
+                            <span className={`directionBadge ${getDirectionBadge(courrier.direction)}`}>
+                              {courrier.direction}
+                            </span>
+                          </td>
+                          <td 
+                            className="kind"
+                            onMouseEnter={(e) => handleMouseEnter(e, courrier.kind || "N/A")}
+                            onMouseMove={handleMouseMove}
+                            onMouseLeave={handleMouseLeave}
+                          >
+                            {courrier.kind || "N/A"}
+                          </td>
+                          <td 
+                            className="department"
+                            onMouseEnter={(e) => handleMouseEnter(e, courrier.department || "N/A")}
+                            onMouseMove={handleMouseMove}
+                            onMouseLeave={handleMouseLeave}
+                          >
+                            {courrier.department || "N/A"}
+                          </td>
+                          <td 
+                            className="emitter"
+                            onMouseEnter={(e) => handleMouseEnter(e, courrier.emitter || "N/A")}
+                            onMouseMove={handleMouseMove}
+                            onMouseLeave={handleMouseLeave}
+                          >
+                            {courrier.emitter || "N/A"}
+                          </td>
+                          <td className="courrierDate">{formatDate(courrier.courrierDate)}</td>
+                          <td 
+                            className="description"
+                            onMouseEnter={(e) => handleMouseEnter(e, courrier.description || "N/A")}
+                            onMouseMove={handleMouseMove}
+                            onMouseLeave={handleMouseLeave}
+                          >
+                            {courrier.description || "N/A"}
+                          </td>
+                          <td className="actions">
+                            <div className="actionButtons">
+                              <button 
+                                className={`actionBtn view ${selectedCourriers.size > 0 ? 'disabled' : ''}`}
+                                onClick={() => selectedCourriers.size === 0 && handleViewPdf(courrier)}
+                                title={selectedCourriers.size > 0 ? "Désactivé pendant la sélection" : "Visualiser"}
+                                disabled={selectedCourriers.size > 0}
+                              >
+                                <MdVisibility />
+                              </button>
+                              <button 
+                                className="actionBtn download"
+                                onClick={() => handleAdaptiveDownload(courrier.id)}
+                                title={getDownloadTooltip()}
+                              >
+                                {selectedCourriers.size > 1 ? <MdArchive /> : <MdDownload />}
+                              </button>
+                              <button 
+                                className={`actionBtn edit ${selectedCourriers.size > 0 ? 'disabled' : ''}`}
+                                onClick={() => selectedCourriers.size === 0 && handleEdit(courrier.id)}
+                                title={selectedCourriers.size > 0 ? "Désactivé pendant la sélection" : "Modifier"}
+                                disabled={selectedCourriers.size > 0}
+                              >
+                                <MdEdit />
+                              </button>
+                              <button 
+                                className="actionBtn email"
+                                onClick={() => handleAdaptiveEmail(courrier.id)}
+                                title={getEmailTooltip()}
+                              >
+                                {selectedCourriers.size > 1 ? <MdOutlineMarkEmailRead /> : <MdEmail />}
+                              </button>
+                              <button 
+                                className={`actionBtn delete ${selectedCourriers.size > 0 ? 'disabled' : ''}`}
+                                onClick={() => selectedCourriers.size === 0 && handleDelete(courrier.id)}
+                                title={selectedCourriers.size > 0 ? "Désactivé pendant la sélection" : "Supprimer"}
+                                disabled={selectedCourriers.size > 0}
+                              >
+                                <MdDelete />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
+              </>
             )}
           </section>
 
         </div>
+        
+        {/* Pagination mobile en bas */}
+        {!searchTerm.trim() && pagination && pagination.totalPages > 1 && (
+          <div className="mobilePagination mobileOnly">
+            <div className="paginationControls">
+              <button
+                className="paginationBtn"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <MdNavigateBefore /> 
+                Précédent
+              </button>
+              
+              <div className="paginationInfo">
+                <span>Page {currentPage} sur {pagination.totalPages}</span>
+                <span className="totalItems">{pagination.total} courrier{pagination.total > 1 ? 's' : ''}</span>
+              </div>
+              
+              <button
+                className="paginationBtn"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === pagination.totalPages}
+              >
+                Suivant
+                <MdNavigateNext />
+              </button>
+            </div>
+          </div>
+        )}
       </main>
       
       {/* Tooltip personnalisé */}
@@ -727,6 +924,17 @@ function ListeCourriers(): ReactElement {
         bulkMode={true}
         selectedCount={bulkEmailModal.courriers.length}
       />
+
+      {/* Bouton Back to Top */}
+      {showBackToTop && (
+        <button
+          className="backToTopBtn mobileOnly"
+          onClick={scrollToTop}
+          title="Retour en haut"
+        >
+          <MdKeyboardArrowUp />
+        </button>
+      )}
     </>
   );
 }

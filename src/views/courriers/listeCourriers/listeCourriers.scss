@@ -11,8 +11,60 @@
   display: flex;
   flex-direction: column;
   gap: 0.75em; // Gap réduit pour optimiser l'espace vertical
+  position: relative; // Important pour le sticky
+  
+  // Barre de recherche mobile sticky (en dehors du container)
+  .mobileSearchContainer {
+    position: sticky;
+    top: calc(6dvh + 4dvh); // Header + SubNav
+    z-index: 1000;
+    background: rgba(vars.$utilsPrimary, 0.05); // MÊME style que header.utils
+    backdrop-filter: vars.$blurMedium; // MÊME blur que le header
+    -webkit-backdrop-filter: vars.$blurMedium;
+    padding: 0.75em 0;
+    margin: -1em -0.5em 0.75em -0.5em; // Compense le padding du main
+    box-shadow: vars.$shadowMedium; // MÊME ombre que le header
+    
+    .searchWrapper {
+      position: relative;
+      max-width: 20em;
+      margin: 0 auto;
+      padding: 0 0.5em;
+      
+      .searchIcon {
+        position: absolute;
+        left: 1.5em;
+        top: 50%;
+        transform: translateY(-50%);
+        color: vars.$fontColorSecondary; // Couleur normale comme le reste
+        font-size: 1.1em;
+      }
+      
+      .searchInput {
+        width: 100%;
+        padding: 0.75em 1em 0.75em 2.5em;
+        border: 2px solid vars.$borderColor;
+        border-radius: 25px;
+        font-size: 0.9em;
+        transition: vars.$transitionMedium;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        
+        &:focus {
+          outline: none;
+          border-color: vars.$utilsPrimary;
+          box-shadow: 0 0 0 3px rgba(38, 208, 206, 0.2);
+        }
+        
+        &::placeholder {
+          color: vars.$fontColorSecondary;
+        }
+      }
+    }
+  }
   
   .listeCourrierContainer {
+    min-width: 90%; // Largeur minimale pour éviter le redimensionnement
     max-width: 95%; // Utiliser 95% de la largeur disponible
     margin: 0 auto;
     padding: 0 0.25em; // Padding réduit sur mobile
@@ -23,6 +75,7 @@
 
     // Responsive tablette
     @media (min-width: vars.$tabletWidth) {
+      min-width: 95%; // Largeur minimale plus grande sur tablette
       max-width: 98%; // Encore plus large sur tablette
       padding: 0 0.5em; // Padding réduit sur tablette
       gap: 1em; // Gap réduit sur tablette
@@ -30,6 +83,7 @@
 
     // Responsive desktop
     @media (min-width: vars.$desktopWidth) {
+      min-width: 98%; // Largeur minimale encore plus grande sur desktop
       max-width: 99%; // Quasi pleine largeur sur desktop
       padding: 0 0.75em; // Padding minimal sur desktop
     }
@@ -54,6 +108,8 @@
     justify-content: space-between;
     align-items: center;
     gap: 1em;
+
+    // La barre de recherche mobile est maintenant en dehors de cette section
     
     .searchContainer {
       position: relative;
@@ -207,7 +263,6 @@
       
       .courriersGrid {
         width: 100%;
-        table-layout: fixed; // Force les largeurs fixes
         border-collapse: collapse;
         font-size: 0.9em;
         
@@ -228,19 +283,18 @@
             letter-spacing: 0.5px;
             background: vars.$greyBackground; // Background pour le sticky
             
-            // Largeurs fixes pour éviter le redimensionnement
-            &:nth-child(1) { width: 3.5%; } // Checkbox
-            &:nth-child(2) { width: 22%; }  // Nom du fichier
-            &:nth-child(3) { width: 8%; }   // Direction
-            &:nth-child(4) { width: 12%; }  // Type
-            &:nth-child(5) { width: 12%; }  // Service
-            &:nth-child(6) { width: 12%; }  // Expéditeur
-            &:nth-child(7) { width: 10%; }  // Date courrier
-            &:nth-child(8) { width: 15%; }  // Description
-            &:nth-child(9) { width: 5.5%; } // Actions
-            
-            &.dateColumn {
-              min-width: 8em;
+            // Largeurs minimales pour éviter que les colonnes importantes se rétrécissent trop
+            &:nth-child(1) { min-width: 3em; }   // Checkbox
+            &:nth-child(2) { min-width: 15em; }  // Nom du fichier - colonne importante
+            &:nth-child(3) { min-width: 6em; }   // Direction
+            &:nth-child(4) { min-width: 8em; }   // Type
+            &:nth-child(5) { min-width: 10em; }  // Service
+            &:nth-child(6) { min-width: 10em; }  // Expéditeur
+            &:nth-child(7) { min-width: 8em; }   // Date courrier
+            &:nth-child(8) { min-width: 12em; }  // Description
+            &:nth-child(9) { 
+              min-width: 10em;  // Actions
+              text-align: right; // Alignement à droite pour la colonne Actions
             }
           }
         }
@@ -346,9 +400,12 @@
               }
               
               &.actions {
+                text-align: right; // Alignement à droite pour les cellules d'actions
+                
                 .actionButtons {
                   display: flex;
                   gap: 0.375em;
+                  justify-content: flex-end; // Justifie les boutons à droite
                   
                   .actionBtn {
                     display: flex;
@@ -450,25 +507,21 @@
           
           thead th {
             padding: 1.25em 1em;
-            
-            // Ajustement des largeurs sur tablette
-            &:nth-child(2) { width: 25%; }  // Plus d'espace pour le nom de fichier
-            &:nth-child(8) { width: 18%; }  // Plus d'espace pour la description
           }
           
           tbody td {
             padding: 1em;
             
             &.fileName .fileNameWrapper .fileNameText {
-              max-width: none; // Utilise toute la largeur allouée
+              max-width: 15em;
             }
             
             &.kind, &.department, &.emitter {
-              max-width: none; // Utilise toute la largeur allouée
+              max-width: 10em;
             }
             
             &.description {
-              max-width: none; // Utilise toute la largeur allouée
+              max-width: 15em;
             }
           }
         }
@@ -484,30 +537,17 @@
         .courriersGrid {
           font-size: 1em;
           
-          thead th {
-            // Ajustement optimal des largeurs sur desktop
-            &:nth-child(1) { width: 3%; }   // Checkbox
-            &:nth-child(2) { width: 28%; }  // Nom du fichier - plus d'espace
-            &:nth-child(3) { width: 7%; }   // Direction - moins d'espace
-            &:nth-child(4) { width: 10%; }  // Type
-            &:nth-child(5) { width: 10%; }  // Service
-            &:nth-child(6) { width: 12%; }  // Expéditeur
-            &:nth-child(7) { width: 8%; }   // Date courrier
-            &:nth-child(8) { width: 20%; }  // Description - plus d'espace
-            &:nth-child(9) { width: 2%; }   // Actions - minimal
-          }
-          
           tbody td {
             &.fileName .fileNameWrapper .fileNameText {
-              max-width: none; // Utilise toute la largeur allouée
+              max-width: 18em;
             }
             
             &.kind, &.department, &.emitter {
-              max-width: none; // Utilise toute la largeur allouée
+              max-width: 12em;
             }
             
             &.description {
-              max-width: none; // Utilise toute la largeur allouée
+              max-width: 20em;
             }
           }
         }
@@ -704,7 +744,271 @@
       background: rgba(vars.$utilsPrimary, 0.12) !important;
     }
   }
-}  // Styles pour les boutons d'action désactivés
+
+  // Styles pour la vue mobile - Cartes
+  .courriersCards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+
+    .mobileSelectAll {
+      display: flex;
+      align-items: center;
+      gap: 0.75em;
+      padding: 1em;
+      background: white;
+      border-radius: 12px;
+      border: 1px solid vars.$borderColor;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+      .selectAllText {
+        font-size: 0.9em;
+        font-weight: 500;
+        color: vars.$utilsPrimary;
+      }
+    }
+
+    .cardsList {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75em;
+    }
+
+    .courrierCard {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid vars.$borderColor;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      transition: vars.$transitionMedium;
+
+      &:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        transform: translateY(-1px);
+      }
+
+      &.selected {
+        border-color: vars.$utilsPrimary;
+        box-shadow: 0 0 0 2px rgba(vars.$utilsPrimary, 0.1);
+        background: rgba(vars.$utilsPrimary, 0.02);
+      }
+
+      .cardHeader {
+        display: flex;
+        align-items: flex-start;
+        gap: 1em;
+        padding: 1em;
+        background: vars.$greyBackground;
+        border-bottom: 1px solid vars.$borderColor;
+
+        .cardSelect {
+          flex-shrink: 0;
+          padding-top: 0.2em; // Alignement visuel avec le titre
+        }
+
+        .cardTitle {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          gap: 0.5em;
+          min-width: 0; // Pour le text overflow
+
+          .fileIcon {
+            color: vars.$utilsPrimary;
+            font-size: 1.2em;
+            flex-shrink: 0;
+          }
+
+          .fileName {
+            font-size: 0.95em;
+            font-weight: 600;
+            color: vars.$fontColorPrimary;
+            margin: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            cursor: help;
+            position: relative;
+            
+            // Tooltip pour afficher le nom complet au survol
+            &:hover::after {
+              content: attr(title);
+              position: absolute;
+              top: -2.5em;
+              left: 50%;
+              transform: translateX(-50%);
+              background: rgba(44, 62, 80, 0.95);
+              color: white;
+              padding: 0.5em 0.75em;
+              border-radius: 6px;
+              font-size: 0.8em;
+              white-space: nowrap;
+              z-index: 1001;
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+              pointer-events: none;
+            }
+          }
+        }
+
+        .cardDirection {
+          flex-shrink: 0;
+          
+          .directionBadge {
+            padding: 0.3em 0.7em;
+            border-radius: 16px;
+            font-size: 0.75em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            
+            &.badge-entrant {
+              background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+              color: white;
+              box-shadow: 0 2px 4px rgba(39, 174, 96, 0.3);
+            }
+            
+            &.badge-sortant {
+              background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
+              color: white;
+              box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+            }
+            
+            &.badge-interne {
+              background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%);
+              color: white;
+              box-shadow: 0 2px 4px rgba(243, 156, 18, 0.3);
+            }
+          }
+        }
+      }
+
+      .cardBody {
+        padding: 1em;
+
+        .cardInfo {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5em;
+
+          .infoRow {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5em;
+
+            .infoLabel {
+              font-size: 0.8em;
+              font-weight: 600;
+              color: vars.$fontColorSecondary;
+              min-width: 5em;
+              flex-shrink: 0;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+            }
+
+            .infoValue {
+              font-size: 0.85em;
+              color: vars.$fontColorPrimary;
+              flex: 1;
+              word-break: break-word;
+            }
+
+            &.description {
+              .infoValue {
+                color: vars.$fontColorSecondary;
+                font-style: italic;
+                line-height: 1.4;
+              }
+            }
+          }
+        }
+      }
+
+      .cardActions {
+        display: flex;
+        justify-content: center;
+        gap: 0.5em;
+        padding: 0.75em 1em;
+        background: vars.$greyBackground;
+        border-top: 1px solid vars.$borderColor;
+
+        .actionBtn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 2.5em;
+          height: 2.5em;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: vars.$transitionMedium;
+          font-size: 1.1em;
+
+          &.download {
+            background: rgba(vars.$utilsPrimary, 0.1);
+            color: vars.$utilsPrimary;
+
+            &:hover:not(.disabled) {
+              background: vars.$utilsPrimary;
+              color: white;
+              transform: translateY(-2px);
+            }
+          }
+
+          &.edit {
+            background: rgba(vars.$warningColor, 0.1);
+            color: vars.$warningColor;
+
+            &:hover:not(.disabled) {
+              background: vars.$warningColor;
+              color: white;
+              transform: translateY(-2px);
+            }
+          }
+
+          &.email {
+            background: rgba(vars.$utilsSecondary, 0.1);
+            color: vars.$utilsSecondary;
+
+            &:hover:not(.disabled) {
+              background: vars.$utilsSecondary;
+              color: white;
+              transform: translateY(-2px);
+            }
+          }
+
+          &.view {
+            background: rgba(#9b59b6, 0.1);
+            color: #9b59b6;
+
+            &:hover:not(.disabled) {
+              background: #9b59b6;
+              color: white;
+              transform: translateY(-2px);
+            }
+          }
+
+          &.delete {
+            background: rgba(vars.$errorColor, 0.1);
+            color: vars.$errorColor;
+
+            &:hover:not(.disabled) {
+              background: vars.$errorColor;
+              color: white;
+              transform: translateY(-2px);
+            }
+          }
+
+          &.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+          }
+        }
+      }
+    }
+  }
+
+  // Styles pour les boutons d'action désactivés
   .actionBtn.disabled {
     opacity: 0.3 !important;
     cursor: not-allowed !important;
@@ -716,3 +1020,144 @@
       color: inherit !important;
     }
   }
+  
+  // Pagination mobile en bas de page
+  .mobilePagination {
+    position: sticky;
+    bottom: 0;
+    z-index: 999;
+    background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 100%);
+    border-top: 1px solid vars.$borderColor;
+    padding: 0.75em 0.5em;
+    margin: 0 -0.5em -1em -0.5em; // Compense le padding du main
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    
+    .paginationControls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1em;
+      
+      .paginationBtn {
+        display: flex;
+        align-items: center;
+        gap: 0.4em;
+        background: vars.$utilsPrimary;
+        color: white;
+        border: none;
+        padding: 0.6em 1em;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: vars.$transitionMedium;
+        font-size: 0.8em;
+        font-weight: 500;
+        white-space: nowrap;
+        
+        &:hover:not(:disabled) {
+          background: vars.$utilsSecondary;
+          transform: translateY(-1px);
+        }
+        
+        &:disabled {
+          background: vars.$borderColor;
+          color: vars.$fontColorSecondary;
+          cursor: not-allowed;
+          transform: none;
+        }
+      }
+      
+      .paginationInfo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.2em;
+        text-align: center;
+        font-size: 0.8em;
+        color: vars.$fontColorSecondary;
+        min-width: 8em;
+        
+        .totalItems {
+          font-size: 0.75em;
+          opacity: 0.8;
+        }
+      }
+    }
+  }
+}
+
+// Utilitaires de visibilité responsive (en dehors du scope #listeCourriers)
+.mobileOnly {
+  display: block !important;
+  
+  @media (min-width: vars.$tabletWidth) {
+    display: none !important;
+  }
+}
+
+.desktopOnly {
+  display: none !important;
+  
+  @media (min-width: vars.$tabletWidth) {
+    display: block !important;
+  }
+}
+
+// Bouton Back to Top (mobile uniquement) - en dehors du scope #listeCourriers
+.backToTopBtn {
+  position: fixed;
+  bottom: 5.5em; // Remonté pour éviter la pagination mobile
+  right: 1.5em;
+  width: 2.8em;
+  height: 2.8em;
+  background: vars.$utilsPrimary;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: all vars.$transitionMedium;
+  box-shadow: 0 3px 10px rgba(vars.$utilsPrimary, 0.3);
+  z-index: 1001; // Z-index plus élevé que la pagination
+  
+  &:hover {
+    background: vars.$utilsDark;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(vars.$utilsPrimary, 0.4);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  // Animation d'apparition
+  animation: fadeInUp 0.3s ease-out;
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(1em);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  // Responsive - ajuster la position sur très petits écrans
+  @media (max-width: 480px) {
+    width: 2.5em;
+    height: 2.5em;
+    bottom: 5em; // Plus haut sur mobile
+    right: 1.2em;
+    font-size: 1.1em;
+  }
+  
+  // Sur tablette et desktop, revenir à la position normale
+  @media (min-width: vars.$tabletWidth) {
+    bottom: 2em;
+    z-index: 1000;
+  }
+}

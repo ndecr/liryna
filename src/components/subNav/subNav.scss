@@ -3,24 +3,34 @@
 // ===================
 // SUB-NAVIGATION
 // ===================
-#subNav {
+div#subNav {
   position: fixed;
   top: 6dvh; /* Collé au header */
   width: 100%;
   height: 4dvh;
   z-index: 99; /* Slightly lower than header's z-index (100) */
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: vars.$blurLight;
-  -webkit-backdrop-filter: vars.$blurLight;
-  border-bottom: 1px solid vars.$borderColor;
+  /* FORCE avec sélecteur plus spécifique */
+  background: rgba(vars.$utilsPrimary, 0.05) !important; 
+  backdrop-filter: vars.$blurMedium !important; 
+  -webkit-backdrop-filter: vars.$blurMedium !important;
+  box-shadow: vars.$shadowMedium !important;
   
-  #header.utils & {
-    background: rgba(38, 208, 206, 0.08);
+  &.utils {
+    background: rgba(vars.$utilsPrimary, 0.05) !important; 
   }
   
-  #header.webdev & {
-    background: rgba(255, 107, 71, 0.08);
+  &.webdev {
+    background: rgba(vars.$webdevPrimary, 0.05) !important; 
   }
+}
+
+/* Sélecteur encore plus spécifique au cas où */
+div#subNav.subNav.utils {
+  background: rgba(vars.$utilsPrimary, 0.05) !important; 
+}
+
+div#subNav.subNav {
+  background: rgba(vars.$utilsPrimary, 0.05) !important; 
 }
 
 .subNavContainer {
@@ -32,6 +42,7 @@
   padding: 0 1em;
   height: 4dvh;
   overflow: hidden;
+  background: transparent !important; /* Force la transparence du container */
 }
 
 .subNavItem {
@@ -57,11 +68,11 @@
   &.active {
     color: vars.$whiteBackground;
     
-    #header.utils & {
+    #subNav.utils & {
       background: vars.$utilsPrimary;
     }
     
-    #header.webdev & {
+    #subNav.webdev & {
       background: vars.$webdevPrimary;
     }
   }
