@@ -272,4 +272,40 @@
       }
     }
   }
+
+  // Styles pour le mode bulk
+  .bulkCourrierInfo {
+    background: rgba(vars.$utilsPrimary, 0.05);
+    border: 1px solid rgba(vars.$utilsPrimary, 0.15);
+    border-radius: 8px;
+    padding: 1em;
+    display: flex;
+    align-items: flex-start;
+    gap: 1em;
+
+    .courrierIcon {
+      font-size: 1.5em;
+      color: vars.$utilsPrimary;
+      margin-top: 0.2em;
+      flex-shrink: 0;
+    }
+
+    .bulkDetails {
+      flex: 1;
+
+      h3 {
+        margin: 0 0 0.5em 0;
+        font-size: 1.1em;
+        font-weight: 600;
+        color: vars.$utilsPrimary;
+      }
+
+      .bulkDescription {
+        margin: 0;
+        color: vars.$fontColorSecondary;
+        font-size: 0.9em;
+        line-height: 1.4;
+      }
+    }
+  }
 }

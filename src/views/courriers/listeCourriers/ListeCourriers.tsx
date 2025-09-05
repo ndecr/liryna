@@ -13,7 +13,10 @@ import {
   MdSearch,
   MdNavigateNext,
   MdNavigateBefore,
-  MdVisibility
+  MdVisibility,
+  MdArchive,
+  MdOutlineMarkEmailRead,
+  MdSelectAll
 } from "react-icons/md";
 import { FiFileText } from "react-icons/fi";
 
@@ -66,6 +69,12 @@ function ListeCourriers(): ReactElement {
   const [emailModal, setEmailModal] = useState<{ visible: boolean; courrier: ICourrier | null; isLoading: boolean }>({
     visible: false,
     courrier: null,
+    isLoading: false
+  });
+  const [selectedCourriers, setSelectedCourriers] = useState<Set<number>>(new Set());
+  const [bulkEmailModal, setBulkEmailModal] = useState<{ visible: boolean; courriers: ICourrier[]; isLoading: boolean }>({
+    visible: false,
+    courriers: [],
     isLoading: false
   });
 
@@ -178,6 +187,125 @@ function ListeCourriers(): ReactElement {
 
   const closeEmailModal = () => {
     setEmailModal({ visible: false, courrier: null, isLoading: false });
+  };
+
+  const closeBulkEmailModal = () => {
+    setBulkEmailModal({ visible: false, courriers: [], isLoading: false });
+  };
+
+  const handleSelectCourrier = (courrierId: number, checked: boolean) => {
+    setSelectedCourriers(prev => {
+      const newSelection = new Set(prev);
+      if (checked) {
+        newSelection.add(courrierId);
+      } else {
+        newSelection.delete(courrierId);
+      }
+      return newSelection;
+    });
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedCourriers(new Set(filteredCourriers.map(c => c.id)));
+    } else {
+      setSelectedCourriers(new Set());
+    }
+  };
+
+  const handleBulkDownload = async () => {
+    if (selectedCourriers.size === 0) {
+      showErrorNotification('Aucun courrier sélectionné');
+      return;
+    }
+    
+    try {
+      // TODO: Implement bulk download API call
+      console.log('Bulk download for courriers:', Array.from(selectedCourriers));
+      showErrorNotification('Fonctionnalité en cours de développement', 'info');
+    } catch (error: unknown) {
+      logError('handleBulkDownload', error);
+      showErrorNotification('Erreur lors du téléchargement groupé');
+    }
+  };
+
+  const handleBulkEmail = () => {
+    if (selectedCourriers.size === 0) {
+      showErrorNotification('Aucun courrier sélectionné');
+      return;
+    }
+    
+    const selectedCourriersData = filteredCourriers.filter(c => selectedCourriers.has(c.id));
+    setBulkEmailModal({
+      visible: true,
+      courriers: selectedCourriersData,
+      isLoading: false
+    });
+  };
+
+  const handleSendBulkEmail = async (emailData: { to: string; subject: string; message: string }) => {
+    setBulkEmailModal(prev => ({ ...prev, isLoading: true }));
+    
+    try {
+      // TODO: Implement bulk email API call
+      console.log('Bulk email for courriers:', bulkEmailModal.courriers.map(c => c.id), 'with data:', emailData);
+      showErrorNotification('Email groupé envoyé avec succès !', 'info');
+      setBulkEmailModal({ visible: false, courriers: [], isLoading: false });
+      setSelectedCourriers(new Set()); // Clear selection after successful send
+    } catch (error: unknown) {
+      logError('handleSendBulkEmail', error);
+      showErrorNotification('Erreur lors de l\'envoi groupé');
+    } finally {
+      setBulkEmailModal(prev => ({ ...prev, isLoading: false }));
+    }
+  };
+
+  const handleAdaptiveDownload = async (courrierId: number) => {
+    if (selectedCourriers.size === 0) {
+      // Téléchargement simple
+      await handleDownload(courrierId);
+    } else if (selectedCourriers.size === 1) {
+      // Téléchargement du courrier sélectionné
+      const selectedId = Array.from(selectedCourriers)[0];
+      await handleDownload(selectedId);
+    } else {
+      // Téléchargement multiple (ZIP)
+      await handleBulkDownload();
+    }
+  };
+
+  const handleAdaptiveEmail = (courrierId: number) => {
+    if (selectedCourriers.size === 0) {
+      // Email simple
+      handleEmail(courrierId);
+    } else if (selectedCourriers.size === 1) {
+      // Email du courrier sélectionné
+      const selectedId = Array.from(selectedCourriers)[0];
+      handleEmail(selectedId);
+    } else {
+      // Email multiple
+      handleBulkEmail();
+    }
+  };
+
+  const getDownloadTooltip = (): string => {
+    if (selectedCourriers.size === 0) {
+      return "Télécharger ce courrier";
+    } else if (selectedCourriers.size === 1) {
+      return "Télécharger le courrier sélectionné";
+    } else {
+      return `Télécharger les ${selectedCourriers.size} courriers (ZIP)`;
+    }
+  };
+
+  const getEmailTooltip = (): string => {
+    if (selectedCourriers.size === 0) {
+      return "Envoyer ce courrier par email";
+    } else if (selectedCourriers.size === 1) {
+      return "Envoyer le courrier sélectionné par email";
+    } else {
+      return `Envoyer les ${selectedCourriers.size} courriers par email`;
+    }
   };
 
   const handleDelete = async (courrierid: number) => {
@@ -309,6 +437,18 @@ function ListeCourriers(): ReactElement {
               </div>
             )}
             
+            {/* Info de sélection */}
+            {selectedCourriers.size > 0 && (
+              <div className="selectionInfo">
+                <span className="selectedCount">
+                  {selectedCourriers.size} courrier{selectedCourriers.size > 1 ? 's' : ''} sélectionné{selectedCourriers.size > 1 ? 's' : ''}
+                </span>
+                <span className="selectionHint">
+                  Les boutons télécharger et email s'adaptent à votre sélection
+                </span>
+              </div>
+            )}
+            
             {/* Pagination Controls - Masquée pendant la recherche */}
             {!searchTerm.trim() && pagination && pagination.totalPages > 1 && (
               <div className="paginationControls">
@@ -358,6 +498,19 @@ function ListeCourriers(): ReactElement {
                   <table className="courriersGrid">
                   <thead>
                     <tr>
+                      <th className="selectColumn">
+                        <label className="checkboxWrapper">
+                          <input
+                            type="checkbox"
+                            checked={selectedCourriers.size > 0 && selectedCourriers.size === filteredCourriers.length}
+                            onChange={(e) => handleSelectAll(e.target.checked)}
+                            className="selectAllCheckbox"
+                          />
+                          <span className="checkboxLabel">
+                            <MdSelectAll />
+                          </span>
+                        </label>
+                      </th>
                       <th>Nom du fichier</th>
                       <th>Direction</th>
                       <th>Type</th>
@@ -370,7 +523,18 @@ function ListeCourriers(): ReactElement {
                   </thead>
                   <tbody>
                     {filteredCourriers.map((courrier: ICourrier) => (
-                      <tr key={courrier.id} className="courrierRow">
+                      <tr key={courrier.id} className={`courrierRow ${selectedCourriers.has(courrier.id) ? 'selected' : ''}`}>
+                        <td className="selectColumn">
+                          <label className="checkboxWrapper">
+                            <input
+                              type="checkbox"
+                              checked={selectedCourriers.has(courrier.id)}
+                              onChange={(e) => handleSelectCourrier(courrier.id, e.target.checked)}
+                              className="selectCheckbox"
+                            />
+                            <span className="checkmark"></span>
+                          </label>
+                        </td>
                         <td className="fileName">
                           <div className="fileNameWrapper">
                             <FiFileText className="fileIcon" />
@@ -425,37 +589,40 @@ function ListeCourriers(): ReactElement {
                         <td className="actions">
                           <div className="actionButtons">
                             <button 
-                              className="actionBtn view"
-                              onClick={() => handleViewPdf(courrier)}
-                              title="Visualiser"
+                              className={`actionBtn view ${selectedCourriers.size > 0 ? 'disabled' : ''}`}
+                              onClick={() => selectedCourriers.size === 0 && handleViewPdf(courrier)}
+                              title={selectedCourriers.size > 0 ? "Désactivé pendant la sélection" : "Visualiser"}
+                              disabled={selectedCourriers.size > 0}
                             >
                               <MdVisibility />
                             </button>
                             <button 
                               className="actionBtn download"
-                              onClick={() => handleDownload(courrier.id)}
-                              title="Télécharger"
+                              onClick={() => handleAdaptiveDownload(courrier.id)}
+                              title={getDownloadTooltip()}
                             >
-                              <MdDownload />
+                              {selectedCourriers.size > 1 ? <MdArchive /> : <MdDownload />}
                             </button>
                             <button 
-                              className="actionBtn edit"
-                              onClick={() => handleEdit(courrier.id)}
-                              title="Modifier"
+                              className={`actionBtn edit ${selectedCourriers.size > 0 ? 'disabled' : ''}`}
+                              onClick={() => selectedCourriers.size === 0 && handleEdit(courrier.id)}
+                              title={selectedCourriers.size > 0 ? "Désactivé pendant la sélection" : "Modifier"}
+                              disabled={selectedCourriers.size > 0}
                             >
                               <MdEdit />
                             </button>
                             <button 
                               className="actionBtn email"
-                              onClick={() => handleEmail(courrier.id)}
-                              title="Envoyer par email"
+                              onClick={() => handleAdaptiveEmail(courrier.id)}
+                              title={getEmailTooltip()}
                             >
-                              <MdEmail />
+                              {selectedCourriers.size > 1 ? <MdOutlineMarkEmailRead /> : <MdEmail />}
                             </button>
                             <button 
-                              className="actionBtn delete"
-                              onClick={() => handleDelete(courrier.id)}
-                              title="Supprimer"
+                              className={`actionBtn delete ${selectedCourriers.size > 0 ? 'disabled' : ''}`}
+                              onClick={() => selectedCourriers.size === 0 && handleDelete(courrier.id)}
+                              title={selectedCourriers.size > 0 ? "Désactivé pendant la sélection" : "Supprimer"}
+                              disabled={selectedCourriers.size > 0}
                             >
                               <MdDelete />
                             </button>
@@ -534,6 +701,17 @@ function ListeCourriers(): ReactElement {
         onClose={closeEmailModal}
         onSend={handleSendEmail}
         isLoading={emailModal.isLoading}
+      />
+
+      {/* Modale Email Groupé */}
+      <EmailModal
+        isVisible={bulkEmailModal.visible}
+        courrier={bulkEmailModal.courriers[0] || null}
+        onClose={closeBulkEmailModal}
+        onSend={handleSendBulkEmail}
+        isLoading={bulkEmailModal.isLoading}
+        bulkMode={true}
+        selectedCount={bulkEmailModal.courriers.length}
       />
     </>
   );

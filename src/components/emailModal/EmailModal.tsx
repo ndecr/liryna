@@ -18,10 +18,36 @@ interface EmailModalProps {
   onClose: () => void;
   onSend: (emailData: { to: string; subject: string; message: string }) => Promise<void>;
   isLoading?: boolean;
+  bulkMode?: boolean;
+  selectedCount?: number;
 }
 
-function EmailModal({ isVisible, courrier, onClose, onSend, isLoading = false }: EmailModalProps): ReactElement {
-  const getDefaultMessage = (courrier: ICourrier | null): string => {
+function EmailModal({ 
+  isVisible, 
+  courrier, 
+  onClose, 
+  onSend, 
+  isLoading = false, 
+  bulkMode = false, 
+  selectedCount = 1 
+}: EmailModalProps): ReactElement {
+  
+  const getDefaultMessage = (courrier: ICourrier | null, isBulkMode: boolean, count: number): string => {
+    if (isBulkMode) {
+      return `Bonjour,
+
+Veuillez trouver ci-joints les ${count} courriers sélectionnés.
+
+Ces documents ont été traités et organisés via WhatATool.
+
+Cordialement,
+WhatATool
+
+--
+WhatATool - Votre solution de gestion documentaire
+© DECRESSAC Nicolas @2025`;
+    }
+    
     if (!courrier) return "";
     
     return `Bonjour,
@@ -44,23 +70,30 @@ WhatATool - Votre solution de gestion documentaire
 © DECRESSAC Nicolas @2025`;
   };
 
+  const getDefaultSubject = (courrier: ICourrier | null, isBulkMode: boolean, count: number): string => {
+    if (isBulkMode) {
+      return `Envoi groupé: ${count} courrier${count > 1 ? 's' : ''}`;
+    }
+    return courrier ? `Courrier: ${courrier.fileName}` : "";
+  };
+
   const [formData, setFormData] = useState({
     to: "",
-    subject: courrier ? `Courrier: ${courrier.fileName}` : "",
-    message: getDefaultMessage(courrier)
+    subject: getDefaultSubject(courrier, bulkMode, selectedCount),
+    message: getDefaultMessage(courrier, bulkMode, selectedCount)
   });
   const [error, setError] = useState<string>("");
 
   // Update form data when courrier changes
   useEffect(() => {
-    if (courrier) {
+    if (isVisible) {
       setFormData({
         to: "",
-        subject: `Courrier: ${courrier.fileName}`,
-        message: getDefaultMessage(courrier)
+        subject: getDefaultSubject(courrier, bulkMode, selectedCount),
+        message: getDefaultMessage(courrier, bulkMode, selectedCount)
       });
     }
-  }, [courrier]);
+  }, [isVisible, courrier, bulkMode, selectedCount]);
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {
     setFormData(prev => ({
@@ -106,8 +139,8 @@ WhatATool - Votre solution de gestion documentaire
       // Reset form and close modal on success
       setFormData({
         to: "",
-        subject: courrier ? `Courrier: ${courrier.fileName}` : "",
-        message: getDefaultMessage(courrier)
+        subject: getDefaultSubject(courrier, bulkMode, selectedCount),
+        message: getDefaultMessage(courrier, bulkMode, selectedCount)
       });
       setError("");
       onClose();
@@ -119,8 +152,8 @@ WhatATool - Votre solution de gestion documentaire
   const handleClose = () => {
     setFormData({
       to: "",
-      subject: courrier ? `Courrier: ${courrier.fileName}` : "",
-      message: getDefaultMessage(courrier)
+      subject: getDefaultSubject(courrier, bulkMode, selectedCount),
+      message: getDefaultMessage(courrier, bulkMode, selectedCount)
     });
     setError("");
     onClose();
@@ -136,7 +169,7 @@ WhatATool - Votre solution de gestion documentaire
           <header className="emailModalHeader">
             <div className="modalTitle">
               <MdEmail className="titleIcon" />
-              <h2>Envoyer par email</h2>
+              <h2>{bulkMode ? `Envoi groupé (${selectedCount} courrier${selectedCount > 1 ? 's' : ''})` : 'Envoyer par email'}</h2>
             </div>
             <button className="closeBtn" onClick={handleClose} type="button">
               <MdClose />
@@ -144,16 +177,28 @@ WhatATool - Votre solution de gestion documentaire
           </header>
 
           {/* Courrier Info */}
-          {courrier && (
-            <div className="courrierInfo">
+          {bulkMode ? (
+            <div className="bulkCourrierInfo">
               <FiFileText className="courrierIcon" />
-              <div className="courrierDetails">
-                <span className="fileName">{courrier.fileName}</span>
-                <span className="fileInfo">
-                  {courrier.kind} • {courrier.department} • {courrier.direction}
-                </span>
+              <div className="bulkDetails">
+                <h3>Envoi groupé de {selectedCount} courrier{selectedCount > 1 ? 's' : ''}</h3>
+                <p className="bulkDescription">
+                  Les courriers sélectionnés seront envoyés en pièces jointes dans un seul email.
+                </p>
               </div>
             </div>
+          ) : (
+            courrier && (
+              <div className="courrierInfo">
+                <FiFileText className="courrierIcon" />
+                <div className="courrierDetails">
+                  <span className="fileName">{courrier.fileName}</span>
+                  <span className="fileInfo">
+                    {courrier.kind} • {courrier.department} • {courrier.direction}
+                  </span>
+                </div>
+              </div>
+            )
           )}
 
           {/* Form */}
@@ -233,11 +278,11 @@ WhatATool - Votre solution de gestion documentaire
                 {isLoading ? (
                   <>
                     <span className="loadingSpinner" />
-                    Envoi...
+                    {bulkMode ? 'Envoi groupé en cours...' : 'Envoi...'}
                   </>
                 ) : (
                   <>
-                    Envoyer
+                    {bulkMode ? `Envoyer ${selectedCount} courrier${selectedCount > 1 ? 's' : ''}` : 'Envoyer'}
                     <MdSend fill="#ffffff" />
                   </>
                 )}
@@ -249,8 +294,10 @@ WhatATool - Votre solution de gestion documentaire
           <div className="infoNote">
             <span className="infoIcon">ℹ️</span>
             <p>
-              Le courrier sera envoyé en pièce jointe. Un email avec les détails du document 
-              sera automatiquement généré si aucun message personnalisé n'est fourni.
+              {bulkMode 
+                ? `Les ${selectedCount} courriers seront envoyés en pièces jointes dans un seul email.`
+                : "Le courrier sera envoyé en pièce jointe. Un email avec les détails du document sera automatiquement généré si aucun message personnalisé n'est fourni."
+              }
             </p>
           </div>
         </div>
