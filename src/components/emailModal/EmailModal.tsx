@@ -2,7 +2,7 @@
 import "./emailModal.scss";
 
 // hooks | libraries
-import { ReactElement, useState } from "react";
+import { ReactElement, useState, useEffect } from "react";
 import { MdClose, MdSend, MdEmail, MdSubject, MdMessage } from "react-icons/md";
 import { FiUser, FiFileText } from "react-icons/fi";
 
@@ -21,12 +21,46 @@ interface EmailModalProps {
 }
 
 function EmailModal({ isVisible, courrier, onClose, onSend, isLoading = false }: EmailModalProps): ReactElement {
+  const getDefaultMessage = (courrier: ICourrier | null): string => {
+    if (!courrier) return "";
+    
+    return `Bonjour,
+
+Veuillez trouver ci-joint le courrier: ${courrier.fileName}
+
+Détails du courrier:
+- Type: ${courrier.kind || 'Non spécifié'}
+- Département: ${courrier.department || 'Non spécifié'}
+- Direction: ${courrier.direction}
+- Émetteur: ${courrier.emitter || 'Non spécifié'}
+- Destinataire: ${courrier.recipient || 'Non spécifié'}
+- Date d'ajout: ${courrier.created_at ? new Date(courrier.created_at).toLocaleDateString('fr-FR') : 'Non spécifiée'}
+
+Cordialement,
+WhatATool
+
+--
+WhatATool - Votre solution de gestion documentaire
+© DECRESSAC Nicolas @2025`;
+  };
+
   const [formData, setFormData] = useState({
     to: "",
     subject: courrier ? `Courrier: ${courrier.fileName}` : "",
-    message: ""
+    message: getDefaultMessage(courrier)
   });
   const [error, setError] = useState<string>("");
+
+  // Update form data when courrier changes
+  useEffect(() => {
+    if (courrier) {
+      setFormData({
+        to: "",
+        subject: `Courrier: ${courrier.fileName}`,
+        message: getDefaultMessage(courrier)
+      });
+    }
+  }, [courrier]);
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {
     setFormData(prev => ({
@@ -73,7 +107,7 @@ function EmailModal({ isVisible, courrier, onClose, onSend, isLoading = false }:
       setFormData({
         to: "",
         subject: courrier ? `Courrier: ${courrier.fileName}` : "",
-        message: ""
+        message: getDefaultMessage(courrier)
       });
       setError("");
       onClose();
@@ -86,7 +120,7 @@ function EmailModal({ isVisible, courrier, onClose, onSend, isLoading = false }:
     setFormData({
       to: "",
       subject: courrier ? `Courrier: ${courrier.fileName}` : "",
-      message: ""
+      message: getDefaultMessage(courrier)
     });
     setError("");
     onClose();
@@ -162,11 +196,11 @@ function EmailModal({ isVisible, courrier, onClose, onSend, isLoading = false }:
             <div className="formGroup">
               <label htmlFor="emailMessage" className="formLabel">
                 <MdMessage className="labelIcon" />
-                Message personnalisé (optionnel)
+                Message personnalisé
               </label>
               <textarea
                 id="emailMessage"
-                placeholder="Ajouter un message personnalisé... (Un message par défaut sera utilisé si vide)"
+                placeholder="Modifier ce message ou laisser tel quel..."
                 value={formData.message}
                 onChange={(e) => handleInputChange('message', e.target.value)}
                 className="formTextarea"
