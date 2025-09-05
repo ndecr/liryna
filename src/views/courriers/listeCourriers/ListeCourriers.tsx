@@ -266,31 +266,7 @@ function ListeCourriers(): ReactElement {
     courrier.kind?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     courrier.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     courrier.emitter?.toLowerCase().includes(searchTerm.toLowerCase())
-  ).sort((a, b) => {
-    // Tri par date de réception (plus récent au plus ancien)
-    const getDateForSorting = (courrier: ICourrier): number => {
-      // Priorité : receptionDate -> created_at -> 0
-      if (courrier.receptionDate) {
-        const date = new Date(courrier.receptionDate);
-        return isNaN(date.getTime()) ? 0 : date.getTime();
-      }
-      if (courrier.created_at) {
-        const date = new Date(courrier.created_at);
-        return isNaN(date.getTime()) ? 0 : date.getTime();
-      }
-      return 0;
-    };
-
-    const dateA = getDateForSorting(a);
-    const dateB = getDateForSorting(b);
-    
-    // Si les dates sont égales, tri par ID décroissant (plus récent en premier)
-    if (dateA === dateB) {
-      return b.id - a.id;
-    }
-    
-    return dateB - dateA;
-  });
+  );
 
   return (
     <>
