@@ -32,83 +32,9 @@ function EmailModal({
   selectedCount = 1 
 }: EmailModalProps): ReactElement {
   
-  const getDefaultMessage = (courrier: ICourrier | null, isBulkMode: boolean, count: number): string => {
-    if (isBulkMode) {
-      return `<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
-  <!-- Header -->
-  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center;">
-    <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
-      <div style="width: 32px; height: 32px; background: #26d0ce; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px;">W</div>
-      <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 300;">WhatATool</h1>
-    </div>
-    <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0 0; font-size: 14px;">Système de gestion documentaire</p>
-  </div>
-  
-  <!-- Content -->
-  <div style="padding: 30px;">
-    <h2 style="color: #333; margin: 0 0 20px 0; font-size: 20px; font-weight: 400;">Envoi groupé: ${count} courrier${count > 1 ? 's' : ''}</h2>
-    
-    <p style="color: #666; line-height: 1.6; margin-bottom: 25px;">Bonjour,</p>
-    
-    <p style="color: #666; line-height: 1.6; margin-bottom: 25px;">Veuillez trouver ci-joints les ${count} courriers sélectionnés.</p>
-    
-    <div style="background: #f0f8ff; border-left: 4px solid #26d0ce; padding: 20px; border-radius: 6px; margin: 25px 0;">
-      <p style="margin: 0; color: #333; font-weight: 500;">📦 Ces documents ont été traités et organisés via WhatATool.</p>
-    </div>
-  </div>
-  
-  <!-- Footer -->
-  <div style="background: #f8f9fa; padding: 20px; border-top: 1px solid #e9ecef; text-align: center;">
-    <p style="color: #adb5bd; font-size: 12px; margin: 0;">
-      <em>WhatATool - Votre solution de gestion documentaire</em><br>
-      <span style="font-size: 10px; color: #868e96;">© DECRESSAC Nicolas @2025</span>
-    </p>
-  </div>
-</div>`;
-    }
-    
-    if (!courrier) return "";
-    
-    return `<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
-  <!-- Header -->
-  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center;">
-    <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
-      <div style="width: 32px; height: 32px; background: #26d0ce; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px;">W</div>
-      <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 300;">WhatATool</h1>
-    </div>
-    <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0 0; font-size: 14px;">Système de gestion documentaire</p>
-  </div>
-  
-  <!-- Content -->
-  <div style="padding: 30px;">
-    <h2 style="color: #333; margin: 0 0 20px 0; font-size: 20px; font-weight: 400;">Courrier: ${courrier.fileName}</h2>
-    
-    <p style="color: #666; line-height: 1.6; margin-bottom: 25px;">Bonjour,</p>
-    
-    <p style="color: #666; line-height: 1.6; margin-bottom: 25px;">Veuillez trouver ci-joint le courrier demandé.</p>
-    
-    <!-- Details Card -->
-    <div style="background: #f8f9fa; border-left: 4px solid #667eea; padding: 20px; border-radius: 6px; margin: 25px 0;">
-      <h3 style="margin: 0 0 15px 0; color: #495057; font-size: 16px; font-weight: 500;">📋 Détails du courrier</h3>
-      <table style="width: 100%; border-collapse: collapse;">
-        <tr><td style="padding: 8px 0; color: #666; width: 120px;"><strong>Type:</strong></td><td style="padding: 8px 0; color: #333;">${courrier.kind || 'Non spécifié'}</td></tr>
-        <tr><td style="padding: 8px 0; color: #666;"><strong>Département:</strong></td><td style="padding: 8px 0; color: #333;">${courrier.department || 'Non spécifié'}</td></tr>
-        <tr><td style="padding: 8px 0; color: #666;"><strong>Direction:</strong></td><td style="padding: 8px 0; color: #333;"><span style="background: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 12px; font-size: 12px;">${courrier.direction}</span></td></tr>
-        <tr><td style="padding: 8px 0; color: #666;"><strong>Émetteur:</strong></td><td style="padding: 8px 0; color: #333;">${courrier.emitter || 'Non spécifié'}</td></tr>
-        <tr><td style="padding: 8px 0; color: #666;"><strong>Destinataire:</strong></td><td style="padding: 8px 0; color: #333;">${courrier.recipient || 'Non spécifié'}</td></tr>
-        <tr><td style="padding: 8px 0; color: #666;"><strong>Date de réception:</strong></td><td style="padding: 8px 0; color: #333;">${courrier.receptionDate ? new Date(courrier.receptionDate).toLocaleDateString('fr-FR') : (courrier.created_at ? new Date(courrier.created_at).toLocaleDateString('fr-FR') : 'Non spécifiée')}</td></tr>
-      </table>
-    </div>
-  </div>
-  
-  <!-- Footer -->
-  <div style="background: #f8f9fa; padding: 20px; border-top: 1px solid #e9ecef; text-align: center;">
-    <p style="color: #adb5bd; font-size: 12px; margin: 0;">
-      <em>WhatATool - Votre solution de gestion documentaire</em><br>
-      <span style="font-size: 10px; color: #868e96;">© DECRESSAC Nicolas @2025</span>
-    </p>
-  </div>
-</div>`;
+  const getDefaultMessage = (): string => {
+    // Plus de template HTML côté frontend - le backend gère tout
+    return "";
   };
 
   const getDefaultSubject = (courrier: ICourrier | null, isBulkMode: boolean, count: number): string => {
@@ -121,7 +47,7 @@ function EmailModal({
   const [formData, setFormData] = useState({
     to: "",
     subject: getDefaultSubject(courrier, bulkMode, selectedCount),
-    message: getDefaultMessage(courrier, bulkMode, selectedCount)
+    message: getDefaultMessage()
   });
   const [error, setError] = useState<string>("");
 
@@ -131,7 +57,7 @@ function EmailModal({
       setFormData({
         to: "",
         subject: getDefaultSubject(courrier, bulkMode, selectedCount),
-        message: getDefaultMessage(courrier, bulkMode, selectedCount)
+        message: getDefaultMessage()
       });
     }
   }, [isVisible, courrier, bulkMode, selectedCount]);
@@ -208,7 +134,7 @@ function EmailModal({
       setFormData({
         to: "",
         subject: getDefaultSubject(courrier, bulkMode, selectedCount),
-        message: getDefaultMessage(courrier, bulkMode, selectedCount)
+        message: getDefaultMessage()
       });
       setError("");
       onClose();
@@ -251,7 +177,7 @@ function EmailModal({
     setFormData({
       to: "",
       subject: getDefaultSubject(courrier, bulkMode, selectedCount),
-      message: getDefaultMessage(courrier, bulkMode, selectedCount)
+      message: getDefaultMessage()
     });
     setError("");
     onClose();
@@ -335,15 +261,15 @@ function EmailModal({
               />
             </div>
 
-            {/* Message */}
+            {/* Personal Note */}
             <div className="formGroup">
               <label htmlFor="emailMessage" className="formLabel">
                 <MdMessage className="labelIcon" />
-                Message personnalisé
+                Note personnelle
               </label>
               <textarea
                 id="emailMessage"
-                placeholder="Modifier ce message ou laisser tel quel..."
+                placeholder="Ajoutez une note personnelle à votre envoi (optionnel)..."
                 value={formData.message}
                 onChange={(e) => handleInputChange('message', e.target.value)}
                 className="formTextarea"
@@ -393,8 +319,8 @@ function EmailModal({
             <span className="infoIcon">ℹ️</span>
             <p>
               {bulkMode 
-                ? `Les ${selectedCount} courriers seront envoyés en pièces jointes dans un seul email.`
-                : "Le courrier sera envoyé en pièce jointe. Un email avec les détails du document sera automatiquement généré si aucun message personnalisé n'est fourni."
+                ? `Les ${selectedCount} courriers seront envoyés en pièces jointes dans un seul email avec un modèle automatique.`
+                : "Le courrier sera envoyé en pièce jointe avec un modèle d'email automatique. Votre note personnelle sera ajoutée si elle est renseignée."
               }
             </p>
           </div>
