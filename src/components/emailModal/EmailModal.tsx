@@ -34,40 +34,81 @@ function EmailModal({
   
   const getDefaultMessage = (courrier: ICourrier | null, isBulkMode: boolean, count: number): string => {
     if (isBulkMode) {
-      return `Bonjour,
-
-Veuillez trouver ci-joints les ${count} courriers sélectionnés.
-
-Ces documents ont été traités et organisés via WhatATool.
-
-Cordialement,
-WhatATool
-
---
-WhatATool - Votre solution de gestion documentaire
-© DECRESSAC Nicolas @2025`;
+      return `<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+  <!-- Header -->
+  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+      <div style="width: 32px; height: 32px; background: #26d0ce; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px;">W</div>
+      <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 300;">WhatATool</h1>
+    </div>
+    <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0 0; font-size: 14px;">Système de gestion documentaire</p>
+  </div>
+  
+  <!-- Content -->
+  <div style="padding: 30px;">
+    <h2 style="color: #333; margin: 0 0 20px 0; font-size: 20px; font-weight: 400;">Envoi groupé: ${count} courrier${count > 1 ? 's' : ''}</h2>
+    
+    <p style="color: #666; line-height: 1.6; margin-bottom: 25px;">Bonjour,</p>
+    
+    <p style="color: #666; line-height: 1.6; margin-bottom: 25px;">Veuillez trouver ci-joints les ${count} courriers sélectionnés.</p>
+    
+    <div style="background: #f0f8ff; border-left: 4px solid #26d0ce; padding: 20px; border-radius: 6px; margin: 25px 0;">
+      <p style="margin: 0; color: #333; font-weight: 500;">📦 Ces documents ont été traités et organisés via WhatATool.</p>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <div style="background: #f8f9fa; padding: 20px; border-top: 1px solid #e9ecef; text-align: center;">
+    <p style="color: #adb5bd; font-size: 12px; margin: 0;">
+      <em>WhatATool - Votre solution de gestion documentaire</em><br>
+      <span style="font-size: 10px; color: #868e96;">© DECRESSAC Nicolas @2025</span>
+    </p>
+  </div>
+</div>`;
     }
     
     if (!courrier) return "";
     
-    return `Bonjour,
-
-Veuillez trouver ci-joint le courrier: ${courrier.fileName}
-
-Détails du courrier:
-- Type: ${courrier.kind || 'Non spécifié'}
-- Département: ${courrier.department || 'Non spécifié'}
-- Direction: ${courrier.direction}
-- Émetteur: ${courrier.emitter || 'Non spécifié'}
-- Destinataire: ${courrier.recipient || 'Non spécifié'}
-- Date d'ajout: ${courrier.created_at ? new Date(courrier.created_at).toLocaleDateString('fr-FR') : 'Non spécifiée'}
-
-Cordialement,
-WhatATool
-
---
-WhatATool - Votre solution de gestion documentaire
-© DECRESSAC Nicolas @2025`;
+    return `<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+  <!-- Header -->
+  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+      <div style="width: 32px; height: 32px; background: #26d0ce; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px;">W</div>
+      <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 300;">WhatATool</h1>
+    </div>
+    <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0 0; font-size: 14px;">Système de gestion documentaire</p>
+  </div>
+  
+  <!-- Content -->
+  <div style="padding: 30px;">
+    <h2 style="color: #333; margin: 0 0 20px 0; font-size: 20px; font-weight: 400;">Courrier: ${courrier.fileName}</h2>
+    
+    <p style="color: #666; line-height: 1.6; margin-bottom: 25px;">Bonjour,</p>
+    
+    <p style="color: #666; line-height: 1.6; margin-bottom: 25px;">Veuillez trouver ci-joint le courrier demandé.</p>
+    
+    <!-- Details Card -->
+    <div style="background: #f8f9fa; border-left: 4px solid #667eea; padding: 20px; border-radius: 6px; margin: 25px 0;">
+      <h3 style="margin: 0 0 15px 0; color: #495057; font-size: 16px; font-weight: 500;">📋 Détails du courrier</h3>
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr><td style="padding: 8px 0; color: #666; width: 120px;"><strong>Type:</strong></td><td style="padding: 8px 0; color: #333;">${courrier.kind || 'Non spécifié'}</td></tr>
+        <tr><td style="padding: 8px 0; color: #666;"><strong>Département:</strong></td><td style="padding: 8px 0; color: #333;">${courrier.department || 'Non spécifié'}</td></tr>
+        <tr><td style="padding: 8px 0; color: #666;"><strong>Direction:</strong></td><td style="padding: 8px 0; color: #333;"><span style="background: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 12px; font-size: 12px;">${courrier.direction}</span></td></tr>
+        <tr><td style="padding: 8px 0; color: #666;"><strong>Émetteur:</strong></td><td style="padding: 8px 0; color: #333;">${courrier.emitter || 'Non spécifié'}</td></tr>
+        <tr><td style="padding: 8px 0; color: #666;"><strong>Destinataire:</strong></td><td style="padding: 8px 0; color: #333;">${courrier.recipient || 'Non spécifié'}</td></tr>
+        <tr><td style="padding: 8px 0; color: #666;"><strong>Date de réception:</strong></td><td style="padding: 8px 0; color: #333;">${courrier.receptionDate ? new Date(courrier.receptionDate).toLocaleDateString('fr-FR') : (courrier.created_at ? new Date(courrier.created_at).toLocaleDateString('fr-FR') : 'Non spécifiée')}</td></tr>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <div style="background: #f8f9fa; padding: 20px; border-top: 1px solid #e9ecef; text-align: center;">
+    <p style="color: #adb5bd; font-size: 12px; margin: 0;">
+      <em>WhatATool - Votre solution de gestion documentaire</em><br>
+      <span style="font-size: 10px; color: #868e96;">© DECRESSAC Nicolas @2025</span>
+    </p>
+  </div>
+</div>`;
   };
 
   const getDefaultSubject = (courrier: ICourrier | null, isBulkMode: boolean, count: number): string => {
@@ -106,26 +147,53 @@ WhatATool - Votre solution de gestion documentaire
   };
 
   const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Regex plus robuste pour la validation d'email
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    
+    // Vérifications supplémentaires
+    if (email.length > 254) return false; // Longueur maximale d'un email
+    if (email.includes('..')) return false; // Pas de points consécutifs
+    if (email.startsWith('.') || email.endsWith('.')) return false; // Pas de point au début ou à la fin
+    
     return emailRegex.test(email);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validation
+    // Reset les erreurs précédentes
+    setError("");
+    
+    // Validation renforcée
     if (!formData.to.trim()) {
       setError("L'adresse email du destinataire est requise");
       return;
     }
     
     if (!validateEmail(formData.to.trim())) {
-      setError("L'adresse email n'est pas valide");
+      setError("L'adresse email n'est pas valide. Veuillez vérifier le format (ex: nom@domaine.com)");
       return;
     }
     
     if (!formData.subject.trim()) {
       setError("Le sujet est requis");
+      return;
+    }
+    
+    if (formData.subject.trim().length > 200) {
+      setError("Le sujet ne peut pas dépasser 200 caractères");
+      return;
+    }
+    
+    // Validation pour le mode bulk
+    if (bulkMode && selectedCount === 0) {
+      setError("Aucun courrier sélectionné pour l'envoi groupé");
+      return;
+    }
+    
+    // Validation pour le mode simple
+    if (!bulkMode && !courrier) {
+      setError("Aucun courrier à envoyer");
       return;
     }
     
@@ -144,8 +212,38 @@ WhatATool - Votre solution de gestion documentaire
       });
       setError("");
       onClose();
-    } catch (error) {
-      // Error will be handled by parent component
+    } catch (error: unknown) {
+      // Gestion d'erreur locale dans le modal ET propagation au parent
+      let errorMessage = "Erreur lors de l'envoi de l'email";
+      
+      if (error instanceof Error) {
+        // Gestion spécifique des erreurs réseau et timeout
+        if (error.name === 'NetworkError' || error.message.includes('fetch')) {
+          errorMessage = "Erreur de connexion. Vérifiez votre connexion internet et réessayez.";
+        } else if (error.message.includes('timeout')) {
+          errorMessage = "L'envoi a pris trop de temps. Réessayez dans quelques instants.";
+        } else if (error.message.includes('401') || error.message.includes('unauthorized')) {
+          errorMessage = "Session expirée. Veuillez vous reconnecter.";
+        } else if (error.message.includes('403') || error.message.includes('forbidden')) {
+          errorMessage = "Vous n'avez pas l'autorisation d'envoyer cet email.";
+        } else if (error.message.includes('404')) {
+          errorMessage = "Courrier non trouvé ou supprimé.";
+        } else if (error.message.includes('413') || error.message.includes('too large')) {
+          errorMessage = "Le courrier est trop volumineux pour être envoyé par email.";
+        } else if (error.message.includes('503') || error.message.includes('email non configuré')) {
+          errorMessage = "Service email temporairement indisponible. Contactez l'administrateur.";
+        } else {
+          errorMessage = error.message;
+        }
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+      
+      // Afficher l'erreur dans le modal pour que l'utilisateur la voie
+      setError(errorMessage);
+      
+      // Propager l'erreur au composant parent pour les notifications globales
+      throw error;
     }
   };
 

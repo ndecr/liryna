@@ -133,11 +133,15 @@ function ListeCourriers(): ReactElement {
 
   const handleDownload = async (courrierid: number) => {
     try {
+      // Trouver le courrier pour obtenir son fileName
+      const courrier = courriers.find(c => c.id === courrierid);
+      const fileName = courrier?.fileName || 'courrier.pdf';
+      
       const blob = await downloadCourrier(courrierid);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'courrier.pdf';
+      a.download = fileName;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -220,12 +224,52 @@ function ListeCourriers(): ReactElement {
     }
     
     try {
-      // TODO: Implement bulk download API call
-      console.log('Bulk download for courriers:', Array.from(selectedCourriers));
-      showErrorNotification('Fonctionnalité en cours de développement', 'info');
+      const courrierIds = Array.from(selectedCourriers);
+      
+      const response = await fetch('/api/courriers/download-bulk', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({ courrierIds })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Erreur lors du téléchargement');
+      }
+      
+      // Créer un blob avec la réponse
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      
+      // Extraire le nom de fichier depuis les headers si disponible
+      const contentDisposition = response.headers.get('Content-Disposition');
+      let fileName = `courriers_${new Date().toISOString().slice(0, 10)}.zip`;
+      
+      if (contentDisposition) {
+        const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]*)(.*?)\2|[^;\n]*)/);
+        if (fileNameMatch && fileNameMatch[3]) {
+          fileName = fileNameMatch[3];
+        }
+      }
+      
+      // Télécharger le fichier
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      showErrorNotification(`Archive ZIP téléchargée: ${courrierIds.length} courrier${courrierIds.length > 1 ? 's' : ''}`, 'info');
+      setSelectedCourriers(new Set()); // Clear selection after successful download
     } catch (error: unknown) {
       logError('handleBulkDownload', error);
-      showErrorNotification('Erreur lors du téléchargement groupé');
+      const errorMessage = error instanceof Error ? error.message : 'Erreur lors du téléchargement groupé';
+      showErrorNotification(errorMessage);
     }
   };
 
@@ -247,14 +291,35 @@ function ListeCourriers(): ReactElement {
     setBulkEmailModal(prev => ({ ...prev, isLoading: true }));
     
     try {
-      // TODO: Implement bulk email API call
-      console.log('Bulk email for courriers:', bulkEmailModal.courriers.map(c => c.id), 'with data:', emailData);
-      showErrorNotification('Email groupé envoyé avec succès !', 'info');
+      const courrierIds = bulkEmailModal.courriers.map(c => c.id);
+      
+      const response = await fetch('/api/courriers/send-bulk-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({ 
+          courrierIds, 
+          to: emailData.to,
+          subject: emailData.subject,
+          message: emailData.message
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Erreur lors de l\'envoi');
+      }
+      
+      const result = await response.json();
+      showErrorNotification(`Email groupé envoyé avec succès: ${result.data.courriersCount} courrier${result.data.courriersCount > 1 ? 's' : ''}`, 'info');
       setBulkEmailModal({ visible: false, courriers: [], isLoading: false });
       setSelectedCourriers(new Set()); // Clear selection after successful send
     } catch (error: unknown) {
       logError('handleSendBulkEmail', error);
-      showErrorNotification('Erreur lors de l\'envoi groupé');
+      const errorMessage = error instanceof Error ? error.message : 'Erreur lors de l\'envoi groupé';
+      showErrorNotification(errorMessage);
     } finally {
       setBulkEmailModal(prev => ({ ...prev, isLoading: false }));
     }
@@ -437,17 +502,6 @@ function ListeCourriers(): ReactElement {
               </div>
             )}
             
-            {/* Info de sélection */}
-            {selectedCourriers.size > 0 && (
-              <div className="selectionInfo">
-                <span className="selectedCount">
-                  {selectedCourriers.size} courrier{selectedCourriers.size > 1 ? 's' : ''} sélectionné{selectedCourriers.size > 1 ? 's' : ''}
-                </span>
-                <span className="selectionHint">
-                  Les boutons télécharger et email s'adaptent à votre sélection
-                </span>
-              </div>
-            )}
             
             {/* Pagination Controls - Masquée pendant la recherche */}
             {!searchTerm.trim() && pagination && pagination.totalPages > 1 && (

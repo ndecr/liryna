@@ -32,7 +32,6 @@
   }
 
   #viewCard {
-    @include mixins.card(0.75em, dark);
     width: 200px;
     height: 200px;
 
@@ -64,6 +63,8 @@
       box-shadow: 0 0.5em 1.5em rgba(0, 0, 0, 0.1);
 
     }
+
+    @include mixins.card(0.75em, dark);
   }
 }
 
