@@ -20,8 +20,6 @@ import AOS from 'aos';
 // views
 import AuthPage from "./views/authPage/AuthPage";
 import HomeWithAuth from "./views/home/Home.tsx";
-import WebDevelopmentWithAuth from "./views/webDevelopment/WebDevelopment.tsx";
-import UtilsWithAuth from "./views/utils/Utils.tsx";
 import CourriersWithAuth from "./views/courriers/Courriers.tsx";
 import NouveauCourrierWithAuth from "./views/courriers/nouveauCourrier/NouveauCourrier.tsx";
 import ListeCourriersWithAuth from "./views/courriers/listeCourriers/ListeCourriers.tsx";
@@ -71,12 +69,10 @@ function App(): ReactElement {
         <Route path="/" element={<Navigate to="/auth" />}></Route>
         <Route path={"auth"} element={<AuthPage />}></Route>
         <Route path={"home"} element={<HomeWithAuth />}></Route>
-        <Route path={"web_dev"} element={<WebDevelopmentWithAuth />}></Route>
-        <Route path={"utils"} element={<UtilsWithAuth />}></Route>
-        <Route path={"utils/mail"} element={<CourriersWithAuth />}></Route>
-        <Route path={"utils/mail/list"} element={<ListeCourriersWithAuth />}></Route>
-        <Route path={"utils/mail/new"} element={<NouveauCourrierWithAuth />}></Route>
-        <Route path={"utils/mail/update/:id"} element={<UpdateCourrierWithAuth />}></Route>
+        <Route path={"mail"} element={<CourriersWithAuth />}></Route>
+        <Route path={"mail/list"} element={<ListeCourriersWithAuth />}></Route>
+        <Route path={"mail/new"} element={<NouveauCourrierWithAuth />}></Route>
+        <Route path={"mail/update/:id"} element={<UpdateCourrierWithAuth />}></Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       

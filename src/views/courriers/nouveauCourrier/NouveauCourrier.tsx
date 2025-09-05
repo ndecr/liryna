@@ -163,7 +163,7 @@ function NouveauCourrier(): ReactElement {
   };
 
   const handleCancel = () => {
-    navigate("/utils/mail");
+    navigate("/mail");
   };
 
   return (

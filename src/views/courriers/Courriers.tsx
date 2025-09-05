@@ -4,7 +4,7 @@ import "./courriers.scss";
 // hooks | libraries
 import { ReactElement, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { MdAdd, MdList, MdSearch, MdArchive } from "react-icons/md";
+import { MdAdd, MdList, MdArchive } from "react-icons/md";
 import { IoMail, IoMailOpen } from "react-icons/io5";
 import { FiCalendar, FiFileText } from "react-icons/fi";
 
@@ -39,25 +39,19 @@ function Courriers(): ReactElement {
 
   const actions = [
     {
-      id: 'new',
+      id: '1',
       label: 'Nouveau courrier',
       icon: <MdAdd />,
       primary: true
     },
     {
-      id: 'list',
+      id: '2',
       label: 'Liste des courriers',
       icon: <MdList />,
       primary: false
     },
     {
-      id: 'search',
-      label: 'Rechercher',
-      icon: <MdSearch />,
-      primary: false
-    },
-    {
-      id: 'archive',
+      id: '3',
       label: 'Archives',
       icon: <MdArchive />,
       primary: false
@@ -100,12 +94,12 @@ function Courriers(): ReactElement {
     event.stopPropagation();
     console.log("Action clicked:", actionId); // Debug
     console.log("Current location:", window.location.pathname); // Debug
-    if (actionId === 'new') {
+    if (actionId === '1') {
       console.log("Navigating to new courrier"); // Debug
-      navigate("/utils/mail/new");
-    } else if (actionId === 'list') {
+      navigate("/mail/new");
+    } else if (actionId === '2') {
       console.log("Navigating to list courriers"); // Debug
-      navigate("/utils/mail/list");
+      navigate("/mail/list");
     } else {
       console.log("Setting active action:", actionId); // Debug
       setActiveAction(actionId);

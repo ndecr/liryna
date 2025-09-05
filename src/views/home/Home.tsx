@@ -2,7 +2,6 @@
 import "./home.scss";
 
 // assets
-import devBackground from "../../assets/background/devSection.webp";
 import utilsBackground from "../../assets/background/utilsSection.webp";
 
 // hooks | library
@@ -22,19 +21,11 @@ function Home(): ReactElement {
       <main>
         <div className={"mainWrapper"}>
           <section className={"utilsSection"}>
-            <Link to={"/utils"}>
+            <Link to={"/mail"}>
               <figure>
                 <img src={utilsBackground} alt={"Bureau de travail"} />
               </figure>
-              <h2>Utilitaires</h2>
-            </Link>
-          </section>
-          <section className={"webDevSection"}>
-            <Link to={"/web_dev"}>
-              <figure>
-                <img src={devBackground} alt={"Éditeur de code"} />
-              </figure>
-              <h2>Développement Web</h2>
+              <h2>Gestion des courriers</h2>
             </Link>
           </section>
         </div>

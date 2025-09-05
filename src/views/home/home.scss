@@ -2,12 +2,19 @@
 @use "../../utils/styles/variables" as vars;
 
 #home {
-  @include mixins.pageContainer;
+  min-height: calc(100dvh - 6dvh - 4dvh); // 100dvh - header - subnav
   background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 50%, #f0f3f7 100%);
-  
-  main {
-    @include mixins.mainContentExpanding;
-    padding-top: 6dvh; // Header height
+  padding: 1em 0.5em;
+  margin-top: calc(6dvh + 4dvh); // Compenser header + subnav fixe
+
+  // Responsive tablette
+  @media (min-width: vars.$tabletWidth) {
+    padding: 1.5em 1em;
+  }
+
+  // Responsive desktop
+  @media (min-width: vars.$desktopWidth) {
+    padding: 2em 1em;
   }
 
   .mainWrapper {
@@ -33,9 +40,10 @@
     }
   }
 
-  .utilsSection, .webDevSection {
+  .utilsSection,
+  .webDevSection {
     flex: 1; // Equal space distribution
-    
+
     a {
       display: block;
       text-decoration: none;
@@ -44,7 +52,7 @@
       box-shadow: 0 0.25em 1.25em rgba(0, 0, 0, 0.08); // Lighter shadow on mobile
       overflow: hidden;
       transition: all 0.3s ease;
-      
+
       &:hover {
         transform: translateY(-0.25em); // Less movement on mobile
         box-shadow: 0 0.5em 1.875em rgba(0, 0, 0, 0.12);
@@ -58,18 +66,18 @@
       @media (min-width: vars.$tabletWidth) {
         border-radius: 20px; // Larger radius for tablet+
         box-shadow: 0 0.625em 2.5em rgba(0, 0, 0, 0.1);
-        
+
         &:hover {
           transform: translateY(-0.5em); // More movement on larger screens
           box-shadow: 0 1.25em 3.75em rgba(0, 0, 0, 0.15);
         }
       }
     }
-    
+
     figure {
       margin: 0;
       overflow: hidden;
-      
+
       img {
         width: 100%;
         height: 12.5em; // Mobile first - smaller height
@@ -87,7 +95,7 @@
         }
       }
     }
-    
+
     h2 {
       padding: 1.5em; // Mobile first - less padding
       margin: 0;

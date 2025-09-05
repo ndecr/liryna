@@ -114,7 +114,7 @@ function ListeCourriers(): ReactElement {
   };
 
   const handleBackClick = () => {
-    navigate("/utils/mail");
+    navigate("/mail");
   };
 
   const formatDate = (dateString?: string): string => {
