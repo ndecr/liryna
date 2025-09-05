@@ -33,7 +33,7 @@ import EmailModal from "../../../components/emailModal/EmailModal.tsx";
 import { CourrierContext } from "../../../context/courrier/CourrierContext.tsx";
 
 // services
-import { downloadCourrierService, sendCourrierEmailService } from "../../../API/services/courrier.service.ts";
+import { downloadCourrierService, sendCourrierEmailService, downloadBulkCourriersService, sendBulkCourrierEmailService } from "../../../API/services/courrier.service.ts";
 
 // utils
 import { 
@@ -226,34 +226,12 @@ function ListeCourriers(): ReactElement {
     try {
       const courrierIds = Array.from(selectedCourriers);
       
-      const response = await fetch('/api/courriers/download-bulk', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        },
-        body: JSON.stringify({ courrierIds })
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Erreur lors du téléchargement');
-      }
-      
-      // Créer un blob avec la réponse
-      const blob = await response.blob();
+      // Utiliser le service au lieu de fetch direct
+      const blob = await downloadBulkCourriersService(courrierIds);
       const url = window.URL.createObjectURL(blob);
       
-      // Extraire le nom de fichier depuis les headers si disponible
-      const contentDisposition = response.headers.get('Content-Disposition');
-      let fileName = `courriers_${new Date().toISOString().slice(0, 10)}.zip`;
-      
-      if (contentDisposition) {
-        const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]*)(.*?)\2|[^;\n]*)/);
-        if (fileNameMatch && fileNameMatch[3]) {
-          fileName = fileNameMatch[3];
-        }
-      }
+      // Nom de fichier par défaut
+      const fileName = `courriers_${new Date().toISOString().slice(0, 10)}.zip`;
       
       // Télécharger le fichier
       const a = document.createElement('a');
@@ -293,27 +271,9 @@ function ListeCourriers(): ReactElement {
     try {
       const courrierIds = bulkEmailModal.courriers.map(c => c.id);
       
-      const response = await fetch('/api/courriers/send-bulk-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        },
-        body: JSON.stringify({ 
-          courrierIds, 
-          to: emailData.to,
-          subject: emailData.subject,
-          message: emailData.message
-        })
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Erreur lors de l\'envoi');
-      }
-      
-      const result = await response.json();
-      showErrorNotification(`Email groupé envoyé avec succès: ${result.data.courriersCount} courrier${result.data.courriersCount > 1 ? 's' : ''}`, 'info');
+      // Utiliser le service au lieu de fetch direct
+      const result = await sendBulkCourrierEmailService(courrierIds, emailData);
+      showErrorNotification(`Email groupé envoyé avec succès: ${result.courriersCount} courrier${result.courriersCount > 1 ? 's' : ''}`, 'info');
       setBulkEmailModal({ visible: false, courriers: [], isLoading: false });
       setSelectedCourriers(new Set()); // Clear selection after successful send
     } catch (error: unknown) {

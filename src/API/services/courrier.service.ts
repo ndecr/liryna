@@ -1,5 +1,6 @@
 import { getRequest, postRequest, postFormDataRequest, patchRequest, deleteRequest } from "../APICalls.ts";
 import { AxiosResponse } from "axios";
+import axios from "axios";
 import { ICourrier, ICourrierUploadData, IApiResponse, ICourrierSearchParams, IPagination, ICourrierStats } from "../../utils/types/courrier.types.ts";
 import { courrierModel } from "../models/courrier.model.ts";
 
@@ -138,4 +139,35 @@ export const getCourrierFieldOptionsService = async (field: 'kind' | 'department
   }
   
   throw new Error(response.data.message || "Failed to get field options");
+};
+
+export const downloadBulkCourriersService = async (courrierIds: number[]): Promise<Blob> => {
+  // Utiliser axios directement pour les téléchargements POST avec responseType blob
+  const token = localStorage.getItem('authToken');
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { Authorization: `Bearer ${token}` })
+    },
+    responseType: 'blob' as const
+  };
+  
+  const response = await axios.post(`/courriers/download-bulk`, { courrierIds }, config);
+  return response.data;
+};
+
+export const sendBulkCourrierEmailService = async (
+  courrierIds: number[],
+  emailData: { to: string; subject: string; message: string }
+): Promise<{ courriersCount: number; messageId: string }> => {
+  const response: AxiosResponse<IApiResponse<{ courriersCount: number; messageId: string }>> = await postRequest(`/courriers/send-bulk-email`, {
+    courrierIds,
+    ...emailData
+  });
+  
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+  
+  throw new Error(response.data.message || "Failed to send bulk courrier email");
 };
