@@ -207,6 +207,7 @@
       
       .courriersGrid {
         width: 100%;
+        table-layout: fixed; // Force les largeurs fixes
         border-collapse: collapse;
         font-size: 0.9em;
         
@@ -226,6 +227,17 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             background: vars.$greyBackground; // Background pour le sticky
+            
+            // Largeurs fixes pour éviter le redimensionnement
+            &:nth-child(1) { width: 3.5%; } // Checkbox
+            &:nth-child(2) { width: 22%; }  // Nom du fichier
+            &:nth-child(3) { width: 8%; }   // Direction
+            &:nth-child(4) { width: 12%; }  // Type
+            &:nth-child(5) { width: 12%; }  // Service
+            &:nth-child(6) { width: 12%; }  // Expéditeur
+            &:nth-child(7) { width: 10%; }  // Date courrier
+            &:nth-child(8) { width: 15%; }  // Description
+            &:nth-child(9) { width: 5.5%; } // Actions
             
             &.dateColumn {
               min-width: 8em;
@@ -438,21 +450,25 @@
           
           thead th {
             padding: 1.25em 1em;
+            
+            // Ajustement des largeurs sur tablette
+            &:nth-child(2) { width: 25%; }  // Plus d'espace pour le nom de fichier
+            &:nth-child(8) { width: 18%; }  // Plus d'espace pour la description
           }
           
           tbody td {
             padding: 1em;
             
             &.fileName .fileNameWrapper .fileNameText {
-              max-width: 15em;
+              max-width: none; // Utilise toute la largeur allouée
             }
             
             &.kind, &.department, &.emitter {
-              max-width: 10em;
+              max-width: none; // Utilise toute la largeur allouée
             }
             
             &.description {
-              max-width: 15em;
+              max-width: none; // Utilise toute la largeur allouée
             }
           }
         }
@@ -468,17 +484,30 @@
         .courriersGrid {
           font-size: 1em;
           
+          thead th {
+            // Ajustement optimal des largeurs sur desktop
+            &:nth-child(1) { width: 3%; }   // Checkbox
+            &:nth-child(2) { width: 28%; }  // Nom du fichier - plus d'espace
+            &:nth-child(3) { width: 7%; }   // Direction - moins d'espace
+            &:nth-child(4) { width: 10%; }  // Type
+            &:nth-child(5) { width: 10%; }  // Service
+            &:nth-child(6) { width: 12%; }  // Expéditeur
+            &:nth-child(7) { width: 8%; }   // Date courrier
+            &:nth-child(8) { width: 20%; }  // Description - plus d'espace
+            &:nth-child(9) { width: 2%; }   // Actions - minimal
+          }
+          
           tbody td {
             &.fileName .fileNameWrapper .fileNameText {
-              max-width: 18em;
+              max-width: none; // Utilise toute la largeur allouée
             }
             
             &.kind, &.department, &.emitter {
-              max-width: 12em;
+              max-width: none; // Utilise toute la largeur allouée
             }
             
             &.description {
-              max-width: 20em;
+              max-width: none; // Utilise toute la largeur allouée
             }
           }
         }
