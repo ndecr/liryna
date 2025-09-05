@@ -2,10 +2,16 @@
 @use "../../../utils/styles/mixins" as mixins;
 
 #updateCourrier {
-  min-height: calc(100dvh - 6dvh - 4dvh); // 100dvh - header - subnav
+  min-height: calc(100dvh - 6dvh); // 100dvh - header seulement
   background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 50%, #f0f3f7 100%);
   padding: 1em 0.5em;
-  margin-top: calc(6dvh + 4dvh); // Compenser header + subnav fixe
+  margin-top: 6dvh; // Compenser header seulement (SubNav masqué en mobile)
+  
+  // En desktop, on remet les valeurs avec SubNav
+  @media (min-width: vars.$tabletWidth) {
+    min-height: calc(100dvh - 6dvh - 4dvh); // Avec SubNav
+    margin-top: calc(6dvh + 4dvh); // Avec SubNav
+  }
 
   // Responsive tablette
   @media (min-width: vars.$tabletWidth) {

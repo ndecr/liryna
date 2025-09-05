@@ -122,7 +122,7 @@ function UpdateCourrier(): ReactElement {
         logError('loadCourrierForEdit', error);
         const errorMessage = handleCourrierLoadError(error);
         showErrorNotification(errorMessage);
-        navigate("/utils/mail/list");
+        navigate("/mail/list");
       } finally {
         setLoadingCourrier(false);
       }
@@ -189,7 +189,7 @@ function UpdateCourrier(): ReactElement {
       };
 
       await updateCourrier(courrier.id, updateData);
-      navigate("/utils/mail/list");
+      navigate("/mail/list");
       showErrorNotification('Courrier modifié avec succès', 'info');
     } catch (error: unknown) {
       logError('handleSubmit - updateCourrier', error);
@@ -199,7 +199,7 @@ function UpdateCourrier(): ReactElement {
   };
 
   const handleCancel = () => {
-    navigate("/utils/mail/list");
+    navigate("/mail/list");
   };
 
   if (loadingCourrier) {
@@ -227,7 +227,7 @@ function UpdateCourrier(): ReactElement {
           <div className="updateCourrierContainer">
             <div className="errorState">
               <p>Courrier non trouvé</p>
-              <Button style="green" onClick={() => navigate("/utils/mail/list")}>
+              <Button style="green" onClick={() => navigate("/mail/list")}>
                 Retour à la liste
               </Button>
             </div>

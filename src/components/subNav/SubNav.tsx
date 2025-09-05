@@ -32,12 +32,7 @@ export default function SubNav(): ReactElement | null {
   return (
     <div 
       id="subNav" 
-      className={`subNav ${activeSection}`}
-      style={{
-        background: 'rgba(38, 208, 206, 0.05)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)'
-      }}
+      className={`subNav`}
     >
       <div className="subNavContainer">
         {sections.map((app: ISection) => (

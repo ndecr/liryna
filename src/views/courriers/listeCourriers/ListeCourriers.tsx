@@ -174,7 +174,7 @@ function ListeCourriers(): ReactElement {
   };
 
   const handleEdit = (courrierid: number) => {
-    navigate(`/utils/mail/update/${courrierid}`);
+    navigate(`/mail/update/${courrierid}`);
   };
 
   const handleEmail = (courrierid: number) => {

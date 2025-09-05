@@ -1,83 +1,98 @@
 @use "../../utils/styles/variables" as vars;
 
 // ===================
-// SUB-NAVIGATION
+// BASE SUBNAV STYLES - COPIE EXACTE DU HEADER
 // ===================
-div#subNav {
+#subNav {
   position: fixed;
-  top: 6dvh; /* Collé au header */
-  width: 100%;
+  top: 6dvh; /* Collé sous le header */
+  left: 0;
+  right: 0;
+  z-index: 99; /* Juste en dessous du header */
   height: 4dvh;
-  z-index: 99; /* Slightly lower than header's z-index (100) */
-  /* FORCE avec sélecteur plus spécifique */
-  background: rgba(vars.$utilsPrimary, 0.05) !important; 
-  backdrop-filter: vars.$blurMedium !important; 
-  -webkit-backdrop-filter: vars.$blurMedium !important;
-  box-shadow: vars.$shadowMedium !important;
+  /* FOND OPAQUE COMME LES PAGES PRINCIPALES */
+  background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 50%, #f0f3f7 100%); /* MÊME fond que les main */
+  border-bottom: 1px solid vars.$borderColor; /* Bordure subtile */
+  transition: all vars.$transitionSmooth;
   
-  &.utils {
-    background: rgba(vars.$utilsPrimary, 0.05) !important; 
-  }
-  
-  &.webdev {
-    background: rgba(vars.$webdevPrimary, 0.05) !important; 
+  /* MASQUE EN MOBILE */
+  @media (max-width: vars.$tabletWidth) {
+    display: none !important;
   }
 }
 
-/* Sélecteur encore plus spécifique au cas où */
-div#subNav.subNav.utils {
-  background: rgba(vars.$utilsPrimary, 0.05) !important; 
-}
-
-div#subNav.subNav {
-  background: rgba(vars.$utilsPrimary, 0.05) !important; 
-}
-
+// ===================
+// SUBNAV CONTAINER - COPIE EXACTE DU HEADER CONTAINER
+// ===================
 .subNavContainer {
-  max-width: 75em;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 1em;
-  padding: 0 1em;
-  height: 4dvh;
-  overflow: hidden;
-  background: transparent !important; /* Force la transparence du container */
+  max-width: 1440px; /* IDENTIQUE au header */
+  margin: 0 auto; /* IDENTIQUE au header */
+  display: flex; /* IDENTIQUE au header */
+  align-items: center; /* IDENTIQUE au header */
+  justify-content: flex-start; /* Alignement à gauche pour les items */
+  padding: 0 1em; /* IDENTIQUE au header */
+  height: 100%; /* IDENTIQUE au header - prend toute la hauteur du parent */
+  gap: 1em; /* Espacement entre les items */
 }
 
+// ===================
+// SUBNAV ITEMS - STYLE SIMILAIRE AUX NAV ITEMS DU HEADER
+// ===================
 .subNavItem {
   display: flex;
-  gap: 0.4rem;
-  padding: 0.5em 1em;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.2em .5em;
   border: none;
   background: transparent;
-  color: vars.$fontColorSecondary;
-  font-size: 0.85rem;
+  color: vars.$navTextColor; /* IDENTIQUE au header */
+  font-size: 0.95rem;
   font-weight: 500;
-  border-radius: 20px;
-  transition: all vars.$transitionFast;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all vars.$transitionSmooth; /* IDENTIQUE au header */
+  position: relative;
+  overflow: hidden;
   white-space: nowrap;
   flex-shrink: 0;
-  cursor: pointer;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    transition: left vars.$transitionMedium;
+    z-index: -1;
+  }
   
   &:hover:not(.active) {
-    background: rgba(255, 255, 255, 0.3);
-    transform: translateY(-1px);
+    transform: translateY(-0.125em); /* IDENTIQUE au header */
+    background: rgba(255, 255, 255, 0.1); /* IDENTIQUE au header */
+    box-shadow: vars.$shadowLight; /* IDENTIQUE au header */
   }
   
   &.active {
-    color: vars.$whiteBackground;
+    color: vars.$navTextColorActive; /* IDENTIQUE au header */
+    transform: translateY(-0.125em); /* IDENTIQUE au header */
+    box-shadow: vars.$shadowMedium; /* IDENTIQUE au header */
     
-    #subNav.utils & {
-      background: vars.$utilsPrimary;
-    }
-    
-    #subNav.webdev & {
-      background: vars.$webdevPrimary;
+    /* IDENTIQUE aux styles du header */
+    background: vars.$utilsGradient;
+    &::before {
+      background: vars.$utilsGradientReverse;
+      left: 0;
     }
   }
   
   .subNavIcon {
-    font-size: 1rem;
+    font-size: 1.1rem; /* IDENTIQUE au header */
+    display: flex;
+    align-items: center;
+  }
+  
+  .subNavText {
+    white-space: nowrap;
   }
 }

@@ -221,7 +221,7 @@
   align-items: center;
   justify-content: center;
   width: 2.5em;
-  height: 2.5em;
+  height: 1.5em;
   border: none;
   background: transparent;
   color: vars.$navTextColor;
@@ -253,7 +253,7 @@
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+  z-index: 1500; /* Au-dessus de la search bar (z-index: 1000) */
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -375,6 +375,15 @@
   &:last-child {
     margin-bottom: 0;
   }
+}
+
+.mobileSectionTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: vars.$utilsPrimary;
+  margin: 0 0 0.75rem 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .mobileNavItem {
