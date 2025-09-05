@@ -22,7 +22,7 @@ import CreatableSelectComponent from "../../../components/creatableSelect/Creata
 import { ICourrierFormData } from "../../../utils/types/courrier.types.ts";
 
 // utils
-import { handleCourrierUploadError } from "../../../utils/scripts/errorHandling.ts";
+import { handleCourrierUploadError, logError, showErrorNotification } from "../../../utils/scripts/errorHandling.ts";
 import { validateCourrierForm } from "../../../utils/scripts/courrierValidation.ts";
 import { useCourrierFieldOptions } from "../../../utils/hooks/useCourrierFieldOptions.ts";
 
@@ -134,7 +134,7 @@ function NouveauCourrier(): ReactElement {
     // Validation
     const validation = validateCourrierForm(formData);
     if (!validation.isValid) {
-      alert(validation.errorMessage);
+      showErrorNotification(validation.errorMessage, 'warning');
       return;
     }
     
@@ -153,11 +153,12 @@ function NouveauCourrier(): ReactElement {
       };
 
       await uploadCourrier(formData.fichierJoint!, uploadData);
+      showErrorNotification('Courrier créé avec succès', 'info');
       navigate("/utils/mail");
     } catch (error: unknown) {
-      console.error("Erreur lors de la création du courrier:", error);
+      logError('handleSubmit - uploadCourrier', error);
       const errorMessage = handleCourrierUploadError(error);
-      alert(errorMessage);
+      showErrorNotification(errorMessage);
     }
   };
 

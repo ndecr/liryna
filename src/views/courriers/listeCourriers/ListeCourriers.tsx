@@ -24,12 +24,24 @@ import SubNav from "../../../components/subNav/SubNav.tsx";
 import Button from "../../../components/button/Button.tsx";
 import Modal from "../../../components/modal/Modal.tsx";
 import Loader from "../../../components/loader/Loader.tsx";
+import EmailModal from "../../../components/emailModal/EmailModal.tsx";
 
 // context
 import { CourrierContext } from "../../../context/courrier/CourrierContext.tsx";
 
 // services
-import { downloadCourrierService } from "../../../API/services/courrier.service.ts";
+import { downloadCourrierService, sendCourrierEmailService } from "../../../API/services/courrier.service.ts";
+
+// utils
+import { 
+  handleCourrierLoadError, 
+  handleCourrierDownloadError, 
+  handleCourrierDeleteError, 
+  handleCourrierViewError,
+  handleCourrierEmailError,
+  logError,
+  showErrorNotification 
+} from "../../../utils/scripts/errorHandling.ts";
 
 // types
 import { ICourrier } from "../../../utils/types/courrier.types.ts";
@@ -50,6 +62,11 @@ function ListeCourriers(): ReactElement {
     pdfUrl: "",
     fileName: "",
     fileType: 'pdf'
+  });
+  const [emailModal, setEmailModal] = useState<{ visible: boolean; courrier: ICourrier | null; isLoading: boolean }>({
+    visible: false,
+    courrier: null,
+    isLoading: false
   });
 
   useEffect(() => {
@@ -76,8 +93,10 @@ function ListeCourriers(): ReactElement {
   const loadCourriers = async (page: number, limit: number = 10) => {
     try {
       await getAllCourriers(page, limit);
-    } catch (error) {
-      // Error handling via context
+    } catch (error: unknown) {
+      logError('loadCourriers', error);
+      const errorMessage = handleCourrierLoadError(error);
+      showErrorNotification(errorMessage);
     }
   };
 
@@ -114,8 +133,10 @@ function ListeCourriers(): ReactElement {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-    } catch (error) {
-      alert('Erreur lors du téléchargement du courrier');
+    } catch (error: unknown) {
+      logError('handleDownload', error);
+      const errorMessage = handleCourrierDownloadError(error);
+      showErrorNotification(errorMessage);
     }
   };
 
@@ -123,17 +144,53 @@ function ListeCourriers(): ReactElement {
     navigate(`/utils/mail/update/${courrierid}`);
   };
 
-  const handleEmail = (_courrierid: number) => {
-    // TODO: Ouvrir une modal pour envoyer par email
+  const handleEmail = (courrierid: number) => {
+    const courrier = courriers.find(c => c.id === courrierid);
+    
+    if (courrier) {
+      setEmailModal({
+        visible: true,
+        courrier,
+        isLoading: false
+      });
+    } else {
+      console.error('Courrier not found for ID:', courrierid);
+    }
+  };
+
+  const handleSendEmail = async (emailData: { to: string; subject: string; message: string }) => {
+    if (!emailModal.courrier) return;
+    
+    setEmailModal(prev => ({ ...prev, isLoading: true }));
+    
+    try {
+      await sendCourrierEmailService(emailModal.courrier.id, emailData);
+      showErrorNotification('Email envoyé avec succès !', 'info');
+      setEmailModal({ visible: false, courrier: null, isLoading: false });
+    } catch (error: unknown) {
+      logError('handleSendEmail', error);
+      const errorMessage = handleCourrierEmailError(error);
+      showErrorNotification(errorMessage);
+    } finally {
+      setEmailModal(prev => ({ ...prev, isLoading: false }));
+    }
+  };
+
+  const closeEmailModal = () => {
+    setEmailModal({ visible: false, courrier: null, isLoading: false });
   };
 
   const handleDelete = async (courrierid: number) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer ce courrier ?')) {
       try {
         await deleteCourrier(courrierid);
-        loadCourriers(currentPage);
-      } catch (error) {
-        alert('Erreur lors de la suppression du courrier');
+        // Recharger les courriers après suppression réussie
+        await loadCourriers(currentPage);
+        showErrorNotification('Courrier supprimé avec succès', 'info');
+      } catch (error: unknown) {
+        logError('handleDelete', error);
+        const errorMessage = handleCourrierDeleteError(error);
+        showErrorNotification(errorMessage);
       }
     }
   };
@@ -154,8 +211,10 @@ function ListeCourriers(): ReactElement {
         fileName: courrier.fileName,
         fileType: isImage ? 'image' : 'pdf'
       });
-    } catch (error) {
-      alert('Erreur lors du chargement du PDF pour visualisation');
+    } catch (error: unknown) {
+      logError('handleViewPdf', error);
+      const errorMessage = handleCourrierViewError(error);
+      showErrorNotification(errorMessage);
     }
   };
 
@@ -304,7 +363,6 @@ function ListeCourriers(): ReactElement {
                       <th>Type</th>
                       <th>Service</th>
                       <th>Expéditeur</th>
-                      <th className="dateColumn">Date réception</th>
                       <th className="dateColumn">Date courrier</th>
                       <th>Description</th>
                       <th>Actions</th>
@@ -355,7 +413,6 @@ function ListeCourriers(): ReactElement {
                         >
                           {courrier.emitter || "N/A"}
                         </td>
-                        <td className="receptionDate">{formatDate(courrier.receptionDate)}</td>
                         <td className="courrierDate">{formatDate(courrier.courrierDate)}</td>
                         <td 
                           className="description"
@@ -469,6 +526,15 @@ function ListeCourriers(): ReactElement {
           />
         )}
       </Modal>
+
+      {/* Modale Email */}
+      <EmailModal
+        isVisible={emailModal.visible}
+        courrier={emailModal.courrier}
+        onClose={closeEmailModal}
+        onSend={handleSendEmail}
+        isLoading={emailModal.isLoading}
+      />
     </>
   );
 }

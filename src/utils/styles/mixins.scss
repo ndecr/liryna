@@ -18,6 +18,32 @@ $subnav-height: 4dvh;    // ~40px
   padding-top: calc(#{$header-height} + #{$subnav-height});
 }
 
+// ===================
+// BUTTON MIXINS
+// ===================
+
+// Mixin pour reset button
+@mixin resetButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  outline: none;
+}
+
+// ===================
+// INPUT MIXINS
+// ===================
+
+// Mixin pour base input
+@mixin inputBase {
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  font-family: inherit;
+}
+
 // Mixin générique qui détecte automatiquement si subnav existe
 @mixin fullViewport {
   // Par défaut, assume header + subnav

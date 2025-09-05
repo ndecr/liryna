@@ -23,7 +23,12 @@ import Loader from "../../../components/loader/Loader.tsx";
 import { ICourrierFormData, ICourrier } from "../../../utils/types/courrier.types.ts";
 
 // utils
-import { handleCourrierUploadError } from "../../../utils/scripts/errorHandling.ts";
+import { 
+  handleCourrierUploadError, 
+  handleCourrierLoadError, 
+  logError, 
+  showErrorNotification 
+} from "../../../utils/scripts/errorHandling.ts";
 import { validateCourrierUpdateForm } from "../../../utils/scripts/courrierValidation.ts";
 import { useCourrierFieldOptions } from "../../../utils/hooks/useCourrierFieldOptions.ts";
 
@@ -113,9 +118,10 @@ function UpdateCourrier(): ReactElement {
         setPdfUrl(url);
         setFileType(isImage ? 'image' : 'pdf');
         
-      } catch (error) {
-        console.error("Erreur lors du chargement du courrier:", error);
-        alert("Erreur lors du chargement du courrier");
+      } catch (error: unknown) {
+        logError('loadCourrierForEdit', error);
+        const errorMessage = handleCourrierLoadError(error);
+        showErrorNotification(errorMessage);
         navigate("/utils/mail/list");
       } finally {
         setLoadingCourrier(false);
@@ -184,10 +190,11 @@ function UpdateCourrier(): ReactElement {
 
       await updateCourrier(courrier.id, updateData);
       navigate("/utils/mail/list");
+      showErrorNotification('Courrier modifié avec succès', 'info');
     } catch (error: unknown) {
-      console.error("Erreur lors de la modification du courrier:", error);
+      logError('handleSubmit - updateCourrier', error);
       const errorMessage = handleCourrierUploadError(error);
-      alert(errorMessage);
+      showErrorNotification(errorMessage);
     }
   };
 
