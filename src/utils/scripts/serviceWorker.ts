@@ -18,6 +18,8 @@ interface ServiceWorkerMessage {
 
 interface ServiceWorkerResponse {
   version?: string;
+  buildVersion?: string;
+  timestamp?: number;
   success?: boolean;
 }
 
@@ -131,6 +133,43 @@ export const getServiceWorkerVersion = async (): Promise<string | null> => {
   return response?.version || null;
 };
 
+// Obtenir les informations détaillées de version
+export const getVersionInfo = async (): Promise<{
+  version: string | null;
+  buildVersion: string | null;
+  timestamp: number | null;
+} | null> => {
+  const response = await sendMessageToServiceWorker({ type: 'GET_VERSION' });
+  if (response) {
+    return {
+      version: response.version || null,
+      buildVersion: response.buildVersion || null,
+      timestamp: response.timestamp || null
+    };
+  }
+  return null;
+};
+
+// Vérifier si une nouvelle version est disponible
+export const checkForNewVersion = async (): Promise<boolean> => {
+  if (!isServiceWorkerSupported()) return false;
+
+  try {
+    const registration = await navigator.serviceWorker.getRegistration();
+    if (registration) {
+      // Forcer la vérification des mises à jour
+      await registration.update();
+      
+      // Vérifier s'il y a un nouveau worker en attente
+      return !!registration.waiting || !!registration.installing;
+    }
+  } catch (error) {
+    console.error('[SW] Failed to check for updates:', error);
+  }
+  
+  return false;
+};
+
 // Vérifier l'état de la connexion
 export const checkOnlineStatus = (): boolean => {
   return navigator.onLine;
@@ -165,12 +204,45 @@ export const addConnectionListeners = (
 const showUpdateAvailableNotification = (): void => {
   // Créer une notification personnalisée ou utiliser une modal
   const shouldUpdate = confirm(
-    'Une nouvelle version de l\'application est disponible. Voulez-vous l\'installer maintenant ?'
+    '🔄 Une nouvelle version de l\'application est disponible.\n\nVoulez-vous l\'installer maintenant pour bénéficier des dernières améliorations ?'
   );
 
   if (shouldUpdate) {
     skipWaiting();
+  } else {
+    // Proposer de rappeler plus tard
+    console.log('[PWA] Update postponed by user');
+    // Programmer une vérification dans 30 minutes
+    setTimeout(() => {
+      checkForNewVersion().then(hasUpdate => {
+        if (hasUpdate) {
+          const laterUpdate = confirm(
+            '🔄 Rappel: Une mise à jour est toujours disponible.\n\nSouhaitez-vous l\'installer maintenant ?'
+          );
+          if (laterUpdate) {
+            skipWaiting();
+          }
+        }
+      });
+    }, 30 * 60 * 1000); // 30 minutes
   }
+};
+
+// Vérification automatique périodique des mises à jour
+export const startUpdateChecker = (): (() => void) => {
+  const checkInterval = 5 * 60 * 1000; // 5 minutes
+  
+  const intervalId = setInterval(async () => {
+    const hasUpdate = await checkForNewVersion();
+    if (hasUpdate) {
+      showUpdateAvailableNotification();
+    }
+  }, checkInterval);
+  
+  // Retourner une fonction pour nettoyer l'interval
+  return () => {
+    clearInterval(intervalId);
+  };
 };
 
 // Vérifier si l'app est installée (PWA)
@@ -233,7 +305,7 @@ export const initializePWA = async (): Promise<void> => {
   }
 
   // Enregistrer le Service Worker
-  await registerServiceWorker();
+  const registration = await registerServiceWorker();
 
   // Ajouter les listeners de connexion
   addConnectionListeners(
@@ -249,6 +321,20 @@ export const initializePWA = async (): Promise<void> => {
     }
   );
 
+  // Démarrer la vérification automatique des mises à jour
+  if (registration) {
+    console.log('[PWA] Starting automatic update checker');
+    startUpdateChecker();
+    
+    // Vérification immédiate au démarrage
+    setTimeout(async () => {
+      const hasUpdate = await checkForNewVersion();
+      if (hasUpdate) {
+        showUpdateAvailableNotification();
+      }
+    }, 10000); // Attendre 10 secondes après le démarrage
+  }
+
   // Vérifier si l'app est déjà installée
   if (!isPWAInstalled()) {
     // Attendre un peu avant de proposer l'installation
@@ -257,5 +343,5 @@ export const initializePWA = async (): Promise<void> => {
     }, 5000);
   }
 
-  console.log('[PWA] PWA initialization complete');
+  console.log('[PWA] PWA initialization complete with auto-update');
 };

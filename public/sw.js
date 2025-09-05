@@ -1,7 +1,9 @@
 // Service Worker pour What a tool PWA
-const CACHE_NAME = 'whatatool-v1.0.0';
-const STATIC_CACHE = 'whatatool-static-v1.0.0';
-const DYNAMIC_CACHE = 'whatatool-dynamic-v1.0.0';
+// Version générée automatiquement lors du build - ne pas modifier manuellement
+const BUILD_VERSION = '__BUILD_VERSION__'; // Sera remplacé par Vite lors du build
+const CACHE_NAME = `whatatool-v${BUILD_VERSION}`;
+const STATIC_CACHE = `whatatool-static-v${BUILD_VERSION}`;
+const DYNAMIC_CACHE = `whatatool-dynamic-v${BUILD_VERSION}`;
 
 // Vérifier si nous sommes en mode développement
 const isDevelopment = self.location.hostname === 'localhost' && self.location.port === '5173';
@@ -236,7 +238,11 @@ self.addEventListener('message', (event) => {
   }
   
   if (event.data && event.data.type === 'GET_VERSION') {
-    event.ports[0].postMessage({ version: CACHE_NAME });
+    event.ports[0].postMessage({ 
+      version: CACHE_NAME,
+      buildVersion: BUILD_VERSION,
+      timestamp: Date.now()
+    });
   }
   
   if (event.data && event.data.type === 'CLEAR_CACHE') {
