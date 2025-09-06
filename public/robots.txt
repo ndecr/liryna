@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /
+
+# Bloque tous les robots d'exploration
+# Cette application contient des données sensibles et privées
+# Accès restreint aux utilisateurs authentifiés uniquement
