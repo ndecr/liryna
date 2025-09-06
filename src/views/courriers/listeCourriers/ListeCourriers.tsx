@@ -686,9 +686,6 @@ function ListeCourriers(): ReactElement {
                               onChange={(e) => handleSelectAll(e.target.checked)}
                               className="selectAllCheckbox"
                             />
-                            <span className="checkboxLabel">
-                              <MdSelectAll />
-                            </span>
                           </label>
                         </th>
                         <th>Nom du fichier</th>

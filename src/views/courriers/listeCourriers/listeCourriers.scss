@@ -196,7 +196,7 @@
       @include mixins.card(12px, medium);
       border: 1px solid vars.$borderColor;
       max-height: calc(100dvh - 6dvh - 4dvh - 12em);
-      overflow: hidden;
+      overflow: scroll;
       display: flex;
       flex-direction: column;
       
@@ -582,7 +582,6 @@
   .selectColumn {
     width: 3em !important;
     text-align: center;
-    padding: 0.5em !important;
   }
 
   .checkboxWrapper {

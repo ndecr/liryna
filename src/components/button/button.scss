@@ -107,8 +107,6 @@
 }
 
 .backButton {
-  @include mixins.flexContainer(row, 0.5em);
-  @include mixins.actionButton(vars.$utilsSecondary, vars.$utilsPrimary);
   align-items: center;
   padding: 0.75em 1em;
   font-size: 0.9em;
@@ -116,6 +114,9 @@
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+
+  @include mixins.flexContainer(row, 0.5em);
+  @include mixins.actionButton(vars.$utilsSecondary, vars.$utilsPrimary);
 
   &:hover {
     transform: translateY(-2px);
@@ -130,6 +131,7 @@
 
 button:disabled {
   @extend %buttonBase;
+  flex-flow: row;
   background: #6e6d70;
   box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.1), inset 0 0.5px 0.5px rgba(255, 255, 255, 0.5), 0 0 0 0.5px rgba(0, 0, 0, 0.12);
   color: #ffffff;
