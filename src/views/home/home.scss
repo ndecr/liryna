@@ -2,79 +2,43 @@
 @use "../../utils/styles/variables" as vars;
 
 #home {
-  min-height: calc(100dvh - 6dvh); // 100dvh - header seulement
-  background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 50%, #f0f3f7 100%);
-  padding: 1em 0.5em;
-  margin-top: 6dvh; // Compenser header seulement (SubNav masqué en mobile)
-  
-  // En desktop, on remet les valeurs avec SubNav
-  @media (min-width: vars.$tabletWidth) {
-    min-height: calc(100dvh - 6dvh - 4dvh); // Avec SubNav
-    margin-top: calc(6dvh + 4dvh); // Avec SubNav
-  }
-
-  // Responsive tablette
-  @media (min-width: vars.$tabletWidth) {
-    padding: 1.5em 1em;
-  }
-
-  // Responsive desktop
-  @media (min-width: vars.$desktopWidth) {
-    padding: 2em 1em;
-  }
+  @include mixins.mainView;
+  @include mixins.responsivePadding(1em, 1.5em, 2em);
 
   .mainWrapper {
-    max-width: 75em;
-    margin: 0 auto;
-    padding: 1em 0.5em; // Mobile first
-    display: flex;
-    flex-direction: column; // Mobile: stack vertically
-    gap: 1.5em; // Mobile gap
+    @include mixins.centeredContainer;
+    @include mixins.flexContainerResponsive(column, row, 1.5em);
+    @include mixins.responsivePadding(1em, 2em, 2em);
     justify-content: center;
-    flex: 1; // Prend tout l'espace disponible dans main
-
-    // Responsive tablette
+    flex: 1;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    
     @media (min-width: vars.$tabletWidth) {
-      flex-direction: row; // Tablette: side by side
-      gap: 2em; // Larger gap for tablet
-      padding: 2em 1em;
-    }
-
-    // Responsive desktop
-    @media (min-width: vars.$desktopWidth) {
-      gap: 3em; // Even larger gap for desktop
+      padding-left: 1em;
+      padding-right: 1em;
     }
   }
 
   .utilsSection,
   .webDevSection {
-    flex: 1; // Equal space distribution
-
     a {
       display: block;
       text-decoration: none;
-      background: white;
-      border-radius: 16px; // Mobile first - smaller radius
-      box-shadow: 0 0.25em 1.25em rgba(0, 0, 0, 0.08); // Lighter shadow on mobile
+      @include mixins.card(16px, light);
       overflow: hidden;
-      transition: all 0.3s ease;
+      transition: all vars.$transitionMedium;
 
       &:hover {
-        transform: translateY(-0.25em); // Less movement on mobile
+        transform: translateY(-0.25em);
         box-shadow: 0 0.5em 1.875em rgba(0, 0, 0, 0.12);
 
         figure img {
           transform: scale(1.05);
         }
-      }
 
-      // Responsive tablette
-      @media (min-width: vars.$tabletWidth) {
-        border-radius: 20px; // Larger radius for tablet+
-        box-shadow: 0 0.625em 2.5em rgba(0, 0, 0, 0.1);
-
-        &:hover {
-          transform: translateY(-0.5em); // More movement on larger screens
+        @media (min-width: vars.$tabletWidth) {
+          transform: translateY(-0.5em);
           box-shadow: 0 1.25em 3.75em rgba(0, 0, 0, 0.15);
         }
       }
@@ -86,36 +50,32 @@
 
       img {
         width: 100%;
-        height: 12.5em; // Mobile first - smaller height
+        height: 12.5em;
         object-fit: cover;
-        transition: transform 0.3s ease;
+        transition: transform vars.$transitionMedium;
 
-        // Responsive tablette
         @media (min-width: vars.$tabletWidth) {
-          height: 15.625em; // Taller on tablet
+          height: 15.625em;
         }
 
-        // Responsive desktop
         @media (min-width: vars.$desktopWidth) {
-          height: 18.75em; // Tallest on desktop
+          height: 18.75em;
         }
       }
     }
 
     h2 {
-      padding: 1.5em; // Mobile first - less padding
+      padding: 1.5em;
       margin: 0;
-      font-size: 1.5rem; // Mobile first - smaller font
+      font-size: 1.5rem;
       font-weight: 700;
       text-align: center;
 
-      // Responsive tablette
       @media (min-width: vars.$tabletWidth) {
         font-size: 1.7rem;
         padding: 2em;
       }
 
-      // Responsive desktop
       @media (min-width: vars.$desktopWidth) {
         font-size: 1.8rem;
       }

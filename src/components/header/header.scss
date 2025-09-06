@@ -1,15 +1,12 @@
 @use "../../utils/styles/variables" as vars;
+@use "../../utils/styles/mixins" as mixins;
 
-// ===================
-// BASE HEADER STYLES
-// ===================
 #header {
   position: fixed;
   inset: 0 0 auto;
   z-index: 100;
   height: 6dvh;
-  /* Force le même background que les autres composants */
-  background: rgba(vars.$utilsPrimary, 0.05); /* MÊME background que SubNav et SearchBar */
+  background: rgba(vars.$utilsPrimary, 0.05);
   backdrop-filter: vars.$blurMedium;
   -webkit-backdrop-filter: vars.$blurMedium;
   transition: all vars.$transitionSmooth;
@@ -19,23 +16,19 @@
   }
   
   &.utils {
-    background: rgba(vars.$utilsPrimary, 0.05); /* Renforce le style utils */
+    background: rgba(vars.$utilsPrimary, 0.05);
   }
 }
 
 .headerContainer {
-  max-width: 1440px;
-  margin: 0 auto;
+  @include mixins.centeredContainer(1440px);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 1em;
-  height: 100%; /* Prend toute la hauteur du header parent */
+  height: 100%;
 }
 
-// ===================
-// BRAND LOGO
-// ===================
 .headerBrand {
   text-decoration: none;
   transition: all vars.$transitionFast;
@@ -79,18 +72,11 @@
   }
 }
 
-// ===================
-// HEADER LAYOUT
-// ===================
 .headerRight {
-  display: flex;
+  @include mixins.flexContainer(row, 1rem);
   align-items: center;
-  gap: 1rem;
 }
 
-// ===================
-// USER INFORMATION
-// ===================
 .userInfo {
   display: none;
   align-items: center;
@@ -101,7 +87,6 @@
     gap: 1rem;
   }
   
-  // Style spécial pour le bouton PWA dans le header
   .pwa-install-btn.compact.desktop {
     font-size: 0.8em;
     padding: 0.4em 0.6em;
@@ -119,13 +104,11 @@
 }
 
 .logoutButton {
-  background: none;
+  @include mixins.resetButton;
   color: vars.$fontColorPrimary;
-  border: none;
   padding: 0.25em 0.5em;
   font-size: 0.85em;
   font-weight: 400;
-  cursor: pointer;
   text-decoration: underline;
   transition: color vars.$transitionFast;
   
@@ -134,13 +117,9 @@
   }
 }
 
-// ===================
-// DESKTOP NAVIGATION
-// ===================
 .headerDesktop {
-  display: flex;
+  @include mixins.flexContainer(row, 0.5rem);
   align-items: center;
-  gap: 0.5rem;
   
   @media (max-width: vars.$mobileWidth) {
     display: none;
@@ -148,9 +127,8 @@
 }
 
 .navItem {
-  display: flex;
+  @include mixins.flexContainer(row, 0.5rem);
   align-items: center;
-  gap: 0.5rem;
   padding: 0.2em .5em;
   border: none;
   background: transparent;
@@ -213,9 +191,6 @@
   }
 }
 
-// ===================
-// MOBILE TOGGLE
-// ===================
 .headerToggle {
   display: none;
   align-items: center;
@@ -243,9 +218,6 @@
   }
 }
 
-// ===================
-// MOBILE MENU OVERLAY
-// ===================
 .mobileMenuOverlay {
   position: fixed;
   top: 0;
@@ -253,7 +225,7 @@
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 1500; /* Au-dessus de la search bar (z-index: 1000) */
+  z-index: 1500;
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -279,7 +251,7 @@
 }
 
 .mobileMenuHeader {
-  display: flex;
+  @include mixins.flexContainer(row, 1rem);
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.5rem;
@@ -325,17 +297,12 @@
   padding: 1rem;
 }
 
-// ===================
-// MOBILE USER INFO
-// ===================
 .mobileUserInfo {
   background: rgba(0, 0, 0, 0.05);
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  @include mixins.flexContainer(column, 0.75rem);
   
   .mobileUserGreeting {
     font-size: 0.9rem;
@@ -344,20 +311,17 @@
     text-align: center;
   }
   
-  // Style spécial pour le bouton PWA dans le menu mobile
   .pwa-install-btn.compact.mobile {
     align-self: center;
     min-width: 150px;
   }
   
   .mobileLogoutButton {
-    background: none;
+    @include mixins.resetButton;
     color: #36395a;
-    border: none;
     padding: 0.25em 0.5em;
     font-size: 0.8rem;
     font-weight: 400;
-    cursor: pointer;
     text-decoration: underline;
     
     &:hover {
@@ -366,9 +330,6 @@
   }
 }
 
-// ===================
-// MOBILE MENU ITEMS
-// ===================
 .mobileSection {
   margin-bottom: 1rem;
   
@@ -381,15 +342,14 @@
   font-size: 0.9rem;
   font-weight: 600;
   color: vars.$utilsPrimary;
-  margin: 0 0 0.75rem 1rem;
+  margin: 1rem 0 0.75rem 1rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .mobileNavItem {
-  display: flex;
+  @include mixins.flexContainer(row, 1rem);
   align-items: center;
-  gap: 1rem;
   width: 100%;
   padding: 1rem;
   border: none;
@@ -429,9 +389,6 @@
   }
 }
 
-// ===================
-// ANIMATIONS
-// ===================
 @keyframes slideInDown {
   from {
     opacity: 0;

@@ -2,34 +2,19 @@
 @use "../../../utils/styles/mixins" as mixins;
 
 #listeCourriers {
-  min-height: calc(100dvh - 6dvh); // 100dvh - header seulement
-  background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 50%, #f0f3f7 100%);
-  padding: 1em 0.5em;
-  margin-top: 6dvh; // Compenser header seulement (SubNav masqué en mobile)
-  
-  // En desktop, on remet les valeurs avec SubNav
-  @media (min-width: vars.$tabletWidth) {
-    min-height: calc(100dvh - 6dvh - 4dvh); // Avec SubNav
-    margin-top: calc(6dvh + 4dvh); // Avec SubNav
-  }
-  
-  // Styles mobile d'abord
-  display: flex;
-  flex-direction: column;
-  gap: 0.75em; // Gap réduit pour optimiser l'espace vertical
-  position: relative; // Important pour le sticky
-  
-  // Barre de recherche mobile sticky (en dehors du container)
+  @include mixins.mainView;
+  @include mixins.flexContainer(column, 0.75em);
+  position: relative;
   .mobileSearchContainer {
     position: sticky;
-    top: 6dvh; // Seulement Header (SubNav masqué en mobile)
+    top: 6dvh;
     z-index: 1000;
-    background: rgba(vars.$utilsPrimary, 0.05); // MÊME style que header.utils
-    backdrop-filter: vars.$blurMedium; // MÊME blur que le header
+    background: rgba(vars.$utilsPrimary, 0.05);
+    backdrop-filter: vars.$blurMedium;
     -webkit-backdrop-filter: vars.$blurMedium;
     padding: 0.75em 0;
-    margin: -1em -0.5em 0.75em -0.5em; // Compense le padding du main
-    box-shadow: vars.$shadowMedium; // MÊME ombre que le header
+    margin: -1em -0.5em 0.75em -0.5em;
+    box-shadow: vars.$shadowMedium;
     
     .searchWrapper {
       position: relative;
@@ -42,56 +27,41 @@
         left: 1.5em;
         top: 50%;
         transform: translateY(-50%);
-        color: vars.$fontColorSecondary; // Couleur normale comme le reste
+        color: vars.$fontColorSecondary;
         font-size: 1.1em;
       }
       
       .searchInput {
-        width: 100%;
-        padding: 0.75em 1em 0.75em 2.5em;
-        border: 2px solid vars.$borderColor;
+        @include mixins.formInput;
+        padding-left: 2.5em;
         border-radius: 25px;
         font-size: 0.9em;
-        transition: vars.$transitionMedium;
-        background: white;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        
-        &:focus {
-          outline: none;
-          border-color: vars.$utilsPrimary;
-          box-shadow: 0 0 0 3px rgba(38, 208, 206, 0.2);
-        }
-        
-        &::placeholder {
-          color: vars.$fontColorSecondary;
-        }
       }
     }
   }
   
   .listeCourrierContainer {
-    min-width: 90%; // Largeur minimale pour éviter le redimensionnement
-    max-width: 95%; // Utiliser 95% de la largeur disponible
+    min-width: 90%;
+    max-width: 95%;
     margin: 0 auto;
-    padding: 0 0.25em; // Padding réduit sur mobile
-    flex: 1; // Prend tout l'espace disponible
+    padding: 0 0.25em;
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.75em; // Gap réduit entre les sections
+    gap: 0.75em;
 
-    // Responsive tablette
     @media (min-width: vars.$tabletWidth) {
-      min-width: 95%; // Largeur minimale plus grande sur tablette
-      max-width: 98%; // Encore plus large sur tablette
-      padding: 0 0.5em; // Padding réduit sur tablette
-      gap: 1em; // Gap réduit sur tablette
+      min-width: 95%;
+      max-width: 98%;
+      padding: 0 0.5em;
+      gap: 1em;
     }
 
-    // Responsive desktop
     @media (min-width: vars.$desktopWidth) {
-      min-width: 98%; // Largeur minimale encore plus grande sur desktop
-      max-width: 99%; // Quasi pleine largeur sur desktop
-      padding: 0 0.75em; // Padding minimal sur desktop
+      min-width: 98%;
+      max-width: 99%;
+      padding: 0 0.75em;
     }
   }
 
@@ -115,12 +85,11 @@
     align-items: center;
     gap: 1em;
 
-    // La barre de recherche mobile est maintenant en dehors de cette section
     
     .searchContainer {
       position: relative;
       max-width: 25em;
-      flex: 1; // Prend l'espace disponible
+      flex: 1;
       
       .searchIcon {
         position: absolute;
@@ -132,22 +101,9 @@
       }
       
       .searchInput {
-        width: 100%;
-        padding: 0.875em 1em 0.875em 2.5em;
-        border: 2px solid vars.$borderColor;
-        border-radius: 8px;
+        @include mixins.formInput;
+        padding-left: 2.5em;
         font-size: 1em;
-        transition: vars.$transitionMedium;
-        
-        &:focus {
-          outline: none;
-          border-color: vars.$utilsPrimary;
-          box-shadow: 0 0 0 3px rgba(38, 208, 206, 0.2);
-        }
-        
-        &::placeholder {
-          color: vars.$fontColorSecondary;
-        }
       }
     }
     
@@ -155,27 +111,13 @@
       display: flex;
       align-items: center;
       gap: 1em;
-      flex-shrink: 0; // Ne se réduit pas
+      flex-shrink: 0;
       
       .paginationBtn {
-        display: flex;
-        align-items: center;
-        gap: 0.5em;
-        background: vars.$utilsPrimary;
-        color: white;
-        border: none;
+        @include mixins.actionButton(vars.$utilsPrimary, vars.$utilsSecondary);
         padding: 0.5em 1em;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: vars.$transitionMedium;
         font-size: 0.85em;
-        font-weight: 500;
         white-space: nowrap;
-        
-        &:hover:not(:disabled) {
-          background: vars.$utilsSecondary;
-          transform: translateY(-1px);
-        }
         
         &:disabled {
           background: vars.$borderColor;
@@ -193,7 +135,7 @@
         text-align: center;
         font-size: 0.85em;
         color: vars.$fontColorSecondary;
-        min-width: 10em; // Largeur minimum pour éviter le saut
+        min-width: 10em;
         
         .totalItems {
           font-size: 0.8em;
@@ -202,7 +144,6 @@
       }
     }
     
-    // Version mobile : pagination sous la recherche
     @media (max-width: vars.$tabletWidth) {
       flex-direction: column;
       align-items: stretch;
@@ -225,10 +166,10 @@
   }
 
   .courriersSection {
-    flex: 1; // Prend tout l'espace disponible
+    flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: 0; // Permet au flex child de se réduire
+    min-height: 0;
     
     .loadingState, .emptyState {
       display: flex;
@@ -252,12 +193,10 @@
     }
     
     .courriersTable {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      @include mixins.card(12px, medium);
       border: 1px solid vars.$borderColor;
-      max-height: calc(100dvh - 6dvh - 4dvh - 12em); // Hauteur max pour laisser place header + search + pagination
-      overflow: hidden; // Container sans scroll
+      max-height: calc(100dvh - 6dvh - 4dvh - 12em);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       
@@ -274,12 +213,12 @@
         
         thead {
           background: vars.$greyBackground;
-          position: sticky; // Header fixe pendant le scroll
+          position: sticky;
           top: 0;
           z-index: 10;
           
           th {
-            padding: 1em 0.5em; // Padding réduit pour cohérence
+            padding: 1em 0.5em;
             text-align: left;
             font-weight: 600;
             color: vars.$fontColorPrimary;
@@ -287,20 +226,19 @@
             font-size: 0.85em;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            background: vars.$greyBackground; // Background pour le sticky
+            background: vars.$greyBackground;
             
-            // Largeurs minimales pour éviter que les colonnes importantes se rétrécissent trop
-            &:nth-child(1) { min-width: 3em; }   // Checkbox
-            &:nth-child(2) { min-width: 15em; }  // Nom du fichier - colonne importante
-            &:nth-child(3) { min-width: 6em; }   // Direction
-            &:nth-child(4) { min-width: 8em; }   // Type
-            &:nth-child(5) { min-width: 10em; }  // Service
-            &:nth-child(6) { min-width: 10em; }  // Expéditeur
-            &:nth-child(7) { min-width: 8em; }   // Date courrier
-            &:nth-child(8) { min-width: 12em; }  // Description
+            &:nth-child(1) { min-width: 3em; }
+            &:nth-child(2) { min-width: 15em; }
+            &:nth-child(3) { min-width: 6em; }
+            &:nth-child(4) { min-width: 8em; }
+            &:nth-child(5) { min-width: 10em; }
+            &:nth-child(6) { min-width: 10em; }
+            &:nth-child(7) { min-width: 8em; }
+            &:nth-child(8) { min-width: 12em; }
             &:nth-child(9) { 
-              min-width: 10em;  // Actions
-              text-align: right; // Alignement à droite pour la colonne Actions
+              min-width: 10em;
+              text-align: right;
             }
           }
         }
@@ -319,7 +257,7 @@
             }
             
             td {
-              padding: 0.75em 0.5em; // Padding réduit pour gagner de la place
+              padding: 0.75em 0.5em;
               vertical-align: middle;
               
               &.fileName {
@@ -338,7 +276,7 @@
                   .fileNameText {
                     font-weight: 500;
                     color: vars.$fontColorPrimary;
-                    max-width: 12em; // Réduit pour éviter le scroll
+                    max-width: 12em;
                     overflow: hidden;
                     text-overflow: ellipsis;
                     white-space: nowrap;
@@ -377,7 +315,7 @@
               
               &.kind, &.department, &.emitter {
                 color: vars.$fontColorSecondary;
-                max-width: 10em; // Augmenté légèrement
+                max-width: 10em;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
@@ -386,7 +324,7 @@
               
               &.description {
                 color: vars.$fontColorSecondary;
-                max-width: 14em; // Réduit pour éviter le scroll
+                max-width: 14em;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
@@ -406,12 +344,12 @@
               }
               
               &.actions {
-                text-align: right; // Alignement à droite pour les cellules d'actions
+                text-align: right;
                 
                 .actionButtons {
                   display: flex;
                   gap: 0.375em;
-                  justify-content: flex-end; // Justifie les boutons à droite
+                  justify-content: flex-end;
                   
                   .actionBtn {
                     display: flex;
@@ -490,9 +428,10 @@
   }
 
 
-  // Responsive tablette
   @media (min-width: vars.$tabletWidth) {
-    padding: 1.5em 0;
+    @include mixins.responsivePadding(1em, 1.5em, 2em);
+    padding-left: 0;
+    padding-right: 0;
     
     .listeCourrierHeader {
       .pageTitle {
@@ -535,7 +474,6 @@
     }
   }
 
-  // Responsive desktop  
   @media (min-width: vars.$desktopWidth) {
     
     .courriersSection {
@@ -570,7 +508,6 @@
     }
   }
 
-  // Styles pour la sélection multiple et actions groupées
   .bulkActions {
     background: rgba(vars.$utilsPrimary, 0.05);
     border: 1px solid rgba(vars.$utilsPrimary, 0.15);
@@ -642,7 +579,6 @@
     }
   }
 
-  // Styles pour les checkboxes et sélection
   .selectColumn {
     width: 3em !important;
     text-align: center;
@@ -741,7 +677,6 @@
     }
   }
 
-  // Style pour les lignes sélectionnées
   .courrierRow.selected {
     background: rgba(vars.$utilsPrimary, 0.08) !important;
     border-left: 3px solid vars.$utilsPrimary;
@@ -751,11 +686,8 @@
     }
   }
 
-  // Styles pour la vue mobile - Cartes
   .courriersCards {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75em;
+    @include mixins.flexContainer(column, 0.75em);
 
     .mobileSelectAll {
       display: flex;
@@ -781,10 +713,8 @@
     }
 
     .courrierCard {
-      background: white;
-      border-radius: 12px;
+      @include mixins.card(12px, light);
       border: 1px solid vars.$borderColor;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
       overflow: hidden;
       transition: vars.$transitionMedium;
 
@@ -809,7 +739,7 @@
 
         .cardSelect {
           flex-shrink: 0;
-          padding-top: 0.2em; // Alignement visuel avec le titre
+          padding-top: 0.2em;
         }
 
         .cardTitle {
@@ -817,7 +747,7 @@
           display: flex;
           align-items: center;
           gap: 0.5em;
-          min-width: 0; // Pour le text overflow
+          min-width: 0;
 
           .fileIcon {
             color: vars.$utilsPrimary;
@@ -836,7 +766,6 @@
             cursor: help;
             position: relative;
             
-            // Tooltip pour afficher le nom complet au survol
             &:hover::after {
               content: attr(title);
               position: absolute;
@@ -1014,7 +943,6 @@
     }
   }
 
-  // Styles pour les boutons d'action désactivés
   .actionBtn.disabled {
     opacity: 0.3 !important;
     cursor: not-allowed !important;
@@ -1027,7 +955,6 @@
     }
   }
   
-  // Pagination mobile en bas de page
   .mobilePagination {
     position: sticky;
     bottom: 0;
@@ -1035,7 +962,7 @@
     background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 100%);
     border-top: 1px solid vars.$borderColor;
     padding: 0.75em 0.5em;
-    margin: 0 -0.5em -1em -0.5em; // Compense le padding du main
+    margin: 0 -0.5em -1em -0.5em;
     box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
     
     .paginationControls {
@@ -1045,24 +972,11 @@
       gap: 1em;
       
       .paginationBtn {
-        display: flex;
-        align-items: center;
-        gap: 0.4em;
-        background: vars.$utilsPrimary;
-        color: white;
-        border: none;
+        @include mixins.actionButton(vars.$utilsPrimary, vars.$utilsSecondary);
         padding: 0.6em 1em;
         border-radius: 20px;
-        cursor: pointer;
-        transition: vars.$transitionMedium;
         font-size: 0.8em;
-        font-weight: 500;
         white-space: nowrap;
-        
-        &:hover:not(:disabled) {
-          background: vars.$utilsSecondary;
-          transform: translateY(-1px);
-        }
         
         &:disabled {
           background: vars.$borderColor;
@@ -1091,7 +1005,6 @@
   }
 }
 
-// Utilitaires de visibilité responsive (en dehors du scope #listeCourriers)
 .mobileOnly {
   display: block !important;
   
@@ -1108,10 +1021,9 @@
   }
 }
 
-// Bouton Back to Top (mobile uniquement) - en dehors du scope #listeCourriers
 .backToTopBtn {
   position: fixed;
-  bottom: 5.5em; // Remonté pour éviter la pagination mobile
+  bottom: 5.5em;
   right: 1.5em;
   width: 2.8em;
   height: 2.8em;
@@ -1126,7 +1038,7 @@
   cursor: pointer;
   transition: all vars.$transitionMedium;
   box-shadow: 0 3px 10px rgba(vars.$utilsPrimary, 0.3);
-  z-index: 1001; // Z-index plus élevé que la pagination
+  z-index: 1001;
   
   &:hover {
     background: vars.$utilsDark;
@@ -1138,7 +1050,6 @@
     transform: translateY(0);
   }
   
-  // Animation d'apparition
   animation: fadeInUp 0.3s ease-out;
   
   @keyframes fadeInUp {
@@ -1152,16 +1063,14 @@
     }
   }
   
-  // Responsive - ajuster la position sur très petits écrans
   @media (max-width: 480px) {
     width: 2.5em;
     height: 2.5em;
-    bottom: 5em; // Plus haut sur mobile
+    bottom: 5em;
     right: 1.2em;
     font-size: 1.1em;
   }
   
-  // Sur tablette et desktop, revenir à la position normale
   @media (min-width: vars.$tabletWidth) {
     bottom: 2em;
     z-index: 1000;

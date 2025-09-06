@@ -1,12 +1,10 @@
 @use 'sass:color';
 
-// Breakpoints
 $mobileWidth: 768px;
 $tabletWidth: 1024px;
 $laptopWidth: 1280px;
 $desktopWidth: 1440px;
 
-// Couleurs de base
 $fontColorPrimary: #2c3e50;
 $fontColorSecondary: #5a6c7d;
 $errorColor: #e74c3c;
@@ -16,57 +14,28 @@ $greyBackground: #f8f9fa;
 $whiteBackground: #ffffff;
 $borderColor: rgba(0, 0, 0, 0.1);
 
-// ===================
-// SECTION WEB DEV - Tons oranges/corail
-// ===================
-$webdevPrimary: #ff6b47;        // Orange corail principal
-$webdevSecondary: #ff8a65;      // Orange plus clair
-$webdevDark: #e55a3c;           // Orange foncé
-$webdevLight: #ffab91;          // Orange très clair
-$webdevAccent: #ff9800;         // Accent orange vif
+$webdevPrimary: #ff6b47;
+$webdevSecondary: #ff8a65;
+$webdevDark: #e55a3c;
 
 $webdevGradient: linear-gradient(135deg, $webdevPrimary 0%, $webdevSecondary 100%);
 $webdevGradientReverse: linear-gradient(135deg, $webdevSecondary 0%, $webdevPrimary 100%);
 
-// ===================
-// SECTION UTILS - Tons vert d'eau
-// ===================
-$utilsPrimary: #26d0ce;         // Vert d'eau principal
-$utilsSecondary: #4dd0e1;       // Cyan clair
-$utilsDark: #1ba69b;            // Vert d'eau foncé
-$utilsLight: #80deea;           // Cyan très clair
-$utilsAccent: #00bcd4;          // Accent cyan
+$utilsPrimary: #26d0ce;
+$utilsSecondary: #4dd0e1;
+$utilsDark: #1ba69b;
 
 $utilsGradient: linear-gradient(135deg, $utilsPrimary 0%, $utilsSecondary 100%);
 $utilsGradientReverse: linear-gradient(135deg, $utilsSecondary 0%, $utilsPrimary 100%);
 
-// ===================
-// COULEURS NEUTRES POUR NAVIGATION
-// ===================
-$navBackground: rgba(255, 255, 255, 0.95);
-$navBackgroundMobile: $whiteBackground;
 $navTextColor: $fontColorPrimary;
 $navTextColorActive: $whiteBackground;
-$navBorderColor: $borderColor;
 
-// ===================
-// SHADOW & BLUR EFFECTS
-// ===================
 $shadowLight: 0 2px 8px rgba(0, 0, 0, 0.1);
 $shadowMedium: 0 4px 16px rgba(0, 0, 0, 0.15);
 $shadowHeavy: 0 8px 32px rgba(0, 0, 0, 0.2);
-$blurLight: blur(10px);
 $blurMedium: blur(20px);
 
-// ===================
-// ANIMATIONS & TRANSITIONS
-// ===================
 $transitionFast: 0.2s ease;
 $transitionMedium: 0.3s ease;
-$transitionSlow: 0.5s ease;
 $transitionSmooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-// Legacy compatibility (to be phased out)
-$brandColor: $utilsPrimary;
-$darkerBrandColor: $utilsDark;
-$brandColorGradient: $utilsGradient;

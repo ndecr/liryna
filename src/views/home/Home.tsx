@@ -2,7 +2,7 @@
 import "./home.scss";
 
 // assets
-import utilsBackground from "../../assets/background/utilsSection.webp";
+import mailBackground from "../../assets/background/mailSectionBckground.webp";
 
 // hooks | library
 import { ReactElement } from "react";
@@ -23,7 +23,7 @@ function Home(): ReactElement {
           <section className={"utilsSection"}>
             <Link to={"/mail"}>
               <figure>
-                <img src={utilsBackground} alt={"Bureau de travail"} />
+                <img src={mailBackground} alt={"Bureau de travail"} />
               </figure>
               <h2>Gestion des courriers</h2>
             </Link>

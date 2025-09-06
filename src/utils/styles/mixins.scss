@@ -1,28 +1,16 @@
-// ===================
-// VIEWPORT HEIGHT MIXINS
-// ===================
+$header-height: 6dvh;
+$subnav-height: 4dvh;
 
-// Heights constants en dvh
-$header-height: 6dvh;    // ~60px
-$subnav-height: 4dvh;    // ~40px
-
-// Mixin pour main avec header seulement
 @mixin fullViewportWithHeader {
   min-height: calc(100dvh - #{$header-height});
   padding-top: $header-height;
 }
 
-// Mixin pour main avec header + subnav  
 @mixin fullViewportWithHeaderSubnav {
   min-height: calc(100dvh - #{$header-height} - #{$subnav-height});
   padding-top: calc(#{$header-height} + #{$subnav-height});
 }
 
-// ===================
-// BUTTON MIXINS
-// ===================
-
-// Mixin pour reset button
 @mixin resetButton {
   background: none;
   border: none;
@@ -32,11 +20,6 @@ $subnav-height: 4dvh;    // ~40px
   outline: none;
 }
 
-// ===================
-// INPUT MIXINS
-// ===================
-
-// Mixin pour base input
 @mixin inputBase {
   width: 100%;
   box-sizing: border-box;
@@ -44,48 +27,35 @@ $subnav-height: 4dvh;    // ~40px
   font-family: inherit;
 }
 
-// Mixin générique qui détecte automatiquement si subnav existe
 @mixin fullViewport {
-  // Par défaut, assume header + subnav
   min-height: calc(100dvh - #{$header-height} - #{$subnav-height});
   padding-top: calc(#{$header-height} + #{$subnav-height});
   
-  // Si pas de subnav dans la page, utiliser cette classe sur le main
   &.no-subnav {
     min-height: calc(100dvh - #{$header-height});
     padding-top: $header-height;
   }
 }
 
-// ===================
-// LAYOUT MIXINS POUR POUSSER LE FOOTER
-// ===================
-
-// Mixin pour conteneur de page complète (body ou page wrapper)
 @mixin pageContainer {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
 
-// Mixin pour main qui pousse le footer vers le bas
 @mixin mainContentExpanding {
-  flex: 1; // Prend tout l'espace disponible
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-// Mixin pour main avec header + subnav qui pousse le footer
 @mixin mainContentExpandingWithSubnav {
-  flex: 1; // Prend tout l'espace disponible
+  flex: 1;
   display: flex;
   flex-direction: column;
-  padding-top: calc(#{$header-height} + #{$subnav-height}); // Header + SubNav
+  padding-top: calc(#{$header-height} + #{$subnav-height});
 }
 
-// ===================
-// LEGACY SUPPORT (À SUPPRIMER PROGRESSIVEMENT)
-// ===================
 @mixin main {
   @include fullViewportWithHeaderSubnav;
   display: flex;
@@ -95,45 +65,198 @@ $subnav-height: 4dvh;    // ~40px
   position: relative;
 }
 
-// ===================
-// LAYOUT HELPERS
-// ===================
+@mixin mainView {
+  min-height: calc(100dvh - #{$header-height});
+  background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 50%, #f0f3f7 100%);
+  margin-top: #{$header-height};
+  
+  @media (min-width: 1024px) {
+    min-height: calc(100dvh - #{$header-height} - #{$subnav-height});
+    margin-top: calc(#{$header-height} + #{$subnav-height});
+  }
+}
 
-// Flex container standard
+@mixin centeredContainer($max-width: 75em) {
+  max-width: $max-width;
+  margin: 0 auto;
+}
+
+@mixin formActions {
+  padding: 1em 1.5em;
+  background: #f8f9fa;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 1em;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  
+  @media (min-width: 1024px) {
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 1.5em 2em;
+  }
+}
+
+@mixin actionButton($bg-color, $hover-color) {
+  background: $bg-color;
+  color: white;
+  border: none;
+  padding: 0.75em 1em;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  
+  &:hover:not(:disabled) {
+    background: $hover-color;
+    transform: translateY(-1px);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+@mixin formInput {
+  padding: 0.75em 1em;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  font-size: 0.95em;
+  transition: all 0.3s ease;
+  background: white;
+  
+  &:focus {
+    outline: none;
+    border-color: #26d0ce;
+    box-shadow: 0 0 0 3px rgba(38, 208, 206, 0.1);
+  }
+  
+  &::placeholder {
+    color: #5a6c7d;
+  }
+}
+
+@mixin reactSelect {
+  .react-select__control {
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-size: 0.95em;
+    min-height: 38px;
+    height: 50px;
+    transition: all 0.3s ease;
+    box-shadow: none;
+    
+    &:hover {
+      border-color: rgba(0, 0, 0, 0.1);
+    }
+    
+    &--is-focused {
+      border-color: #26d0ce;
+      box-shadow: 0 0 0 3px rgba(38, 208, 206, 0.1);
+      
+      &:hover {
+        border-color: #26d0ce;
+      }
+    }
+  }
+  
+  .react-select__value-container {
+    padding: 0 1em;
+    height: 50px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .react-select__single-value {
+    color: #2c3e50;
+    font-size: 0.95em;
+  }
+  
+  .react-select__placeholder {
+    color: #5a6c7d;
+    font-size: 0.95em;
+  }
+  
+  .react-select__indicator-separator {
+    display: none;
+  }
+  
+  .react-select__dropdown-indicator {
+    color: #5a6c7d;
+    padding: 0.5em;
+    
+    &:hover {
+      color: #26d0ce;
+    }
+  }
+  
+  .react-select__indicators {
+    height: 46px;
+  }
+  
+  .react-select__menu {
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 0.25em 1.25em rgba(0, 0, 0, 0.08);
+    margin-top: 0.25em;
+  }
+  
+  .react-select__option {
+    font-size: 0.95em;
+    color: #2c3e50;
+    
+    &--is-selected {
+      background-color: #26d0ce;
+      color: white;
+    }
+    
+    &--is-focused {
+      background-color: rgba(38, 208, 206, 0.1);
+      color: #2c3e50;
+    }
+    
+    &:hover {
+      background-color: rgba(38, 208, 206, 0.1);
+    }
+  }
+}
+
 @mixin flexContainer($direction: column, $gap: 1em) {
   display: flex;
   flex-direction: $direction;
   gap: $gap;
 }
 
-// Flex container responsive
 @mixin flexContainerResponsive($mobile-direction: column, $tablet-direction: row, $gap: 1em) {
   @include flexContainer($mobile-direction, $gap);
   
-  @media (min-width: 1024px) { // $tabletWidth
+  @media (min-width: 1024px) {
     flex-direction: $tablet-direction;
     gap: calc(#{$gap} * 1.5);
   }
   
-  @media (min-width: 1440px) { // $desktopWidth  
+  @media (min-width: 1440px) {
     gap: calc(#{$gap} * 2);
   }
 }
 
-// Container avec padding responsive
 @mixin responsivePadding($mobile: 1em, $tablet: 1.5em, $desktop: 2em) {
-  padding: $mobile 0.5em; // Mobile first
+  padding: $mobile 0.5em;
   
-  @media (min-width: 1024px) { // $tabletWidth
+  @media (min-width: 1024px) {
     padding: $tablet 1em;
   }
   
-  @media (min-width: 1440px) { // $desktopWidth
+  @media (min-width: 1440px) {
     padding: $desktop 1.5em;
   }
 }
 
-// Card standard
 @mixin card($radius: 0.75em, $shadow: light) {
   background: white;
   border-radius: $radius;
@@ -146,8 +269,7 @@ $subnav-height: 4dvh;    // ~40px
     box-shadow: 0 0.5em 2em rgba(0, 0, 0, 0.15);
   }
   
-  // Responsive
-  @media (min-width: 1024px) { // $tabletWidth
+  @media (min-width: 1024px) {
     border-radius: calc(#{$radius} * 1.2);
     
     @if $shadow == light {

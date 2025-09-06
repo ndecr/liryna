@@ -2,36 +2,15 @@
 @use "../../../utils/styles/mixins" as mixins;
 
 #updateCourrier {
-  min-height: calc(100dvh - 6dvh); // 100dvh - header seulement
-  background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 50%, #f0f3f7 100%);
-  padding: 1em 0.5em;
-  margin-top: 6dvh; // Compenser header seulement (SubNav masqué en mobile)
-  
-  // En desktop, on remet les valeurs avec SubNav
-  @media (min-width: vars.$tabletWidth) {
-    min-height: calc(100dvh - 6dvh - 4dvh); // Avec SubNav
-    margin-top: calc(6dvh + 4dvh); // Avec SubNav
-  }
-
-  // Responsive tablette
-  @media (min-width: vars.$tabletWidth) {
-    padding: 1.5em 1em; 
-  }
-
-  // Responsive desktop
-  @media (min-width: vars.$desktopWidth) {
-    padding: 2em 1em;
-  }
+  @include mixins.mainView;
+  @include mixins.responsivePadding(1em, 1.5em, 2em);
 
   .updateCourrierContainer {
-    max-width: 90em; // Plus large pour accueillir les deux colonnes
-    margin: 0 auto;
-    padding: 0 0.5em; // Mobile first
-    flex: 1; // Prend tout l'espace disponible
-    display: flex;
-    flex-direction: column;
+    @include mixins.centeredContainer(90em);
+    @include mixins.flexContainer(column, 1em);
+    flex: 1;
+    padding: 0 0.5em;
 
-    // Responsive tablette
     @media (min-width: vars.$tabletWidth) {
       padding: 0 1em;
     }
@@ -39,19 +18,18 @@
 
   .updateCourrierHeader {
     display: flex;
-    flex-direction: column; // Mobile first - stack vertically
-    gap: 1em; // Mobile gap
+    flex-direction: column;
+    gap: 1em;
     color: vars.$fontColorPrimary;
 
-    // Responsive tablette
     @media (min-width: vars.$tabletWidth) {
-      flex-direction: row; // Horizontal on larger screens
+      flex-direction: row;
       align-items: center;
       gap: 2em;
     }
 
     .pageTitle {
-      font-size: 2em; // Mobile first
+      font-size: 2em;
       font-weight: 700;
       margin: 0;
       background: vars.$utilsGradient;
@@ -59,12 +37,10 @@
       background-clip: text;
       -webkit-text-fill-color: transparent;
 
-      // Responsive tablette
       @media (min-width: vars.$tabletWidth) {
         font-size: 2.3em;
       }
 
-      // Responsive desktop
       @media (min-width: vars.$desktopWidth) {
         font-size: 2.5em;
       }
@@ -84,27 +60,22 @@
 
   .updateCourrierContent {
     display: flex;
-    flex-direction: column; // Mobile: stack vertically
+    flex-direction: column;
     gap: 1.5em;
-    margin: 1.5em 0 0; // Only top margin
+    margin: 1.5em 0 0;
 
-    // Responsive desktop
     @media (min-width: vars.$desktopWidth) {
-      flex-direction: row; // Side by side on desktop
+      flex-direction: row;
       gap: 2em;
       margin-top: 2em;
     }
 
     .previewSection {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 0.25em 1.25em rgba(0, 0, 0, 0.08);
+      @include mixins.card(12px, light);
       overflow: hidden;
 
-      // Mobile: pas de largeur fixe
-      // Desktop: 40% de largeur
       @media (min-width: vars.$desktopWidth) {
-        flex: 0 0 40%; // 40% de largeur, pas de flex-grow
+        flex: 0 0 40%;
       }
 
       .previewHeader {
@@ -128,11 +99,10 @@
 
       .previewContainer {
         padding: 1em;
-        height: 50em; // Hauteur fixe pour la preview
+        height: 50em;
 
-        // Responsive desktop
         @media (min-width: vars.$desktopWidth) {
-          height: 60em; // Plus grande sur desktop
+          height: 60em;
         }
 
         .pdfPreview,
@@ -152,14 +122,11 @@
     }
 
     .formSection {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 0.25em 1.25em rgba(0, 0, 0, 0.08);
+      @include mixins.card(12px, light);
       overflow: hidden;
 
-      // Desktop: prend le reste de l'espace
       @media (min-width: vars.$desktopWidth) {
-        flex: 1; // Prend l'espace restant (60%)
+        flex: 1;
       }
 
       .courrierForm {
@@ -168,21 +135,19 @@
         flex-direction: column;
 
         .formGrid {
-          padding: 1.5em; // Mobile first
+          padding: 1.5em;
           display: flex;
           flex-direction: column;
-          gap: 1.2em; // Mobile gap uniformisé
-          flex: 1; // Prend tout l'espace disponible
+          gap: 1.2em;
+          flex: 1;
 
-          // Responsive tablette
           @media (min-width: vars.$tabletWidth) {
             padding: 2em;
-            gap: 1.5em; // Tablette gap uniformisé
+            gap: 1.5em;
           }
 
-          // Responsive desktop
           @media (min-width: vars.$desktopWidth) {
-            gap: 1.8em; // Desktop gap uniformisé
+            gap: 1.8em;
           }
         }
 
@@ -192,28 +157,26 @@
           border-radius: 0;
           display: flex;
           flex-direction: column;
-          gap: 1em; // Espacement uniforme entre titre et contenu
+          gap: 1em;
 
           h3.sectionTitle {
             display: flex;
             align-items: center;
             gap: 0.75em;
-            font-size: 1.2em; // Mobile first
+            font-size: 1.2em;
             font-weight: 600;
             color: vars.$utilsPrimary;
-            padding: 0 0 0.5em; // Only bottom padding
+            padding: 0 0 0.5em;
             border-bottom: 2px solid vars.$borderColor;
-            margin: 0; // Remove default margins
+            margin: 0;
 
-            // Responsive tablette
             @media (min-width: vars.$tabletWidth) {
               font-size: 1.3em;
             }
 
             svg {
-              font-size: 1.3em; // Mobile first
+              font-size: 1.3em;
 
-              // Responsive tablette
               @media (min-width: vars.$tabletWidth) {
                 font-size: 1.4em;
               }
@@ -221,18 +184,17 @@
           }
 
           .formRow:not(:last-child) {
-            margin-bottom: 0.5em; // Espacement entre les lignes dans une section
+            margin-bottom: 0.5em;
           }
         }
 
         .formRow {
           display: flex;
-          flex-direction: column; // Mobile: stack vertically
-          gap: 1em; // Mobile gap
+          flex-direction: column;
+          gap: 1em;
 
-          // Responsive tablette
           @media (min-width: vars.$tabletWidth) {
-            flex-direction: row; // Horizontal on larger screens
+            flex-direction: row;
             gap: 1.5em;
           }
         }
@@ -240,8 +202,8 @@
         .formGroup {
           display: flex;
           flex-direction: column;
-          gap: 0.5em; // Using gap instead of margins
-          flex: 1; // Equal distribution in rows
+          gap: 0.5em;
+          flex: 1;
 
           label {
             display: flex;
@@ -259,108 +221,11 @@
 
           input,
           textarea {
-            padding: 0.75em 1em;
-            border: 2px solid vars.$borderColor;
-            border-radius: 8px;
-            font-size: 0.95em;
-            transition: all 0.3s ease;
-            background: white;
-
-            &:focus {
-              outline: none;
-              border-color: vars.$utilsPrimary;
-              box-shadow: 0 0 0 3px rgba(38, 208, 206, 0.1);
-            }
-
-            &::placeholder {
-              color: vars.$fontColorSecondary;
-            }
+            @include mixins.formInput;
           }
 
-          // React-Select styling
           .react-select-container {
-            .react-select__control {
-              border: 2px solid vars.$borderColor;
-              border-radius: 8px;
-              font-size: 0.95em;
-              min-height: 38px;
-              height: 50px; // Même hauteur que les inputs normaux
-              transition: all 0.3s ease;
-              box-shadow: none;
-
-              &:hover {
-                border-color: vars.$borderColor;
-              }
-
-              &--is-focused {
-                border-color: vars.$utilsPrimary;
-                box-shadow: 0 0 0 3px rgba(38, 208, 206, 0.1);
-
-                &:hover {
-                  border-color: vars.$utilsPrimary;
-                }
-              }
-            }
-
-            .react-select__value-container {
-              padding: 0 1em; // Supprimer le padding vertical
-              height: 50px; // Même hauteur que le control
-              display: flex;
-              align-items: center; // Centrer verticalement le contenu
-            }
-
-            .react-select__single-value {
-              color: vars.$fontColorPrimary;
-              font-size: 0.95em;
-            }
-
-            .react-select__placeholder {
-              color: vars.$fontColorSecondary;
-              font-size: 0.95em;
-            }
-
-            .react-select__indicator-separator {
-              display: none;
-            }
-
-            .react-select__dropdown-indicator {
-              color: vars.$fontColorSecondary;
-              padding: 0.5em;
-
-              &:hover {
-                color: vars.$utilsPrimary;
-              }
-            }
-
-            .react-select__indicators {
-              height: 46px; // Ajuster la hauteur des indicateurs
-            }
-
-            .react-select__menu {
-              border: 2px solid vars.$borderColor;
-              border-radius: 8px;
-              box-shadow: 0 0.25em 1.25em rgba(0, 0, 0, 0.08);
-              margin-top: 0.25em;
-            }
-
-            .react-select__option {
-              font-size: 0.95em;
-              color: vars.$fontColorPrimary;
-
-              &--is-selected {
-                background-color: vars.$utilsPrimary;
-                color: white;
-              }
-
-              &--is-focused {
-                background-color: rgba(38, 208, 206, 0.1);
-                color: vars.$fontColorPrimary;
-              }
-
-              &:hover {
-                background-color: rgba(38, 208, 206, 0.1);
-              }
-            }
+            @include mixins.reactSelect;
           }
 
           textarea {
@@ -370,20 +235,8 @@
         }
 
         .formActions {
-          padding: 1em 1.5em; // Mobile first
-          background: vars.$greyBackground;
-          display: flex;
-          flex-direction: column-reverse; // Mobile: cancel on top
-          gap: 1em; // Mobile gap
-          border-top: 1px solid vars.$borderColor;
-          margin-top: auto; // Pousse les actions vers le bas
-
-          // Responsive tablette
-          @media (min-width: vars.$tabletWidth) {
-            flex-direction: row; // Horizontal on larger screens
-            justify-content: flex-end;
-            padding: 1.5em 2em;
-          }
+          @include mixins.formActions;
+          margin-top: auto;
 
           .btnCancel,
           .btnSubmit {
@@ -392,14 +245,13 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center; // Center on mobile
+            justify-content: center;
             gap: 0.5em;
             font-weight: 600;
             transition: all 0.3s ease;
 
-            // Responsive tablette
             @media (min-width: vars.$tabletWidth) {
-              width: auto; // Auto width on larger screens
+              width: auto;
             }
 
             &:disabled {

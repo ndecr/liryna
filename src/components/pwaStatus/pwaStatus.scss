@@ -143,7 +143,6 @@
     }
   }
 
-  // Responsive
   @media (max-width: vars.$mobileWidth) {
     top: 0.5em;
     right: 0.5em;
@@ -170,7 +169,6 @@
   }
 }
 
-// Animation pour l'apparition des notifications
 @keyframes slideIn {
   from {
     opacity: 0;
@@ -182,7 +180,6 @@
   }
 }
 
-// Classes globales pour l'état de connexion
 body.offline {
   .connection-dependent {
     opacity: 0.6;

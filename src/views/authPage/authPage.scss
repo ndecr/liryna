@@ -16,8 +16,8 @@
     @include mixins.mainContentExpanding;
     align-items: center;
     justify-content: center;
-    padding: calc(6dvh + 1em) 1em 1em; // Header height + padding
-    gap: 1.5em; // Mobile first
+    padding: calc(6dvh + 1em) 1em 1em;
+    gap: 1.5em;
 
     .changeFormButtonWrapper {
       width: 17.5em;
@@ -31,9 +31,8 @@
       }
     }
 
-    // Responsive tablette et plus
     @media (min-width: vars.$tabletWidth) {
-      gap: 2em; // Larger gap on bigger screens
+      gap: 2em;
       padding: 2em;
     }
   }

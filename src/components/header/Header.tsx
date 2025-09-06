@@ -5,7 +5,7 @@ import "./header.scss";
 import { ReactElement, useState, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
-import {  IoAdd, IoList } from "react-icons/io5";
+import { IoHome, IoAdd, IoList } from "react-icons/io5";
 import { UserContext } from "../../context/user/UserContext.tsx";
 
 // components
@@ -76,7 +76,10 @@ export default function Header(): ReactElement {
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && !isAuthRoute && (
         <div className="mobileMenuOverlay" onClick={closeMobileMenu}>
-          <div className="mobileMenu utils" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="mobileMenu utils"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="mobileMenuHeader utils">
               <span className="mobileMenuTitle">Navigation</span>
               <button className="mobileMenuClose" onClick={closeMobileMenu}>
@@ -100,17 +103,30 @@ export default function Header(): ReactElement {
 
               {/* Navigation des courriers */}
               <div className="mobileSection">
+                <button
+                  className={`mobileNavItem ${
+                    location.pathname === "/home" ? "active" : ""
+                  }`}
+                  onClick={() => handleNavigate("/home")}
+                >
+                  <IoHome className="mobileNavIcon" />
+                  <span className="mobileNavText">Accueil</span>
+                </button>
                 <h3 className="mobileSectionTitle">Gestion des courriers</h3>
-                <button 
-                  className={`mobileNavItem ${location.pathname === '/mail/new' ? 'active' : ''}`}
-                  onClick={() => handleNavigate('/mail/new')}
+                <button
+                  className={`mobileNavItem ${
+                    location.pathname === "/mail/new" ? "active" : ""
+                  }`}
+                  onClick={() => handleNavigate("/mail/new")}
                 >
                   <IoAdd className="mobileNavIcon" />
                   <span className="mobileNavText">Ajouter un courrier</span>
                 </button>
-                <button 
-                  className={`mobileNavItem ${location.pathname === '/mail/list' ? 'active' : ''}`}
-                  onClick={() => handleNavigate('/mail/list')}
+                <button
+                  className={`mobileNavItem ${
+                    location.pathname === "/mail/list" ? "active" : ""
+                  }`}
+                  onClick={() => handleNavigate("/mail/list")}
                 >
                   <IoList className="mobileNavIcon" />
                   <span className="mobileNavText">Liste des courriers</span>
