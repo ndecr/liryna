@@ -9,12 +9,18 @@ axios.defaults.timeout = 10000;
 axios.defaults.baseURL = getApiBaseUrl();
 axios.defaults.withCredentials = true; // Nécessaire pour les cookies httpOnly
 
-// Interceptor pour ajouter le token CSRF automatiquement (JWT maintenant dans les cookies)
+// Interceptor pour ajouter le token CSRF automatiquement (JWT dans cookies + fallback localStorage)
 axios.interceptors.request.use(async (config) => {
   // Les cookies sont automatiquement envoyés avec withCredentials: true
-  // Plus besoin de gérer manuellement le JWT token
+  // Mais ajout fallback localStorage pour compatibilité cross-origin
   
   config.headers = config.headers || {};
+  
+  // Temporaire: Fallback localStorage si cookies httpOnly ne fonctionnent pas
+  const fallbackToken = localStorage.getItem('authToken');
+  if (fallbackToken) {
+    config.headers.Authorization = `Bearer ${fallbackToken}`;
+  }
   
   // Ajouter le token CSRF pour les méthodes protégées
   const protectedMethods = ['post', 'patch', 'delete'];

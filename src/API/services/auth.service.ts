@@ -3,12 +3,17 @@ import { postRequest } from "../APICalls.ts";
 import { IUserCredentials, IUserRegistration, IAuthResponse } from "../../utils/types/user.types.ts";
 
 export const loginService = async (credentials: IUserCredentials): Promise<IAuthResponse> => {
-  const response: AxiosResponse<IAuthResponse> = await postRequest<IUserCredentials, IAuthResponse>(
+  const response: AxiosResponse<IAuthResponse & { token?: string }> = await postRequest<IUserCredentials, IAuthResponse & { token?: string }>(
     "/users/login",
     credentials
   );
   
-  // Plus de gestion localStorage - le token JWT est maintenant dans un cookie httpOnly sécurisé
+  // Temporaire: Si le serveur renvoie un token ET que les cookies ne marchent pas, l'utiliser
+  if (response.data.token) {
+    console.warn('🍪 Cookies httpOnly ne fonctionnent pas, fallback vers localStorage temporaire');
+    localStorage.setItem('authToken', response.data.token);
+  }
+  
   return response.data;
 };
 
