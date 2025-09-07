@@ -2,6 +2,12 @@
 import { ChangeEvent, ReactElement, useContext, useState, useEffect, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
+// components
+import PasswordStrengthIndicator from "../passwordStrengthIndicator/PasswordStrengthIndicator.tsx";
+
+// utils
+import { PasswordStrength } from "../../utils/scripts/passwordValidation.ts";
+
 // custom types
 interface ISignUpFormProps {
   email: string;
@@ -41,6 +47,8 @@ export default function SignUpForm({
   const navigate = useNavigate();
   const { register, user, isLoading } = useContext(UserContext);
   const [error, setError] = useState<string>("");
+  const [passwordIsValid, setPasswordIsValid] = useState<boolean>(false);
+  // const [passwordStrength, setPasswordStrength] = useState<PasswordStrength | null>(null); // Non utilisé
   
   const handleSubmit = async (): Promise<void> => {
     setError("");
@@ -56,8 +64,8 @@ export default function SignUpForm({
       return;
     }
     
-    if (password.length < 4) {
-      setError("Le mot de passe doit contenir au moins 4 caractères.");
+    if (!passwordIsValid) {
+      setError("Le mot de passe ne respecte pas les critères de sécurité requis.");
       return;
     }
     
@@ -86,6 +94,27 @@ export default function SignUpForm({
       setError(errorMessage);
     }
   };
+
+  // Gestionnaire de validation du mot de passe
+  const handlePasswordValidityChange = (isValid: boolean, _strength: PasswordStrength) => {
+    setPasswordIsValid(isValid);
+    // setPasswordStrength(strength); // Non utilisé
+  };
+
+  // Gestionnaire de génération de mot de passe
+  useEffect(() => {
+    const handlePasswordGenerated = (event: CustomEvent) => {
+      const generatedPassword = event.detail.password;
+      setPassword(generatedPassword);
+      setPasswordConfirmation(generatedPassword);
+    };
+
+    document.addEventListener('passwordGenerated', handlePasswordGenerated as EventListener);
+    
+    return () => {
+      document.removeEventListener('passwordGenerated', handlePasswordGenerated as EventListener);
+    };
+  }, []); // Pas de dépendances - les fonctions setters sont stables dans React
   
   useEffect(() => {
     if (user) {
@@ -149,6 +178,14 @@ export default function SignUpForm({
           }
         />
       </div>
+      
+      {/* Indicateur de force du mot de passe */}
+      <PasswordStrengthIndicator
+        password={password}
+        showDetails={true}
+        onValidityChange={handlePasswordValidityChange}
+      />
+      
       <div className={"inputContainer"}>
         <label htmlFor={"passwordConfirmation"}>
           Confirmer le mot de passe

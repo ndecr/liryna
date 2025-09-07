@@ -5,6 +5,10 @@ import 'aos/dist/aos.css';
 // types
 import { ReactElement, useEffect } from "react";
 
+// utils
+import { logEnvironmentInfo } from "./utils/scripts/utils.ts";
+import { testEnvironmentConfig } from "./utils/scripts/testEnvironment.ts";
+
 // hooks | library
 import {
   BrowserRouter as Router,
@@ -60,6 +64,14 @@ function App(): ReactElement {
       once: true,
       offset: 100
     });
+    
+    // Log environment information on app start
+    logEnvironmentInfo();
+    
+    // Test environment configuration in development
+    if (import.meta.env.DEV) {
+      testEnvironmentConfig();
+    }
   }, []);
 
   return (

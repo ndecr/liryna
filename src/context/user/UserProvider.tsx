@@ -10,6 +10,7 @@ import { IUser, IUserCredentials, IUserRegistration } from "../../utils/types/us
 // services
 import { getCurrentUserService } from "../../API/services/user.service.ts";
 import { loginService, registerService, logoutService, getStoredToken } from "../../API/services/auth.service.ts";
+import { csrfService } from "../../utils/services/csrfService.ts";
 
 export const UserProvider = ({
   children,
@@ -77,6 +78,7 @@ export const UserProvider = ({
 
   const logout = (): void => {
     logoutService();
+    csrfService.clearToken();
     setUser(null);
   };
 
