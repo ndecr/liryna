@@ -7,34 +7,54 @@ import { csrfService } from "../utils/services/csrfService.ts";
 
 axios.defaults.timeout = 10000;
 axios.defaults.baseURL = getApiBaseUrl();
-axios.defaults.withCredentials = false;
+axios.defaults.withCredentials = true; // Nécessaire pour les cookies httpOnly
 
-// Interceptor pour ajouter le token JWT et CSRF automatiquement
+// Interceptor pour ajouter le token CSRF automatiquement (JWT maintenant dans les cookies)
 axios.interceptors.request.use(async (config) => {
-  const token = localStorage.getItem('authToken');
-  if (token) {
-    config.headers = config.headers || {};
-    config.headers.Authorization = `Bearer ${token}`;
-    
-    // Ajouter le token CSRF pour les méthodes protégées
-    const protectedMethods = ['post', 'patch', 'delete'];
-    if (protectedMethods.includes(config.method?.toLowerCase() || '')) {
-      try {
-        // Exclure les routes de login/register/csrf-token
-        const isAuthRoute = config.url?.includes('/login') || 
-                           config.url?.includes('/register') || 
-                           config.url?.includes('/csrf-token');
-        if (!isAuthRoute) {
-          const csrfHeaders = await csrfService.getCSRFHeaders();
-          Object.assign(config.headers as Record<string, string>, csrfHeaders);
-        }
-      } catch (error) {
-        console.warn('Impossible d\'ajouter le token CSRF:', error);
+  // Les cookies sont automatiquement envoyés avec withCredentials: true
+  // Plus besoin de gérer manuellement le JWT token
+  
+  config.headers = config.headers || {};
+  
+  // Ajouter le token CSRF pour les méthodes protégées
+  const protectedMethods = ['post', 'patch', 'delete'];
+  if (protectedMethods.includes(config.method?.toLowerCase() || '')) {
+    try {
+      // Exclure les routes de login/register/csrf-token
+      const isAuthRoute = config.url?.includes('/login') || 
+                         config.url?.includes('/register') || 
+                         config.url?.includes('/csrf-token');
+      if (!isAuthRoute) {
+        const csrfHeaders = await csrfService.getCSRFHeaders();
+        Object.assign(config.headers as Record<string, string>, csrfHeaders);
       }
+    } catch (error) {
+      console.warn('Impossible d\'ajouter le token CSRF:', error);
     }
   }
+  
   return config;
 });
+
+// Interceptor de réponse pour gérer les erreurs d'authentification automatiquement
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Gestion automatique des erreurs d'authentification avec cookies
+    if (error.response?.status === 401) {
+      // Token JWT expiré ou invalide - redirection vers login
+      console.warn('Token JWT invalide ou expiré, redirection vers login');
+      // Nettoyer les données utilisateur et rediriger
+      window.location.href = '/login';
+    } else if (error.response?.status === 403) {
+      // Token CSRF invalide - nettoyer et redemander
+      console.warn('Token CSRF invalide');
+      csrfService.clearToken();
+    }
+    
+    return Promise.reject(error);
+  }
+);
 
 export const getRequest: (url: string, config?: Record<string, unknown>) => Promise<AxiosResponse> = async (
   url: string,
@@ -70,25 +90,21 @@ export const postFormDataRequest = async <R>(
   formData: FormData,
 ): Promise<AxiosResponse<R>> => {
   try {
-    const token = localStorage.getItem('authToken');
+    // Les cookies JWT sont automatiquement envoyés avec withCredentials: true
     const config: Record<string, unknown> = {
-      headers: {} as Record<string, string>
+      headers: {} as Record<string, string>,
+      withCredentials: true // Assurer que les cookies sont envoyés
     };
     
-    // Ajouter le token d'auth manuellement pour éviter les conflits
-    if (token) {
-      (config.headers as Record<string, string>).Authorization = `Bearer ${token}`;
-      
-      // Ajouter le token CSRF
-      try {
-        const csrfHeaders = await csrfService.getCSRFHeaders();
-        Object.assign(config.headers as Record<string, string>, csrfHeaders);
-      } catch (error) {
-        console.warn('Impossible d\'ajouter le token CSRF au FormData:', error);
-      }
+    // Ajouter uniquement le token CSRF pour les uploads
+    try {
+      const csrfHeaders = await csrfService.getCSRFHeaders();
+      Object.assign(config.headers as Record<string, string>, csrfHeaders);
+    } catch (error) {
+      console.warn('Impossible d\'ajouter le token CSRF au FormData:', error);
     }
     
-    // Ne PAS définir Content-Type - laisser le navigateur le faire
+    // Ne PAS définir Content-Type - laisser le navigateur le faire pour multipart/form-data
     return await axios.post<R>(url, formData, config);
   } catch (error) {
     console.error("Erreur in postFormDataRequest:", error);

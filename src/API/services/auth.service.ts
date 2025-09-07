@@ -8,10 +8,7 @@ export const loginService = async (credentials: IUserCredentials): Promise<IAuth
     credentials
   );
   
-  if (response.data.success && response.data.token) {
-    localStorage.setItem('authToken', response.data.token);
-  }
-  
+  // Plus de gestion localStorage - le token JWT est maintenant dans un cookie httpOnly sécurisé
   return response.data;
 };
 
@@ -21,17 +18,21 @@ export const registerService = async (userData: IUserRegistration): Promise<IAut
     userData
   );
   
-  if (response.data.success && response.data.token) {
-    localStorage.setItem('authToken', response.data.token);
-  }
-  
+  // Plus de gestion localStorage - le token JWT est maintenant dans un cookie httpOnly sécurisé
   return response.data;
 };
 
-export const logoutService = (): void => {
-  localStorage.removeItem('authToken');
+export const logoutService = async (): Promise<void> => {
+  // Appeler l'API pour supprimer le cookie côté serveur
+  try {
+    await postRequest<null, { success: boolean; message: string }>("/users/logout", null);
+  } catch (error) {
+    console.error("Erreur lors de la déconnexion côté serveur:", error);
+    // Continuer même si l'API échoue - la déconnexion côté client est prioritaire
+  }
 };
 
-export const getStoredToken = (): string | null => {
-  return localStorage.getItem('authToken');
-};
+// Plus nécessaire avec les cookies httpOnly - supprimé
+// export const getStoredToken = (): string | null => {
+//   return localStorage.getItem('authToken');
+// };
