@@ -1,0 +1,113 @@
+import { getRequest } from '../../API/APICalls';
+
+/**
+ * Service de gestion des tokens CSRF
+ * Permet de récupérer et stocker les tokens CSRF pour les requêtes protégées
+ */
+
+interface CSRFTokenResponse {
+  success: boolean;
+  csrfToken: string;
+  headerName: string;
+}
+
+class CSRFService {
+  private token: string | null = null;
+  private headerName: string = 'x-csrf-token';
+  
+  /**
+   * Récupère un nouveau token CSRF depuis l'API
+   */
+  async fetchToken(): Promise<string> {
+    try {
+      // Vérifier qu'un token d'auth existe avant d'essayer de récupérer le CSRF
+      const authToken = localStorage.getItem('authToken');
+      if (!authToken) {
+        throw new Error('Pas de token d\'authentification disponible');
+      }
+      
+      const response = await getRequest('/csrf-token') as { data: CSRFTokenResponse };
+      
+      if (response.data.success && response.data.csrfToken) {
+        this.token = response.data.csrfToken;
+        this.headerName = response.data.headerName || 'x-csrf-token';
+        return this.token;
+      }
+      
+      throw new Error('Token CSRF non reçu');
+      
+    } catch (error) {
+      console.error('Erreur lors de la récupération du token CSRF:', error);
+      this.token = null;
+      throw error;
+    }
+  }
+  
+  /**
+   * Récupère le token actuel ou en génère un nouveau
+   */
+  async getToken(): Promise<string> {
+    if (!this.token) {
+      return await this.fetchToken();
+    }
+    return this.token;
+  }
+  
+  /**
+   * Récupère le nom du header CSRF
+   */
+  getHeaderName(): string {
+    return this.headerName;
+  }
+  
+  /**
+   * Efface le token stocké (utile lors de la déconnexion)
+   */
+  clearToken(): void {
+    this.token = null;
+  }
+  
+  /**
+   * Vérifie si un token est disponible
+   */
+  hasToken(): boolean {
+    return this.token !== null;
+  }
+  
+  /**
+   * Récupère les headers nécessaires pour une requête protégée
+   */
+  async getCSRFHeaders(): Promise<Record<string, string>> {
+    try {
+      // Vérifier qu'on a un token d'auth avant d'essayer le CSRF
+      const authToken = localStorage.getItem('authToken');
+      if (!authToken) {
+        // Pas d'auth token = pas besoin de CSRF token
+        return {};
+      }
+      
+      const token = await this.getToken();
+      return {
+        [this.headerName]: token
+      };
+    } catch (error) {
+      console.warn('Impossible de récupérer les headers CSRF:', error);
+      return {};
+    }
+  }
+}
+
+// Instance singleton
+export const csrfService = new CSRFService();
+
+/**
+ * Hook pour faciliter l'utilisation du service CSRF dans les composants
+ */
+export const useCSRFToken = () => {
+  return {
+    getToken: () => csrfService.getToken(),
+    clearToken: () => csrfService.clearToken(),
+    getHeaders: () => csrfService.getCSRFHeaders(),
+    hasToken: () => csrfService.hasToken()
+  };
+};

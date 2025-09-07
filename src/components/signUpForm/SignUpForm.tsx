@@ -48,7 +48,7 @@ export default function SignUpForm({
   const { register, user, isLoading } = useContext(UserContext);
   const [error, setError] = useState<string>("");
   const [passwordIsValid, setPasswordIsValid] = useState<boolean>(false);
-  const [passwordStrength, setPasswordStrength] = useState<PasswordStrength | null>(null);
+  // const [passwordStrength, setPasswordStrength] = useState<PasswordStrength | null>(null); // Non utilisé
   
   const handleSubmit = async (): Promise<void> => {
     setError("");
@@ -96,9 +96,9 @@ export default function SignUpForm({
   };
 
   // Gestionnaire de validation du mot de passe
-  const handlePasswordValidityChange = (isValid: boolean, strength: PasswordStrength) => {
+  const handlePasswordValidityChange = (isValid: boolean, _strength: PasswordStrength) => {
     setPasswordIsValid(isValid);
-    setPasswordStrength(strength);
+    // setPasswordStrength(strength); // Non utilisé
   };
 
   // Gestionnaire de génération de mot de passe
@@ -114,7 +114,7 @@ export default function SignUpForm({
     return () => {
       document.removeEventListener('passwordGenerated', handlePasswordGenerated as EventListener);
     };
-  }, [setPassword, setPasswordConfirmation]);
+  }, []); // Pas de dépendances - les fonctions setters sont stables dans React
   
   useEffect(() => {
     if (user) {

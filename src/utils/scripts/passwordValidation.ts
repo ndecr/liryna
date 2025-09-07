@@ -236,31 +236,7 @@ const getSpecialCharVariety = (password: string): number => {
   return specialChars.size;
 };
 
-/**
- * Génère un mot de passe fort aléatoire
- */
-export const generateStrongPassword = (length: number = 16): string => {
-  const lowercase = 'abcdefghijklmnopqrstuvwxyz';
-  const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const digits = '0123456789';
-  const special = '@$!%*?&';
-  const allChars = lowercase + uppercase + digits + special;
-
-  // S'assurer qu'on a au moins un caractère de chaque type
-  let password = '';
-  password += lowercase[Math.floor(Math.random() * lowercase.length)];
-  password += uppercase[Math.floor(Math.random() * uppercase.length)];
-  password += digits[Math.floor(Math.random() * digits.length)];
-  password += special[Math.floor(Math.random() * special.length)];
-
-  // Remplir le reste de manière aléatoire
-  for (let i = password.length; i < length; i++) {
-    password += allChars[Math.floor(Math.random() * allChars.length)];
-  }
-
-  // Mélanger le mot de passe pour éviter les patterns prévisibles
-  return password.split('').sort(() => Math.random() - 0.5).join('');
-};
+// Fonction générée plus bas avec une meilleure implémentation
 
 /**
  * Estime le temps nécessaire pour craquer le mot de passe
@@ -292,4 +268,56 @@ const getCharsetSize = (password: string): number => {
   if (/\d/.test(password)) size += 10;
   if (/[@$!%*?&()_+=\-{}\[\]:";'<>?,./\\|`~]/.test(password)) size += 32;
   return size;
+};
+
+/**
+ * Génère un mot de passe fort aléatoirement
+ */
+export const generateStrongPassword = (length: number = 16): string => {
+  // Caractères EXACTEMENT comme attendus par le serveur
+  const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+  const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const numbers = '0123456789';
+  const specialChars = '@$!%*?&'; // SEULEMENT ceux autorisés par le backend
+  
+  // S'assurer d'un minimum de 8 caractères même si demandé moins
+  const finalLength = Math.max(length, 8);
+  
+  // S'assurer qu'on a au moins un caractère de chaque catégorie REQUISE
+  let password = '';
+  
+  // Ajouter au moins un caractère de chaque type requis (backend validation)
+  password += getRandomChar(lowercase);   // au moins 1 minuscule
+  password += getRandomChar(uppercase);   // au moins 1 majuscule  
+  password += getRandomChar(numbers);     // au moins 1 chiffre
+  password += getRandomChar(specialChars); // au moins 1 caractère spécial
+  
+  // Compléter avec des caractères aléatoires (tous autorisés)
+  const allChars = lowercase + uppercase + numbers + specialChars;
+  for (let i = password.length; i < finalLength; i++) {
+    password += getRandomChar(allChars);
+  }
+  
+  // Mélanger le mot de passe pour éviter un pattern prévisible
+  return shuffleString(password);
+};
+
+/**
+ * Sélectionne un caractère aléatoire dans une chaîne
+ */
+const getRandomChar = (chars: string): string => {
+  const randomIndex = Math.floor(Math.random() * chars.length);
+  return chars[randomIndex];
+};
+
+/**
+ * Mélange aléatoirement les caractères d'une chaîne
+ */
+const shuffleString = (str: string): string => {
+  const array = str.split('');
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array.join('');
 };

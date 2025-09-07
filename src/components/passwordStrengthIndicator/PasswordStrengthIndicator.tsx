@@ -25,7 +25,7 @@ function PasswordStrengthIndicator({
       setStrength(null);
       onValidityChange?.(false, {} as PasswordStrength);
     }
-  }, [password, onValidityChange]);
+  }, [password]); // Supprimer onValidityChange des dépendances pour éviter la boucle
 
   const handleGeneratePassword = () => {
     const generatedPassword = generateStrongPassword(16);
