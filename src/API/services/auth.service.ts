@@ -25,7 +25,7 @@ export const registerService = async (userData: IUserRegistration): Promise<IAut
 export const logoutService = async (): Promise<void> => {
   // Appeler l'API pour supprimer le cookie côté serveur
   try {
-    await postRequest<null, { success: boolean; message: string }>("/users/logout", null);
+    await postRequest<{}, { success: boolean; message: string }>("/users/logout", {});
   } catch (error) {
     console.error("Erreur lors de la déconnexion côté serveur:", error);
     // Continuer même si l'API échoue - la déconnexion côté client est prioritaire
