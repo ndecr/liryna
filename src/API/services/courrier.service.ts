@@ -143,13 +143,13 @@ export const getCourrierFieldOptionsService = async (field: 'kind' | 'department
 
 export const downloadBulkCourriersService = async (courrierIds: number[]): Promise<Blob> => {
   // Utiliser axios directement pour les téléchargements POST avec responseType blob
-  const token = localStorage.getItem('authToken');
+  // Les cookies httpOnly sont automatiquement envoyés avec withCredentials: true
   const config = {
     headers: {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` })
+      'Content-Type': 'application/json'
     },
-    responseType: 'blob' as const
+    responseType: 'blob' as const,
+    withCredentials: true // Assurer que les cookies sont envoyés
   };
   
   const response = await axios.post(`/courriers/download-bulk`, { courrierIds }, config);

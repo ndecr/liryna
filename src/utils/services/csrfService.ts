@@ -20,12 +20,7 @@ class CSRFService {
    */
   async fetchToken(): Promise<string> {
     try {
-      // Vérifier qu'un token d'auth existe avant d'essayer de récupérer le CSRF
-      const authToken = localStorage.getItem('authToken');
-      if (!authToken) {
-        throw new Error('Pas de token d\'authentification disponible');
-      }
-      
+      // Avec les cookies httpOnly, l'authentification est transparente
       const response = await getRequest('/csrf-token') as { data: CSRFTokenResponse };
       
       if (response.data.success && response.data.csrfToken) {
@@ -79,13 +74,7 @@ class CSRFService {
    */
   async getCSRFHeaders(): Promise<Record<string, string>> {
     try {
-      // Vérifier qu'on a un token d'auth avant d'essayer le CSRF
-      const authToken = localStorage.getItem('authToken');
-      if (!authToken) {
-        // Pas d'auth token = pas besoin de CSRF token
-        return {};
-      }
-      
+      // Avec les cookies httpOnly, récupérer le token CSRF si authentifié
       const token = await this.getToken();
       return {
         [this.headerName]: token

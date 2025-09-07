@@ -42,10 +42,9 @@ axios.interceptors.response.use(
   (error) => {
     // Gestion automatique des erreurs d'authentification avec cookies
     if (error.response?.status === 401) {
-      // Token JWT expiré ou invalide - redirection vers login
-      console.warn('Token JWT invalide ou expiré, redirection vers login');
-      // Nettoyer les données utilisateur et rediriger
-      window.location.href = '/login';
+      // Token JWT expiré ou invalide - laisser le UserProvider gérer l'état
+      console.warn('Token JWT invalide ou expiré');
+      // Ne pas rediriger ici - laisser le UserProvider s'en charger
     } else if (error.response?.status === 403) {
       // Token CSRF invalide - nettoyer et redemander
       console.warn('Token CSRF invalide');
