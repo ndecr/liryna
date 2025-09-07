@@ -28,11 +28,10 @@ export const UserProvider = ({
       // Avec les cookies httpOnly, on tente directement de récupérer le profil utilisateur
       // Le cookie sera automatiquement envoyé si présent
       try {
-          await getCurrentUser();
-        } catch (error) {
-          console.error("Token invalid, logging out:", error);
-          logout();
-        }
+        await getCurrentUser();
+      } catch (error) {
+        console.error("Token invalid, logging out:", error);
+        logout();
       }
       setIsLoading(false);
     };
