@@ -22,23 +22,6 @@ export const UserProvider = ({
 
   const isAuthenticated = useMemo(() => !!user, [user]);
 
-  // Vérifier l'authentification au chargement
-  useEffect(() => {
-    const initAuth = async () => {
-      // Avec les cookies httpOnly, on tente directement de récupérer le profil utilisateur
-      // Le cookie sera automatiquement envoyé si présent
-      try {
-        await getCurrentUser();
-      } catch (error) {
-        console.error("Token invalid, logging out:", error);
-        await logout();
-      }
-      setIsLoading(false);
-    };
-    
-    initAuth();
-  }, [getCurrentUser, logout]);
-
   const getCurrentUser = useCallback(async (): Promise<void> => {
     try {
       const currentUser = await getCurrentUserService();
@@ -55,6 +38,23 @@ export const UserProvider = ({
     csrfService.clearToken();
     setUser(null);
   }, []);
+
+  // Vérifier l'authentification au chargement
+  useEffect(() => {
+    const initAuth = async () => {
+      // Avec les cookies httpOnly, on tente directement de récupérer le profil utilisateur
+      // Le cookie sera automatiquement envoyé si présent
+      try {
+        await getCurrentUser();
+      } catch (error) {
+        console.error("Token invalid, logging out:", error);
+        await logout();
+      }
+      setIsLoading(false);
+    };
+    
+    initAuth();
+  }, [getCurrentUser, logout]);
 
   const login = useCallback(async (credentials: IUserCredentials): Promise<void> => {
     setIsLoading(true);
