@@ -9,7 +9,7 @@ import { IUser, IUserCredentials, IUserRegistration } from "../../utils/types/us
 
 // services
 import { getCurrentUserService } from "../../API/services/user.service.ts";
-import { loginService, registerService, logoutService, getStoredToken } from "../../API/services/auth.service.ts";
+import { loginService, registerService, logoutService } from "../../API/services/auth.service.ts";
 import { csrfService } from "../../utils/services/csrfService.ts";
 
 export const UserProvider = ({
@@ -20,14 +20,14 @@ export const UserProvider = ({
   const [user, setUser] = useState<IUser | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const isAuthenticated = useMemo(() => !!user && !!getStoredToken(), [user]);
+  const isAuthenticated = useMemo(() => !!user, [user]);
 
   // Vérifier l'authentification au chargement
   useEffect(() => {
     const initAuth = async () => {
-      const token = getStoredToken();
-      if (token) {
-        try {
+      // Avec les cookies httpOnly, on tente directement de récupérer le profil utilisateur
+      // Le cookie sera automatiquement envoyé si présent
+      try {
           await getCurrentUser();
         } catch (error) {
           console.error("Token invalid, logging out:", error);
@@ -76,8 +76,8 @@ export const UserProvider = ({
     }
   };
 
-  const logout = (): void => {
-    logoutService();
+  const logout = async (): Promise<void> => {
+    await logoutService();
     csrfService.clearToken();
     setUser(null);
   };

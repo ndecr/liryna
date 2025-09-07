@@ -2,10 +2,15 @@ import axios from "axios";
 
 export const handleAuthError = (error: unknown): string => {
   if (axios.isAxiosError(error)) {
+    // Gestion des erreurs d'authentification avec cookies httpOnly
     if (error.response?.status === 409) {
       return "Un compte avec cet email existe déjà. Vous pouvez vous connecter avec cet email.";
     } else if (error.response?.status === 401) {
-      return "Identifiants invalides. Veuillez vérifier votre email et mot de passe.";
+      // Token invalide ou expiré - redirection automatique gérée par les interceptors
+      return "Session expirée ou identifiants invalides.";
+    } else if (error.response?.status === 403) {
+      // Token CSRF invalide
+      return "Session de sécurité expirée. Veuillez rafraîchir la page.";
     } else if (error.response?.data?.message) {
       return error.response.data.message;
     } else {
