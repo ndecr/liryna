@@ -3,6 +3,64 @@ import react from "@vitejs/plugin-react";
 import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
+// Plugin pour générer CSP adaptée à l'environnement
+const generateCSP = () => {
+  return {
+    name: 'generate-csp',
+    buildStart() {
+      const isDev = process.env.NODE_ENV === 'development';
+      
+      // CSP stricte pour production
+      const prodCSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.liryna.app; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
+      
+      // CSP permissive pour développement
+      const devCSP = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.liryna.app https://localhost:8800; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
+      
+      const cspValue = isDev ? devCSP : prodCSP;
+      
+      // Générer vercel.json avec la CSP appropriée
+      const vercelConfig = {
+        "rewrites": [
+          {
+            "source": "/(.*)",
+            "destination": "/index.html"
+          }
+        ],
+        "headers": [
+          {
+            "source": "/(.*)",
+            "headers": [
+              {
+                "key": "Content-Security-Policy",
+                "value": cspValue
+              },
+              {
+                "key": "X-Content-Type-Options",
+                "value": "nosniff"
+              },
+              {
+                "key": "X-Frame-Options", 
+                "value": "DENY"
+              },
+              {
+                "key": "Referrer-Policy",
+                "value": "strict-origin-when-cross-origin"
+              },
+              {
+                "key": "Permissions-Policy",
+                "value": "geolocation=(), microphone=(), camera=(), fullscreen=(), payment=()"
+              }
+            ]
+          }
+        ]
+      };
+      
+      writeFileSync(join(__dirname, 'vercel.json'), JSON.stringify(vercelConfig, null, 2));
+      console.log(`✅ CSP generated for ${isDev ? 'development' : 'production'}`);
+    }
+  };
+};
+
 // Plugin pour générer et injecter la version dans le service worker
 const injectVersion = () => {
   return {
@@ -41,7 +99,7 @@ const injectVersion = () => {
 };
 
 export default defineConfig({
-  plugins: [react(), injectVersion()],
+  plugins: [react(), generateCSP(), injectVersion()],
   base: "/",
   build: {
     // Optimisations pour PWA
