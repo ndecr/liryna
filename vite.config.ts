@@ -11,10 +11,10 @@ const generateCSP = () => {
       const isDev = process.env.NODE_ENV === 'development';
       
       // CSP stricte pour production
-      const prodCSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.liryna.app; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
+      const prodCSP = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; object-src 'self'; connect-src 'self' https://api.liryna.app; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
       
       // CSP permissive pour développement
-      const devCSP = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.liryna.app https://localhost:8800; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
+      const devCSP = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; object-src 'self'; connect-src 'self' https://api.liryna.app https://localhost:8800; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
       
       const cspValue = isDev ? devCSP : prodCSP;
       
