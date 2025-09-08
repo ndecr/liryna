@@ -373,52 +373,14 @@ function ListeCourriers(): ReactElement {
       // Détecter le type de fichier basé sur l'extension
       const isImage = courrier.fileName.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|webp)$/);
       
-      // Option 1 : Utiliser directement l'URL de l'API (recommandé pour CSP strict)
-      // L'API doit servir les fichiers avec les headers appropriés
-      const directUrl = `/api/courriers/${courrier.id}/download`;
-      
-      try {
-        // Tester si l'API peut servir directement le fichier
-        const response = await fetch(directUrl, {
-          method: 'HEAD',
-          credentials: 'include'
-        });
-        
-        if (response.ok) {
-          // Utiliser l'URL directe de l'API
-          setPdfModal({
-            visible: true,
-            pdfUrl: directUrl,
-            fileName: courrier.fileName,
-            fileType: isImage ? 'image' : 'pdf'
-          });
-          return;
-        }
-      } catch (headError) {
-        console.warn('Direct URL not available, falling back to blob method');
-      }
-      
-      // Option 2 : Fallback avec blob et data URL
+      // Utiliser uniquement la méthode blob URL (compatible CSP strict)
       const blob = await downloadCourrierService(courrier.id);
       
       // Détecter le type de fichier basé sur le type MIME du blob aussi
       const isImageBlob = blob.type.startsWith('image/') || isImage;
       
-      // Vérifier la taille du fichier pour décider de la méthode d'affichage
-      const maxDataUrlSize = 10 * 1024 * 1024; // 10MB max pour data URL
-      
-      let fileUrl: string;
-      
-      if (blob.size <= maxDataUrlSize) {
-        // Pour les petits fichiers, utiliser data URL (compatible CSP)
-        const arrayBuffer = await blob.arrayBuffer();
-        const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
-        fileUrl = `data:${blob.type};base64,${base64}`;
-      } else {
-        // Pour les gros fichiers, créer un blob URL temporaire
-        // Note: nécessite 'blob:' dans frame-src du CSP
-        fileUrl = URL.createObjectURL(blob);
-      }
+      // Créer un blob URL temporaire (compatible avec object-src 'self')
+      const fileUrl = URL.createObjectURL(blob);
       
       setPdfModal({
         visible: true,

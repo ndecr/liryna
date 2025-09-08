@@ -8,8 +8,8 @@ const generateCSP = () => {
   return {
     name: 'generate-csp',
     buildStart() {
-      // Toujours utiliser le CSP de production avec object-src 'self'
-      const cspValue = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; object-src 'self'; connect-src 'self' https://api.liryna.app; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
+      // CSP strict et sécurisé avec support des blob URLs pour l'affichage de fichiers
+      const cspValue = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob:; object-src 'self' blob:; connect-src 'self' https://api.liryna.app; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
       
       // Générer vercel.json avec la CSP appropriée
       const vercelConfig = {
@@ -52,8 +52,8 @@ const generateCSP = () => {
       console.log(`✅ CSP generated with object-src 'self'`);
     },
     transformIndexHtml(html: string) {
-      // Injecter le CSP directement dans le HTML pour court-circuiter le cache Vercel
-      const cspValue = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; object-src 'self'; connect-src 'self' https://api.liryna.app; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
+      // CSP strict et sécurisé avec support des blob URLs pour l'affichage de fichiers
+      const cspValue = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob:; object-src 'self' blob:; connect-src 'self' https://api.liryna.app; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
       
       return html.replace(
         '<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />',
