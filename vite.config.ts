@@ -8,18 +8,8 @@ const generateCSP = () => {
   return {
     name: 'generate-csp',
     buildStart() {
-      // Détection spécifique Vercel + environnement
-      const isVercelBuild = process.env.VERCEL || process.env.CI;
-      const isDev = process.env.NODE_ENV === 'development' && !isVercelBuild;
-      console.log('🔍 Build Environment:', process.env.NODE_ENV, '| Vercel:', !!isVercelBuild, '| isDev:', isDev);
-      
-      // CSP stricte pour production
-      const prodCSP = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; object-src 'self'; connect-src 'self' https://api.liryna.app; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
-      
-      // CSP permissive pour développement
-      const devCSP = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; object-src 'self'; connect-src 'self' https://api.liryna.app https://localhost:8800; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
-      
-      const cspValue = isDev ? devCSP : prodCSP;
+      // Toujours utiliser le CSP de production avec object-src 'self'
+      const cspValue = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; object-src 'self'; connect-src 'self' https://api.liryna.app; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
       
       // Générer vercel.json avec la CSP appropriée
       const vercelConfig = {
@@ -59,7 +49,19 @@ const generateCSP = () => {
       };
       
       writeFileSync(join(__dirname, 'vercel.json'), JSON.stringify(vercelConfig, null, 2));
-      console.log(`✅ CSP generated for ${isDev ? 'development' : 'production'}`);
+      console.log(`✅ CSP generated with object-src 'self'`);
+    },
+    transformIndexHtml(html: string) {
+      // Injecter le CSP directement dans le HTML pour court-circuiter le cache Vercel
+      const cspValue = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; object-src 'self'; connect-src 'self' https://api.liryna.app; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
+      
+      return html.replace(
+        '<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />',
+        `<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+    
+    <!-- Content Security Policy - Force object-src 'self' -->
+    <meta http-equiv="Content-Security-Policy" content="${cspValue}" />`
+      );
     }
   };
 };
