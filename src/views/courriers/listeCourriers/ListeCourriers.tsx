@@ -856,23 +856,10 @@ function ListeCourriers(): ReactElement {
       {/* Tooltip personnalisé */}
       {tooltip.visible && (
         <div 
-          className="customTooltip"
+          className="tooltip"
           style={{
-            position: 'fixed',
             left: tooltip.x,
             top: tooltip.y,
-            zIndex: 10000,
-            backgroundColor: 'rgba(44, 62, 80, 0.95)',
-            color: 'white',
-            padding: '0.75em 1em',
-            borderRadius: '8px',
-            fontSize: '0.8em',
-            maxWidth: '25em',
-            wordWrap: 'break-word',
-            whiteSpace: 'pre-wrap',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)',
-            backdropFilter: 'blur(4px)',
-            pointerEvents: 'none'
           }}
         >
           {tooltip.content}
@@ -889,12 +876,7 @@ function ListeCourriers(): ReactElement {
           <img
             src={pdfModal.pdfUrl}
             alt={pdfModal.fileName}
-            style={{ 
-              width: '100%', 
-              height: '100%', 
-              objectFit: 'contain',
-              border: 'none'
-            }}
+            className="modal-content-image"
           />
         ) : (
           // Utiliser embed au lieu d'iframe pour les PDFs (meilleure compatibilité CSP)
@@ -903,7 +885,7 @@ function ListeCourriers(): ReactElement {
             type="application/pdf"
             width="100%"
             height="100%"
-            style={{ border: 'none' }}
+            className="modal-content-embed"
             title="Visualisation PDF"
           />
         )}

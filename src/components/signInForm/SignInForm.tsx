@@ -95,16 +95,7 @@ export default function SignInForm({
       </div>
       {error && (
         <div
-          className={"errorMessage"}
-          style={{
-            color: "#dc3545",
-            background: "#f8d7da",
-            border: "1px solid #f5c6cb",
-            borderRadius: "4px",
-            padding: "8px 12px",
-            margin: "10px 0",
-            fontSize: "14px",
-          }}
+          className="errorMessage"
         >
           {error}
         </div>
