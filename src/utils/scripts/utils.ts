@@ -15,7 +15,7 @@ export const getApiBaseUrl = (): string => {
     return devUrl;
   } else {
     // Production - utiliser le backend de production
-    const prodUrl = "https://ndecrolympe.duckdns.org/api";
+    const prodUrl = "https://api.liryna.app/api";
     console.log('🚀 Mode production détecté - Backend:', prodUrl);
     return prodUrl;
   }
