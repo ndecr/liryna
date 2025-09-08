@@ -8,7 +8,10 @@ const generateCSP = () => {
   return {
     name: 'generate-csp',
     buildStart() {
-      const isDev = process.env.NODE_ENV === 'development';
+      // Détection spécifique Vercel + environnement
+      const isVercelBuild = process.env.VERCEL || process.env.CI;
+      const isDev = process.env.NODE_ENV === 'development' && !isVercelBuild;
+      console.log('🔍 Build Environment:', process.env.NODE_ENV, '| Vercel:', !!isVercelBuild, '| isDev:', isDev);
       
       // CSP stricte pour production
       const prodCSP = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; object-src 'self'; connect-src 'self' https://api.liryna.app; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
