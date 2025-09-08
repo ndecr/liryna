@@ -215,7 +215,7 @@ export default function SignUpForm({
       )}
       <div className={"buttonContainer"}>
         <Button 
-          style={"orange"} 
+          style={"seaGreen"} 
           children={isLoading ? "Inscription..." : "S'enregistrer"} 
           type={"submit"} 
           disabled={isLoading}

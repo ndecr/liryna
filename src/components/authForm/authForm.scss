@@ -1,3 +1,5 @@
+@use "../../utils/styles/variables" as vars;
+
 #authForm {
   display: flex;
   flex-flow: column;
@@ -22,7 +24,7 @@
       width: 15%;
       height: 2px;
       border-radius: 8px;
-      background: linear-gradient(135deg, #fb5858, #36395a);
+      background: linear-gradient(135deg, vars.$utilsPrimary, vars.$utilsSecondary);
     }
   }
 

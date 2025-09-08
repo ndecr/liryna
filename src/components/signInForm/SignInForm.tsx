@@ -94,23 +94,26 @@ export default function SignInForm({
         />
       </div>
       {error && (
-        <div className={"errorMessage"} style={{
-          color: "#dc3545",
-          background: "#f8d7da",
-          border: "1px solid #f5c6cb",
-          borderRadius: "4px",
-          padding: "8px 12px",
-          margin: "10px 0",
-          fontSize: "14px"
-        }}>
+        <div
+          className={"errorMessage"}
+          style={{
+            color: "#dc3545",
+            background: "#f8d7da",
+            border: "1px solid #f5c6cb",
+            borderRadius: "4px",
+            padding: "8px 12px",
+            margin: "10px 0",
+            fontSize: "14px",
+          }}
+        >
           {error}
         </div>
       )}
       <div className={"buttonContainer"}>
-        <Button 
-          style="orange" 
-          children={isLoading ? "Connexion..." : "Connexion"} 
-          type="submit" 
+        <Button
+          style="seaGreen"
+          children={isLoading ? "Connexion..." : "Connexion"}
+          type="submit"
           disabled={isLoading}
         />
       </div>

@@ -5,7 +5,7 @@ import "./button.scss";
 import { ReactElement, ReactNode, MouseEvent } from "react";
 
 interface IButtonProps {
-  style: "orange" | "white" | "grey" | "green" | "red" | "back";
+  style: "orange" | "white" | "grey" | "green" | "red" | "back" | "seaGreen";
   children: ReactNode;
   type?: "submit" | "reset" | "button";
   disabled?: boolean;
