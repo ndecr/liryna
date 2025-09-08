@@ -8,11 +8,8 @@ export const loginService = async (credentials: IUserCredentials): Promise<IAuth
     credentials
   );
   
-  // Temporaire: Si le serveur renvoie un token ET que les cookies ne marchent pas, l'utiliser
-  if (response.data.token) {
-    console.warn('🍪 Cookies httpOnly ne fonctionnent pas, fallback vers localStorage temporaire');
-    localStorage.setItem('authToken', response.data.token);
-  }
+  // Le token JWT est maintenant dans un cookie httpOnly cross-domain (.liryna.app)
+  // Plus besoin de localStorage - sécurité maximale contre XSS
   
   return response.data;
 };
@@ -28,13 +25,15 @@ export const registerService = async (userData: IUserRegistration): Promise<IAut
 };
 
 export const logoutService = async (): Promise<void> => {
-  // Appeler l'API pour supprimer le cookie côté serveur
+  // Appeler l'API pour supprimer le cookie httpOnly côté serveur
   try {
     await postRequest<{}, { success: boolean; message: string }>("/users/logout", {});
   } catch (error) {
     console.error("Erreur lors de la déconnexion côté serveur:", error);
-    // Continuer même si l'API échoue - la déconnexion côté client est prioritaire
+    // Continuer même si l'API échoue - le cookie sera nettoyé côté serveur
   }
+  
+  // Plus besoin de nettoyer localStorage - tout est dans le cookie httpOnly
 };
 
 // Plus nécessaire avec les cookies httpOnly - supprimé
