@@ -370,19 +370,61 @@ function ListeCourriers(): ReactElement {
 
   const handleViewPdf = async (courrier: ICourrier) => {
     try {
-      // Utiliser directement le service au lieu du context pour éviter les re-renders
-      const blob = await downloadCourrierService(courrier.id);
-      const pdfUrl = URL.createObjectURL(blob);
+      // Détecter le type de fichier basé sur l'extension
+      const isImage = courrier.fileName.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|webp)$/);
       
-      // Détecter le type de fichier basé sur l'extension ou le type MIME du blob
-      const isImage = blob.type.startsWith('image/') || 
-                      courrier.fileName.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|webp)$/);
+      // Option 1 : Utiliser directement l'URL de l'API (recommandé pour CSP strict)
+      // L'API doit servir les fichiers avec les headers appropriés
+      const directUrl = `/api/courriers/${courrier.id}/download`;
+      
+      try {
+        // Tester si l'API peut servir directement le fichier
+        const response = await fetch(directUrl, {
+          method: 'HEAD',
+          credentials: 'include'
+        });
+        
+        if (response.ok) {
+          // Utiliser l'URL directe de l'API
+          setPdfModal({
+            visible: true,
+            pdfUrl: directUrl,
+            fileName: courrier.fileName,
+            fileType: isImage ? 'image' : 'pdf'
+          });
+          return;
+        }
+      } catch (headError) {
+        console.warn('Direct URL not available, falling back to blob method');
+      }
+      
+      // Option 2 : Fallback avec blob et data URL
+      const blob = await downloadCourrierService(courrier.id);
+      
+      // Détecter le type de fichier basé sur le type MIME du blob aussi
+      const isImageBlob = blob.type.startsWith('image/') || isImage;
+      
+      // Vérifier la taille du fichier pour décider de la méthode d'affichage
+      const maxDataUrlSize = 10 * 1024 * 1024; // 10MB max pour data URL
+      
+      let fileUrl: string;
+      
+      if (blob.size <= maxDataUrlSize) {
+        // Pour les petits fichiers, utiliser data URL (compatible CSP)
+        const arrayBuffer = await blob.arrayBuffer();
+        const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+        fileUrl = `data:${blob.type};base64,${base64}`;
+      } else {
+        // Pour les gros fichiers, créer un blob URL temporaire
+        // Note: nécessite 'blob:' dans frame-src du CSP
+        fileUrl = URL.createObjectURL(blob);
+      }
       
       setPdfModal({
         visible: true,
-        pdfUrl: pdfUrl,
+        pdfUrl: fileUrl,
         fileName: courrier.fileName,
-        fileType: isImage ? 'image' : 'pdf'
+        fileType: isImageBlob ? 'image' : 'pdf'
       });
     } catch (error: unknown) {
       logError('handleViewPdf', error);
@@ -393,6 +435,7 @@ function ListeCourriers(): ReactElement {
 
   const closePdfModal = () => {
     // Nettoyer l'URL du blob pour éviter les fuites mémoire
+    // Ne pas nettoyer les URLs directes de l'API ou les data URLs
     if (pdfModal.pdfUrl && pdfModal.pdfUrl.startsWith('blob:')) {
       URL.revokeObjectURL(pdfModal.pdfUrl);
     }
@@ -892,8 +935,10 @@ function ListeCourriers(): ReactElement {
             }}
           />
         ) : (
-          <iframe
+          // Utiliser embed au lieu d'iframe pour les PDFs (meilleure compatibilité CSP)
+          <embed
             src={pdfModal.pdfUrl}
+            type="application/pdf"
             width="100%"
             height="100%"
             style={{ border: 'none' }}

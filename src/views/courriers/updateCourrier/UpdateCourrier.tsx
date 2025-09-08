@@ -473,8 +473,9 @@ function UpdateCourrier(): ReactElement {
                       className="imagePreview"
                     />
                   ) : (
-                    <iframe
+                    <embed
                       src={pdfUrl}
+                      type="application/pdf"
                       title="Aperçu du courrier"
                       className="pdfPreview"
                     />
