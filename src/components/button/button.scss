@@ -8,7 +8,7 @@
   font-family: -apple-system, BlinkMacSystemFont, "Roboto", sans-serif;
   border-radius: 6px;
   border: none;
-  font-size: 0.95dvw;
+  font-size: 1rem;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
@@ -16,11 +16,11 @@
   transition: all vars.$transitionMedium;
 
   @media (max-width: 1024px) {
-    font-size: 1.5dvw;
+    font-size: .8rem;
   }
 
   @media (max-width: 25em) {
-    font-size: 0.875em;
+    font-size: .8rem;
   }
 }
 

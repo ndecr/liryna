@@ -1,6 +1,7 @@
 // hooks | library
 import { ChangeEvent, ReactElement, useContext, useState, useEffect, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { IoEye, IoEyeOff } from "react-icons/io5";
 
 // components
 import PasswordStrengthIndicator from "../passwordStrengthIndicator/PasswordStrengthIndicator.tsx";
@@ -12,12 +13,10 @@ import { PasswordStrength } from "../../utils/scripts/passwordValidation.ts";
 interface ISignUpFormProps {
   email: string;
   password: string;
-  passwordConfirmation: string;
   firstName: string;
   lastName: string;
   setEmail: (value: string) => void;
   setPassword: (value: string) => void;
-  setPasswordConfirmation: (value: string) => void;
   setFirstName: (value: string) => void;
   setLastName: (value: string) => void;
 }
@@ -35,12 +34,10 @@ import Button from "../button/Button";
 export default function SignUpForm({
   email,
   password,
-  passwordConfirmation,
   firstName,
   lastName,
   setEmail,
   setPassword,
-  setPasswordConfirmation,
   setFirstName,
   setLastName,
 }: Readonly<ISignUpFormProps>): ReactElement {
@@ -48,19 +45,15 @@ export default function SignUpForm({
   const { register, user, isLoading } = useContext(UserContext);
   const [error, setError] = useState<string>("");
   const [passwordIsValid, setPasswordIsValid] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   // const [passwordStrength, setPasswordStrength] = useState<PasswordStrength | null>(null); // Non utilisé
   
   const handleSubmit = async (): Promise<void> => {
     setError("");
     
     // Validation
-    if (!email || !password || !passwordConfirmation || !firstName || !lastName) {
+    if (!email || !password || !firstName || !lastName) {
       setError("Tous les champs sont requis.");
-      return;
-    }
-    
-    if (password !== passwordConfirmation) {
-      setError("Les mots de passe ne correspondent pas.");
       return;
     }
     
@@ -106,7 +99,6 @@ export default function SignUpForm({
     const handlePasswordGenerated = (event: CustomEvent) => {
       const generatedPassword = event.detail.password;
       setPassword(generatedPassword);
-      setPasswordConfirmation(generatedPassword);
     };
 
     document.addEventListener('passwordGenerated', handlePasswordGenerated as EventListener);
@@ -168,38 +160,33 @@ export default function SignUpForm({
       </div>
       <div className={"inputContainer"}>
         <label htmlFor={"password"}>Mot de passe</label>
-        <input
-          id={"password"}
-          type={"password"}
-          value={password}
-          autoComplete={"on"}
-          onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-            setPassword(e.target.value)
-          }
-        />
+        <div className="password-input-container">
+          <input
+            id={"password"}
+            type={showPassword ? "text" : "password"}
+            value={password}
+            autoComplete={"on"}
+            onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+              setPassword(e.target.value)
+            }
+          />
+          <button
+            type="button"
+            className="password-toggle-btn"
+            onClick={() => setShowPassword(!showPassword)}
+            title={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+          >
+            {showPassword ? <IoEyeOff /> : <IoEye />}
+          </button>
+        </div>
       </div>
       
       {/* Indicateur de force du mot de passe */}
       <PasswordStrengthIndicator
         password={password}
-        showDetails={true}
         onValidityChange={handlePasswordValidityChange}
       />
       
-      <div className={"inputContainer"}>
-        <label htmlFor={"passwordConfirmation"}>
-          Confirmer le mot de passe
-        </label>
-        <input
-          id={"passwordConfirmation"}
-          type={"password"}
-          value={passwordConfirmation}
-          autoComplete={"off"}
-          onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-            setPasswordConfirmation(e.target.value)
-          }
-        />
-      </div>
       {error && (
         <div className={"errorMessage"} style={{
           color: "#dc3545",

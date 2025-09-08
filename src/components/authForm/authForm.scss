@@ -7,7 +7,7 @@
   border: 2px solid #36395a;
   border-radius: 4px;
   padding: 1em;
-  gap:2em;
+  gap: 1em;
   width: 16.25em;
 
 
@@ -39,6 +39,42 @@
       border: 1px solid #36395a;
       border-radius: 4px;
       padding: .5em;
+    }
+
+    .password-input-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      input {
+        padding-right: 2.5em; // Espace pour le bouton toggle
+      }
+
+      .password-toggle-btn {
+        position: absolute;
+        right: 0.5em;
+        background: none;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.25em;
+        color: #36395a;
+        font-size: 1.1em;
+        transition: vars.$transitionMedium;
+
+        &:hover {
+          color: vars.$utilsPrimary;
+          transform: scale(1.1);
+        }
+
+        &:focus {
+          outline: 2px solid vars.$utilsPrimary;
+          outline-offset: 2px;
+          border-radius: 4px;
+        }
+      }
     }
   }
 
