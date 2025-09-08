@@ -1,6 +1,6 @@
 {
-  "name": "What a tool !",
-  "short_name": "WhatAtool",
+  "name": "Liryna",
+  "short_name": "Liryna",
   "description": "Application de gestion de courriers et outils web",
   "start_url": "/",
   "display": "standalone",

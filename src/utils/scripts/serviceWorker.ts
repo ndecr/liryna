@@ -1,4 +1,4 @@
-// Service Worker registration et gestion pour What a tool PWA
+// Service Worker registration et gestion pour Liryna PWA
 
 const SW_URL = '/sw.js';
 const isProduction = (() => {
@@ -265,7 +265,7 @@ export const showInstallPrompt = (): Promise<boolean> => {
       
       // Montrer un bouton d'installation personnalisé
       const shouldInstall = confirm(
-        'Voulez-vous installer What a tool sur votre appareil pour une meilleure expérience ?'
+        'Voulez-vous installer Liryna sur votre appareil pour une meilleure expérience ?'
       );
 
       if (shouldInstall && deferredPrompt) {

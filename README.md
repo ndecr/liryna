@@ -1,10 +1,10 @@
-# 🔐 WhatATool - Gestion Documentaire Sécurisée
+# 🔐 Liryna - Gestion Documentaire Sécurisée
 
 Une application React PWA moderne pour la gestion complète de documents avec authentification sécurisée par cookies httpOnly.
 
 ## 🎯 Description
 
-**WhatATool** est une application de gestion documentaire complète spécialisée dans le suivi et la gestion des courriers. L'application offre une interface moderne, responsive et sécurisée avec des fonctionnalités PWA pour une utilisation optimale sur tous les appareils.
+**Liryna** est une application de gestion documentaire complète spécialisée dans le suivi et la gestion des courriers. L'application offre une interface moderne, responsive et sécurisée avec des fonctionnalités PWA pour une utilisation optimale sur tous les appareils.
 
 ## ✨ Fonctionnalités
 
@@ -259,4 +259,4 @@ npm install && npm run dev
 
 ---
 
-**🔐 WhatATool** - Solution complète de gestion documentaire sécurisée avec PWA ! 📱✨
+**🔐 Liryna** - Solution complète de gestion documentaire sécurisée avec PWA ! 📱✨

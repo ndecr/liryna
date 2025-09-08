@@ -42,8 +42,8 @@ export default function Header(): ReactElement {
             title={isAuthRoute ? "" : "Home"}
           >
             <h1 className="brandTitle">
-              <span className="what">What</span> a{" "}
-              <span className="tool">tool!</span>
+              <span className="Lir">Lir</span>
+              <span className="yna">yna</span>
             </h1>
           </Link>
 

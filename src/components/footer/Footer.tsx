@@ -8,7 +8,7 @@ export default function Footer(): ReactElement {
   return (
     <footer id="footer">
       <div className={"textWrapper"}>
-        <p>What a tool ! ©DECRESSAC Nicolas – 2025</p>
+        <p>Liryna ! ©DECRESSAC Nicolas – 2025</p>
       </div>
     </footer>
   );

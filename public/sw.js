@@ -1,9 +1,9 @@
-// Service Worker pour What a tool PWA
+// Service Worker pour Liryna PWA
 // Version générée automatiquement lors du build - ne pas modifier manuellement
 const BUILD_VERSION = '__BUILD_VERSION__'; // Sera remplacé par Vite lors du build
-const CACHE_NAME = `whatatool-v${BUILD_VERSION}`;
-const STATIC_CACHE = `whatatool-static-v${BUILD_VERSION}`;
-const DYNAMIC_CACHE = `whatatool-dynamic-v${BUILD_VERSION}`;
+const CACHE_NAME = `liryna-v${BUILD_VERSION}`;
+const STATIC_CACHE = `liryna-static-v${BUILD_VERSION}`;
+const DYNAMIC_CACHE = `liryna-dynamic-v${BUILD_VERSION}`;
 
 // Vérifier si nous sommes en mode développement
 const isDevelopment = self.location.hostname === 'localhost' && self.location.port === '5173';
@@ -280,7 +280,7 @@ self.addEventListener('push', (event) => {
     };
     
     event.waitUntil(
-      self.registration.showNotification(data.title || 'What a tool', options)
+      self.registration.showNotification(data.title || 'Liryna', options)
     );
   }
 });
