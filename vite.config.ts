@@ -9,7 +9,7 @@ const generateCSP = () => {
     name: 'generate-csp',
     buildStart() {
       // CSP strict et sécurisé avec support des blob URLs pour l'affichage de fichiers
-      const cspValue = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob:; object-src 'self' blob:; frame-src 'self' blob:; connect-src 'self' https://api.liryna.app https://unpkg.com https://fonts.googleapis.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
+      const cspValue = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob:; object-src 'self' blob:; frame-src 'self' blob:; connect-src 'self' https://api.liryna.app https://unpkg.com https://fonts.googleapis.com; child-src blob:; worker-src blob: https://unpkg.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
       
       // Générer vercel.json avec la CSP appropriée
       const vercelConfig = {
@@ -53,7 +53,7 @@ const generateCSP = () => {
     },
     transformIndexHtml(html: string) {
       // CSP strict et sécurisé avec support des blob URLs pour l'affichage de fichiers
-      const cspValue = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob:; object-src 'self' blob:; frame-src 'self' blob:; connect-src 'self' https://api.liryna.app https://unpkg.com https://fonts.googleapis.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
+      const cspValue = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob:; object-src 'self' blob:; frame-src 'self' blob:; connect-src 'self' https://api.liryna.app https://unpkg.com https://fonts.googleapis.com; child-src blob:; worker-src blob: https://unpkg.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
       
       return html.replace(
         '<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />',
