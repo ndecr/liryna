@@ -1,8 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as pdfjsLib from 'pdfjs-dist';
+import React, { useState } from 'react';
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 
-// Configuration du worker PDF.js
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Configuration du worker pour react-pdf
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 interface PDFViewerProps {
   pdfUrl: string;
@@ -10,80 +12,32 @@ interface PDFViewerProps {
 }
 
 const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl, fileName }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [numPages, setNumPages] = useState<number | null>(null);
+  const [pageNumber, setPageNumber] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const [pdfDoc, setPdfDoc] = useState<any>(null);
 
-  const renderPage = async (pageNum: number) => {
-    if (!pdfDoc || !canvasRef.current) return;
+  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+    setNumPages(numPages);
+    setLoading(false);
+    setError('');
+  };
 
-    try {
-      const page = await pdfDoc.getPage(pageNum);
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
+  const onDocumentLoadError = (error: any) => {
+    console.error('Error loading PDF:', error);
+    setError('Impossible de charger le PDF');
+    setLoading(false);
+  };
 
-      if (!ctx) return;
-
-      // Calcul de l'échelle pour s'adapter à la largeur du container
-      const containerWidth = canvas.parentElement?.clientWidth || 800;
-      const viewport = page.getViewport({ scale: 1 });
-      const scale = (containerWidth - 40) / viewport.width; // 40px de marge
-
-      const scaledViewport = page.getViewport({ scale });
-
-      canvas.height = scaledViewport.height;
-      canvas.width = scaledViewport.width;
-
-      const renderContext = {
-        canvasContext: ctx,
-        viewport: scaledViewport,
-      };
-
-      await page.render(renderContext).promise;
-    } catch (err) {
-      console.error('Error rendering page:', err);
-      setError('Erreur lors du rendu de la page');
+  const goToPrevPage = () => {
+    if (pageNumber > 1) {
+      setPageNumber(pageNumber - 1);
     }
   };
 
-  useEffect(() => {
-    const loadPDF = async () => {
-      try {
-        setLoading(true);
-        setError('');
-
-        const loadingTask = pdfjsLib.getDocument(pdfUrl);
-        const pdf = await loadingTask.promise;
-
-        setPdfDoc(pdf);
-        setTotalPages(pdf.numPages);
-        setCurrentPage(1);
-
-        // Rendre la première page
-        await renderPage(1);
-        setLoading(false);
-      } catch (err) {
-        console.error('Error loading PDF:', err);
-        setError('Impossible de charger le PDF');
-        setLoading(false);
-      }
-    };
-
-    loadPDF();
-  }, [pdfUrl]);
-
-  useEffect(() => {
-    if (pdfDoc && currentPage > 0) {
-      renderPage(currentPage);
-    }
-  }, [currentPage, pdfDoc]);
-
-  const goToPage = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
+  const goToNextPage = () => {
+    if (numPages && pageNumber < numPages) {
+      setPageNumber(pageNumber + 1);
     }
   };
 
@@ -112,21 +66,21 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl, fileName }) => {
 
   return (
     <div className="pdf-viewer">
-      {totalPages > 1 && (
+      {numPages && numPages > 1 && (
         <div className="pdf-controls">
           <button 
-            onClick={() => goToPage(currentPage - 1)}
-            disabled={currentPage <= 1}
+            onClick={goToPrevPage}
+            disabled={pageNumber <= 1}
             className="pdf-nav-btn"
           >
             ‹ Précédent
           </button>
           <span className="pdf-page-info">
-            Page {currentPage} sur {totalPages}
+            Page {pageNumber} sur {numPages}
           </span>
           <button 
-            onClick={() => goToPage(currentPage + 1)}
-            disabled={currentPage >= totalPages}
+            onClick={goToNextPage}
+            disabled={pageNumber >= numPages}
             className="pdf-nav-btn"
           >
             Suivant ›
@@ -134,11 +88,20 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl, fileName }) => {
         </div>
       )}
       
-      <div className="pdf-canvas-container">
-        <canvas 
-          ref={canvasRef}
-          className="pdf-canvas"
-        />
+      <div className="pdf-document-container">
+        <Document
+          file={pdfUrl}
+          onLoadSuccess={onDocumentLoadSuccess}
+          onLoadError={onDocumentLoadError}
+          loading={<div className="pdf-viewer-loading">Chargement du PDF...</div>}
+        >
+          <Page 
+            pageNumber={pageNumber}
+            className="pdf-page"
+            renderTextLayer={false}
+            renderAnnotationLayer={false}
+          />
+        </Document>
       </div>
 
       <div className="pdf-actions">
