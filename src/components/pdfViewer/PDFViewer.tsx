@@ -3,8 +3,8 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
-// Configuration du worker pour react-pdf
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+// Configuration du worker pour react-pdf via CDN
+pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 interface PDFViewerProps {
   pdfUrl: string;
@@ -17,7 +17,12 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl, fileName }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
 
+  // Debug: Log l'URL du PDF
+  console.log('PDFViewer - pdfUrl:', pdfUrl);
+  console.log('PDFViewer - fileName:', fileName);
+
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+    console.log('PDF loaded successfully:', numPages, 'pages');
     setNumPages(numPages);
     setLoading(false);
     setError('');
@@ -25,6 +30,8 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl, fileName }) => {
 
   const onDocumentLoadError = (error: any) => {
     console.error('Error loading PDF:', error);
+    console.error('PDF URL:', pdfUrl);
+    console.error('Error details:', JSON.stringify(error, null, 2));
     setError('Impossible de charger le PDF');
     setLoading(false);
   };
@@ -94,6 +101,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl, fileName }) => {
           onLoadSuccess={onDocumentLoadSuccess}
           onLoadError={onDocumentLoadError}
           loading={<div className="pdf-viewer-loading">Chargement du PDF...</div>}
+          error={<div className="pdf-viewer-error">Erreur de chargement du PDF</div>}
         >
           <Page 
             pageNumber={pageNumber}
