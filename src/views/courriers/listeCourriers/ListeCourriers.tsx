@@ -29,6 +29,7 @@ import Button from "../../../components/button/Button.tsx";
 import Modal from "../../../components/modal/Modal.tsx";
 import Loader from "../../../components/loader/Loader.tsx";
 import EmailModal from "../../../components/emailModal/EmailModal.tsx";
+import PDFViewer from "../../../components/pdfViewer/PDFViewer.tsx";
 
 // context
 import { CourrierContext } from "../../../context/courrier/CourrierContext.tsx";
@@ -880,31 +881,12 @@ function ListeCourriers(): ReactElement {
             className="modal-content-image"
           />
         ) : (
-          // Affichage conditionnel pour PDFs selon la plateforme
-          <div className="pdf-container">
-            {/* Tentative d'embed pour desktop */}
-            <embed
-              src={pdfModal.pdfUrl}
-              type="application/pdf"
-              width="100%"
-              height="100%"
-              className="modal-content-embed"
-              title="Visualisation PDF"
+          // Utiliser PDF.js pour un rendu optimal des PDFs
+          <div id="pdfViewer">
+            <PDFViewer 
+              pdfUrl={pdfModal.pdfUrl}
+              fileName={pdfModal.fileName || 'document.pdf'}
             />
-            
-            {/* Fallback pour mobile - lien de téléchargement */}
-            <div className="pdf-fallback">
-              <p>Problème d'affichage du PDF ?</p>
-              <a 
-                href={pdfModal.pdfUrl} 
-                download={pdfModal.fileName}
-                className="pdf-download-link"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                📄 Télécharger le PDF
-              </a>
-            </div>
           </div>
         )}
       </Modal>
