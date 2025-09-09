@@ -118,6 +118,13 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
+  // Ignorer Google Fonts et autres CDNs externes (laisser le navigateur gérer)
+  if (url.hostname === 'fonts.googleapis.com' || 
+      url.hostname === 'fonts.gstatic.com' ||
+      url.hostname === 'unpkg.com') {
+    return;
+  }
+  
   // Ignorer les requêtes Vite en développement (sécurité supplémentaire)
   if (url.pathname.includes('/@vite/') || 
       url.pathname.includes('/@react-refresh') ||
