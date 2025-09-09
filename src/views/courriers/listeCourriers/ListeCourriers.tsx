@@ -81,13 +81,14 @@ function ListeCourriers(): ReactElement {
   const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
 
   useEffect(() => {
-    if (searchTerm.trim()) {
-      // Si recherche active, charger tous les courriers
-      loadCourriers(1, 1000); // Charge un grand nombre pour avoir tous les courriers
-    } else {
-      // Si pas de recherche, pagination normale - revenir à la page 1 si on était en recherche
+    if (searchTerm.trim() && searchTerm.trim().length >= 3) {
+      // Si recherche active avec au moins 3 caractères, charger avec limite backend max
+      loadCourriers(1, 100); // Utiliser la limite maximum autorisée par le backend
+    } else if (!searchTerm.trim()) {
+      // Si pas de recherche, pagination normale
       loadCourriers(currentPage);
     }
+    // Si recherche < 3 caractères, ne rien faire
   }, [currentPage, searchTerm]);
 
   // Gérer l'affichage du bouton Back to Top
@@ -879,15 +880,32 @@ function ListeCourriers(): ReactElement {
             className="modal-content-image"
           />
         ) : (
-          // Utiliser embed au lieu d'iframe pour les PDFs (meilleure compatibilité CSP)
-          <embed
-            src={pdfModal.pdfUrl}
-            type="application/pdf"
-            width="100%"
-            height="100%"
-            className="modal-content-embed"
-            title="Visualisation PDF"
-          />
+          // Affichage conditionnel pour PDFs selon la plateforme
+          <div className="pdf-container">
+            {/* Tentative d'embed pour desktop */}
+            <embed
+              src={pdfModal.pdfUrl}
+              type="application/pdf"
+              width="100%"
+              height="100%"
+              className="modal-content-embed"
+              title="Visualisation PDF"
+            />
+            
+            {/* Fallback pour mobile - lien de téléchargement */}
+            <div className="pdf-fallback">
+              <p>Problème d'affichage du PDF ?</p>
+              <a 
+                href={pdfModal.pdfUrl} 
+                download={pdfModal.fileName}
+                className="pdf-download-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                📄 Télécharger le PDF
+              </a>
+            </div>
+          </div>
         )}
       </Modal>
 
