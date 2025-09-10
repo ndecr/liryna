@@ -11,17 +11,26 @@ const SimplePDFViewer: React.FC<SimplePDFViewerProps> = ({ pdfUrl, fileName }) =
   const [iframeSrc, setIframeSrc] = useState<string>('');
 
   useEffect(() => {
-    // Utiliser iframe avec authentification
+    console.log('SimplePDFViewer - pdfUrl:', pdfUrl);
     setIframeSrc(pdfUrl);
-    setLoading(false);
+    
+    // Arrêter le loading après un petit délai pour voir l'iframe
+    const loadTimeout = setTimeout(() => {
+      console.log('SimplePDFViewer - Arrêt du loading après 2s');
+      setLoading(false);
+    }, 2000);
+    
+    return () => clearTimeout(loadTimeout);
   }, [pdfUrl]);
 
   const handleIframeLoad = () => {
+    console.log('SimplePDFViewer - iframe chargée avec succès');
     setLoading(false);
     setError('');
   };
 
   const handleIframeError = () => {
+    console.log('SimplePDFViewer - erreur lors du chargement iframe');
     setLoading(false);
     setError('Impossible de charger le PDF');
   };
