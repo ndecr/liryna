@@ -35,7 +35,7 @@ import PDFViewer from "../../../components/pdfViewer/PDFViewer.tsx";
 import { CourrierContext } from "../../../context/courrier/CourrierContext.tsx";
 
 // services
-import { downloadCourrierService, sendCourrierEmailService, downloadBulkCourriersService, sendBulkCourrierEmailService } from "../../../API/services/courrier.service.ts";
+import { sendCourrierEmailService, downloadBulkCourriersService, sendBulkCourrierEmailService } from "../../../API/services/courrier.service.ts";
 
 // utils
 import { 
@@ -375,20 +375,14 @@ function ListeCourriers(): ReactElement {
       // Détecter le type de fichier basé sur l'extension
       const isImage = courrier.fileName.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|webp)$/);
       
-      // Utiliser uniquement la méthode blob URL (compatible CSP strict)
-      const blob = await downloadCourrierService(courrier.id);
-      
-      // Détecter le type de fichier basé sur le type MIME du blob aussi
-      const isImageBlob = blob.type.startsWith('image/') || isImage;
-      
-      // Créer un blob URL temporaire (compatible avec object-src 'self')
-      const fileUrl = URL.createObjectURL(blob);
+      // Utiliser directement l'endpoint API - plus simple et compatible CSP
+      const apiUrl = `https://api.liryna.app/api/courriers/${courrier.id}/download`;
       
       setPdfModal({
         visible: true,
-        pdfUrl: fileUrl,
+        pdfUrl: apiUrl,
         fileName: courrier.fileName,
-        fileType: isImageBlob ? 'image' : 'pdf'
+        fileType: isImage ? 'image' : 'pdf'
       });
     } catch (error: unknown) {
       logError('handleViewPdf', error);
@@ -398,11 +392,7 @@ function ListeCourriers(): ReactElement {
   };
 
   const closePdfModal = () => {
-    // Nettoyer l'URL du blob pour éviter les fuites mémoire
-    // Ne pas nettoyer les URLs directes de l'API ou les data URLs
-    if (pdfModal.pdfUrl && pdfModal.pdfUrl.startsWith('blob:')) {
-      URL.revokeObjectURL(pdfModal.pdfUrl);
-    }
+    // Plus besoin de nettoyer les blob URLs puisqu'on utilise l'API directement
     setPdfModal({
       visible: false,
       pdfUrl: "",

@@ -18,35 +18,18 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl, fileName }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [pdfData, setPdfData] = useState<string | ArrayBuffer | null>(null);
-  const [useFallback, setUseFallback] = useState<boolean>(false);
+  const [useFallback, setUseFallback] = useState<boolean>(true); // Commencer directement avec le fallback
 
   // Debug: Log l'URL du PDF
   console.log('PDFViewer - pdfUrl:', pdfUrl);
   console.log('PDFViewer - fileName:', fileName);
 
-  // Convertir le blob URL en ArrayBuffer pour éviter les problèmes CSP
+  // Utiliser directement l'URL API - plus simple et compatible CSP
   useEffect(() => {
-    const loadPdfData = async () => {
-      if (pdfUrl.startsWith('blob:')) {
-        try {
-          setLoading(true);
-          setError('');
-          setUseFallback(false);
-          const response = await fetch(pdfUrl);
-          const arrayBuffer = await response.arrayBuffer();
-          setPdfData(arrayBuffer);
-        } catch (err) {
-          console.error('Erreur lors du chargement du blob PDF:', err);
-          setUseFallback(true);
-          setLoading(false);
-        }
-      } else {
-        setPdfData(pdfUrl);
-        setUseFallback(false);
-      }
-    };
-
-    loadPdfData();
+    setLoading(true);
+    setError('');
+    setUseFallback(false);
+    setPdfData(pdfUrl);
   }, [pdfUrl]);
   
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
