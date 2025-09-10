@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 interface SimplePDFViewerProps {
   pdfUrl: string;
@@ -9,6 +9,7 @@ const SimplePDFViewer: React.FC<SimplePDFViewerProps> = ({ pdfUrl, fileName }) =
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [iframeSrc, setIframeSrc] = useState<string>('');
+  const cspTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     console.log('SimplePDFViewer - pdfUrl:', pdfUrl);
@@ -16,19 +17,28 @@ const SimplePDFViewer: React.FC<SimplePDFViewerProps> = ({ pdfUrl, fileName }) =
     setLoading(true);
     setError('');
     
-    // Arrêter le loading après un délai raisonnable pour laisser l'iframe se charger
-    const loadTimeout = setTimeout(() => {
-      console.log('SimplePDFViewer - Arrêt du loading après 3s');
+    // Détecter les erreurs CSP plus rapidement
+    cspTimeoutRef.current = setTimeout(() => {
+      console.log('SimplePDFViewer - CSP timeout, probable blocage iframe');
+      setError('CSP bloque l\'iframe, ouverture dans nouvel onglet recommandée');
       setLoading(false);
-    }, 3000);
+    }, 1500); // Réduit à 1.5s pour détecter plus vite
     
-    return () => clearTimeout(loadTimeout);
+    return () => {
+      if (cspTimeoutRef.current) {
+        clearTimeout(cspTimeoutRef.current);
+      }
+    };
   }, [pdfUrl]);
 
   const handleIframeLoad = () => {
     console.log('SimplePDFViewer - iframe chargée avec succès');
     setLoading(false);
     setError('');
+    // Annuler le timeout CSP si l'iframe se charge
+    if (cspTimeoutRef.current) {
+      clearTimeout(cspTimeoutRef.current);
+    }
   };
 
   const handleIframeError = () => {

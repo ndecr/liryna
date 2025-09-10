@@ -30,6 +30,9 @@
     <!-- Robots meta tag - Empêche l'indexation -->
     <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
     
+    <!-- Content Security Policy - Autorise frame-src pour api.liryna.app -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob:; object-src 'self' blob:; frame-src 'self' blob: https://api.liryna.app; connect-src 'self' https://api.liryna.app https://fonts.googleapis.com https://unpkg.com; worker-src 'self' https://unpkg.com; base-uri 'self'; form-action 'self';" />
+    
     <!-- Theme colors -->
     <meta name="theme-color" content="#EAEFEC" />
     <meta name="msapplication-TileColor" content="#EAEFEC" />

@@ -11,7 +11,7 @@ interface ModernPDFViewerProps {
   fileName: string;
 }
 
-const ModernPDFViewer: React.FC<ModernPDFViewerProps> = ({ pdfUrl, fileName }) => {
+const ModernPDFViewer: React.FC<ModernPDFViewerProps> = ({ pdfUrl }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
 
@@ -24,11 +24,6 @@ const ModernPDFViewer: React.FC<ModernPDFViewerProps> = ({ pdfUrl, fileName }) =
     setError('');
   };
 
-  const handleDocumentError = () => {
-    console.error('Error loading PDF with modern viewer');
-    setError('Impossible de charger le PDF');
-    setLoading(false);
-  };
 
   if (error) {
     return (
@@ -66,7 +61,6 @@ const ModernPDFViewer: React.FC<ModernPDFViewerProps> = ({ pdfUrl, fileName }) =
             fileUrl={pdfUrl}
             plugins={[defaultLayoutPluginInstance]}
             onDocumentLoad={handleDocumentLoad}
-            onDocumentLoadError={handleDocumentError}
           />
         </Worker>
       </div>
