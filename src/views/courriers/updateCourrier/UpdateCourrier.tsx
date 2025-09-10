@@ -18,6 +18,7 @@ import SubNav from "../../../components/subNav/SubNav.tsx";
 import Button from "../../../components/button/Button.tsx";
 import CreatableSelectComponent from "../../../components/creatableSelect/CreatableSelect.tsx";
 import Loader from "../../../components/loader/Loader.tsx";
+import ModernPDFViewer from "../../../components/pdfViewer/ModernPDFViewer.tsx";
 
 // types
 import { ICourrierFormData, ICourrier } from "../../../utils/types/courrier.types.ts";
@@ -473,11 +474,9 @@ function UpdateCourrier(): ReactElement {
                       className="imagePreview"
                     />
                   ) : (
-                    <embed
-                      src={pdfUrl}
-                      type="application/pdf"
-                      title="Aperçu du courrier"
-                      className="pdfPreview"
+                    <ModernPDFViewer 
+                      pdfUrl={pdfUrl}
+                      fileName={courrier?.fileName || 'document.pdf'}
                     />
                   )
                 )}

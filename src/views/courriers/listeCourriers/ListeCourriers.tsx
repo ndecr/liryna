@@ -29,7 +29,7 @@ import Button from "../../../components/button/Button.tsx";
 import Modal from "../../../components/modal/Modal.tsx";
 import Loader from "../../../components/loader/Loader.tsx";
 import EmailModal from "../../../components/emailModal/EmailModal.tsx";
-import PDFViewer from "../../../components/pdfViewer/PDFViewer.tsx";
+import ModernPDFViewer from "../../../components/pdfViewer/ModernPDFViewer.tsx";
 
 // context
 import { CourrierContext } from "../../../context/courrier/CourrierContext.tsx";
@@ -886,7 +886,7 @@ function ListeCourriers(): ReactElement {
         ) : (
           // Utiliser PDF.js pour un rendu optimal des PDFs
           <div id="pdfViewer">
-            <PDFViewer 
+            <ModernPDFViewer 
               pdfUrl={pdfModal.pdfUrl}
               fileName={pdfModal.fileName || 'document.pdf'}
             />
