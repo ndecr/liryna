@@ -13,12 +13,14 @@ const SimplePDFViewer: React.FC<SimplePDFViewerProps> = ({ pdfUrl, fileName }) =
   useEffect(() => {
     console.log('SimplePDFViewer - pdfUrl:', pdfUrl);
     setIframeSrc(pdfUrl);
+    setLoading(true);
+    setError('');
     
-    // Arrêter le loading après un petit délai pour voir l'iframe
+    // Arrêter le loading après un délai raisonnable pour laisser l'iframe se charger
     const loadTimeout = setTimeout(() => {
-      console.log('SimplePDFViewer - Arrêt du loading après 2s');
+      console.log('SimplePDFViewer - Arrêt du loading après 3s');
       setLoading(false);
-    }, 2000);
+    }, 3000);
     
     return () => clearTimeout(loadTimeout);
   }, [pdfUrl]);

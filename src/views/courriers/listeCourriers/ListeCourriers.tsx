@@ -36,6 +36,7 @@ import { CourrierContext } from "../../../context/courrier/CourrierContext.tsx";
 
 // services
 import { sendCourrierEmailService, downloadBulkCourriersService, sendBulkCourrierEmailService } from "../../../API/services/courrier.service.ts";
+import { generateViewUrlService } from "../../../API/services/viewUrl.service.ts";
 
 // utils
 import { 
@@ -375,15 +376,27 @@ function ListeCourriers(): ReactElement {
       // Détecter le type de fichier basé sur l'extension
       const isImage = courrier.fileName.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|webp)$/);
       
-      // Utiliser directement l'endpoint API - plus simple et compatible CSP
-      const apiUrl = `https://api.liryna.app/api/courriers/${courrier.id}/download`;
-      
-      setPdfModal({
-        visible: true,
-        pdfUrl: apiUrl,
-        fileName: courrier.fileName,
-        fileType: isImage ? 'image' : 'pdf'
-      });
+      if (isImage) {
+        // Pour les images, générer aussi une URL signée pour cohérence
+        const viewUrlData = await generateViewUrlService(courrier.id, 10);
+        
+        setPdfModal({
+          visible: true,
+          pdfUrl: viewUrlData.viewUrl,
+          fileName: courrier.fileName,
+          fileType: 'image'
+        });
+      } else {
+        // Pour les PDFs, utiliser l'URL signée pour éviter les problèmes d'authentification iframe
+        const viewUrlData = await generateViewUrlService(courrier.id, 10);
+        
+        setPdfModal({
+          visible: true,
+          pdfUrl: viewUrlData.viewUrl,
+          fileName: courrier.fileName,
+          fileType: 'pdf'
+        });
+      }
     } catch (error: unknown) {
       logError('handleViewPdf', error);
       const errorMessage = handleCourrierViewError(error);
