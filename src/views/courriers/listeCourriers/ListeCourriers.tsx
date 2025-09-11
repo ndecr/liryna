@@ -377,12 +377,13 @@ function ListeCourriers(): ReactElement {
       const isImage = courrier.fileName.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|webp)$/);
       
       if (isImage) {
-        // Pour les images, générer aussi une URL signée pour cohérence
-        const viewUrlData = await generateViewUrlService(courrier.id, 10);
+        // Pour les images, utiliser l'endpoint download direct (pas de problème CSP avec <img>)
+        const blob = await downloadCourrier(courrier.id);
+        const url = window.URL.createObjectURL(blob);
         
         setPdfModal({
           visible: true,
-          pdfUrl: viewUrlData.viewUrl,
+          pdfUrl: url,
           fileName: courrier.fileName,
           fileType: 'image'
         });
@@ -405,7 +406,11 @@ function ListeCourriers(): ReactElement {
   };
 
   const closePdfModal = () => {
-    // Plus besoin de nettoyer les blob URLs puisqu'on utilise l'API directement
+    // Nettoyer les blob URLs pour les images
+    if (pdfModal.pdfUrl && pdfModal.pdfUrl.startsWith('blob:')) {
+      window.URL.revokeObjectURL(pdfModal.pdfUrl);
+    }
+    
     setPdfModal({
       visible: false,
       pdfUrl: "",

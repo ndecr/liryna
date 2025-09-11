@@ -35,6 +35,7 @@ import { useCourrierFieldOptions } from "../../../utils/hooks/useCourrierFieldOp
 
 // services
 import { downloadCourrierService, getCourrierByIdService } from "../../../API/services/courrier.service.ts";
+import { generateViewUrlService } from "../../../API/services/viewUrl.service.ts";
 
 interface SelectOption {
   value: string;
@@ -109,15 +110,21 @@ function UpdateCourrier(): ReactElement {
         });
 
         // Load file for preview
-        const blob = await downloadCourrierService(courrierData.id);
-        const url = URL.createObjectURL(blob);
+        // Détecter le type de fichier basé sur l'extension
+        const isImage = courrierData.fileName.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|webp)$/);
         
-        // Détecter le type de fichier basé sur l'extension ou le type MIME du blob
-        const isImage = blob.type.startsWith('image/') || 
-                        courrierData.fileName.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|webp)$/);
-        
-        setPdfUrl(url);
-        setFileType(isImage ? 'image' : 'pdf');
+        if (isImage) {
+          // Pour les images, utiliser l'endpoint download direct (pas de problème CSP avec <img>)
+          const blob = await downloadCourrierService(courrierData.id);
+          const url = URL.createObjectURL(blob);
+          setPdfUrl(url);
+          setFileType('image');
+        } else {
+          // Pour les PDFs, utiliser l'URL signée pour éviter les problèmes d'authentification iframe
+          const viewUrlData = await generateViewUrlService(courrierData.id, 10);
+          setPdfUrl(viewUrlData.viewUrl);
+          setFileType('pdf');
+        }
         
       } catch (error: unknown) {
         logError('loadCourrierForEdit', error);
@@ -131,9 +138,9 @@ function UpdateCourrier(): ReactElement {
 
     fetchCourrier();
 
-    // Cleanup PDF URL on unmount
+    // Cleanup pour les blob URLs (images uniquement)
     return () => {
-      if (pdfUrl) {
+      if (pdfUrl && pdfUrl.startsWith('blob:')) {
         URL.revokeObjectURL(pdfUrl);
       }
     };
