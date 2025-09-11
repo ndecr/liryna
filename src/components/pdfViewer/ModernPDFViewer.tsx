@@ -31,15 +31,7 @@ const ModernPDFViewer: React.FC<ModernPDFViewerProps> = ({ pdfUrl }) => {
         <p>Erreur lors du chargement du PDF</p>
         <button 
           onClick={() => window.open(pdfUrl, '_blank')}
-          style={{
-            padding: '10px 15px',
-            backgroundColor: '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            marginTop: '10px'
-          }}
+          className="pdf-error-button"
         >
           Ouvrir dans un nouvel onglet
         </button>

@@ -288,7 +288,6 @@ function UpdateCourrier(): ReactElement {
                           classNamePrefix="react-select"
                           placeholder="Sélectionner..."
                           isSearchable={false}
-                          styles={{}}
                         />
                       </div>
                       <div className="formGroup">
@@ -380,7 +379,6 @@ function UpdateCourrier(): ReactElement {
                           classNamePrefix="react-select"
                           placeholder="Sélectionner..."
                           isSearchable={false}
-                          styles={{}}
                         />
                       </div>
                     </div>

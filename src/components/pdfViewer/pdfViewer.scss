@@ -31,6 +31,31 @@
     }
   }
 
+  .pdf-error-button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+
+  .pdf-iframe-container {
+    height: 80vh;
+    min-height: 600px;
+  }
+
+  .pdf-iframe {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    min-height: 600px;
+  }
+
   .pdf-controls {
     display: flex;
     align-items: center;

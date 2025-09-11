@@ -497,7 +497,7 @@ function ListeCourriers(): ReactElement {
               <MdSearch className="searchIcon" />
               <input
                 type="text"
-                placeholder="Rechercher par nom de fichier, type, service..."
+                placeholder="Nom, type, service..."
                 value={searchTerm}
                 onChange={handleSearchChange}
                 className="searchInput"

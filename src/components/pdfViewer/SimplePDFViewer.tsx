@@ -62,15 +62,7 @@ const SimplePDFViewer: React.FC<SimplePDFViewerProps> = ({ pdfUrl, fileName }) =
         <p>Le fichier sera ouvert dans un nouvel onglet</p>
         <button 
           onClick={() => window.open(pdfUrl, '_blank')}
-          style={{
-            padding: '10px 15px',
-            backgroundColor: '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            marginTop: '10px'
-          }}
+          className="pdf-error-button"
         >
           Ouvrir dans un nouvel onglet
         </button>
@@ -80,16 +72,12 @@ const SimplePDFViewer: React.FC<SimplePDFViewerProps> = ({ pdfUrl, fileName }) =
 
   return (
     <div className="simple-pdf-viewer">
-      <div className="pdf-iframe-container" style={{ height: '80vh', minHeight: '600px' }}>
+      <div className="pdf-iframe-container">
         <iframe
           src={iframeSrc}
           width="100%"
           height="100%"
-          style={{
-            border: '1px solid #ddd',
-            borderRadius: '8px',
-            minHeight: '600px',
-          }}
+          className="pdf-iframe"
           title={`Prévisualisation PDF: ${fileName}`}
           onLoad={handleIframeLoad}
           onError={handleIframeError}
