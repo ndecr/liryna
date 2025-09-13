@@ -2,7 +2,7 @@
 import "./nouveauCourrier.scss";
 
 // hooks | libraries
-import { ReactElement, useState, useContext } from "react";
+import { ReactElement, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { MdArrowBack, MdUploadFile, MdSave, MdCancel } from "react-icons/md";
@@ -23,7 +23,7 @@ import { ICourrierFormData } from "../../../utils/types/courrier.types.ts";
 
 // utils
 import { handleCourrierUploadError, logError, showErrorNotification } from "../../../utils/scripts/errorHandling.ts";
-import { validateCourrierForm } from "../../../utils/scripts/courrierValidation.ts";
+import { validateCourrierForm, sanitizeFileName } from "../../../utils/scripts/courrierValidation.ts";
 import { useCourrierFieldOptions } from "../../../utils/hooks/useCourrierFieldOptions.ts";
 
 interface SelectOption {
@@ -70,18 +70,37 @@ function NouveauCourrier(): ReactElement {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // Pour le nom de fichier, appliquer la sanitisation en temps réel
+    if (name === 'customFileName') {
+      const sanitized = sanitizeFileName(value);
+      setFormData(prev => ({
+        ...prev,
+        [name]: sanitized // Utiliser directement la version nettoyée
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   const handleInputBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value.trim() // Trim quand l'utilisateur sort du champ
-    }));
+    
+    if (name === 'customFileName') {
+      const sanitized = sanitizeFileName(value.trim());
+      setFormData(prev => ({
+        ...prev,
+        [name]: sanitized
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value.trim() // Trim quand l'utilisateur sort du champ
+      }));
+    }
   };
 
   const handleSelectChange = (selectedOption: SelectOption | null, name: string) => {
@@ -95,10 +114,12 @@ function NouveauCourrier(): ReactElement {
 
   const handleFileUpload = (file: File) => {
     const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "").trim();
+    const sanitizedName = sanitizeFileName(nameWithoutExt);
+    
     setFormData(prev => ({
       ...prev,
       fichierJoint: file,
-      customFileName: prev.customFileName || nameWithoutExt // Ne remplace que si vide
+      customFileName: prev.customFileName || sanitizedName // Ne remplace que si vide
     }));
   };
 
