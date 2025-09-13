@@ -2,7 +2,7 @@
 import "./nouveauCourrier.scss";
 
 // hooks | libraries
-import { ReactElement, useState, useContext, useEffect } from "react";
+import { ReactElement, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { MdArrowBack, MdUploadFile, MdSave, MdCancel } from "react-icons/md";
