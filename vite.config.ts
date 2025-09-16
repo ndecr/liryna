@@ -59,7 +59,7 @@ const generateCSP = () => {
       let cspValue;
       if (isDev) {
         // CSP pour développement - plus permissive pour Vite HMR et API locale
-        cspValue = "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob: data:; object-src 'self' blob:; frame-src 'self' blob: http://localhost:8800; connect-src 'self' ws: ws://localhost:* http://localhost:* https://localhost:* https://fonts.googleapis.com https://unpkg.com; worker-src 'self' blob:; base-uri 'self'; form-action 'self';";
+        cspValue = "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob: data:; object-src 'self' blob:; frame-src 'self' blob: http://localhost:8800; connect-src 'self' ws: ws://localhost:* http://localhost:* http://localhost:8800 https://localhost:* https://fonts.googleapis.com https://unpkg.com; worker-src 'self' blob:; base-uri 'self'; form-action 'self';";
         console.log(`🔧 Development CSP applied`);
       } else {
         // CSP pour production - strict et sécurisé
