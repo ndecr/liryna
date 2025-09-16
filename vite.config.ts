@@ -8,11 +8,10 @@ const generateCSP = () => {
   return {
     name: 'generate-csp',
     buildStart() {
-      // CSP strict et sécurisé avec support des blob URLs pour l'affichage de fichiers
-      // IMPORTANT: frame-src inclut https://api.liryna.app pour permettre l'affichage des PDFs via iframe fallback
-      const cspValue = "default-src 'self'; script-src 'self'; style-src 'self' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob:; object-src 'self' blob:; frame-src 'self' blob: https://api.liryna.app; connect-src 'self' https://api.liryna.app https://fonts.googleapis.com https://unpkg.com; worker-src 'self' https://unpkg.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
+      // CSP pour production - strict et sécurisé
+      const prodCSP = "default-src 'self'; script-src 'self'; style-src 'self' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob:; object-src 'self' blob:; frame-src 'self' blob: https://api.liryna.app; connect-src 'self' https://api.liryna.app https://fonts.googleapis.com https://unpkg.com; worker-src 'self' https://unpkg.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
       
-      // Générer vercel.json avec la CSP appropriée
+      // Générer vercel.json avec la CSP de production
       const vercelConfig = {
         "rewrites": [
           {
@@ -26,7 +25,7 @@ const generateCSP = () => {
             "headers": [
               {
                 "key": "Content-Security-Policy",
-                "value": cspValue
+                "value": prodCSP
               },
               {
                 "key": "X-Content-Type-Options",
@@ -50,18 +49,28 @@ const generateCSP = () => {
       };
       
       writeFileSync(join(__dirname, 'vercel.json'), JSON.stringify(vercelConfig, null, 2));
-      console.log(`✅ CSP generated with secure empty hash for react-select compatibility`);
+      console.log(`✅ CSP generated for production`);
     },
-    transformIndexHtml(html: string) {
-      // CSP strict et sécurisé avec support des blob URLs pour l'affichage de fichiers
-      // IMPORTANT: frame-src inclut https://api.liryna.app pour permettre l'affichage des PDFs via iframe fallback
-      const cspValue = "default-src 'self'; script-src 'self'; style-src 'self' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob:; object-src 'self' blob:; frame-src 'self' blob: https://api.liryna.app; connect-src 'self' https://api.liryna.app https://fonts.googleapis.com https://unpkg.com; worker-src 'self' https://unpkg.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
+    transformIndexHtml(html: string, context) {
+      // Déterminer l'environnement
+      const isDev = context?.server !== undefined;
+      
+      let cspValue;
+      if (isDev) {
+        // CSP pour développement - plus permissive pour Vite HMR et API locale
+        cspValue = "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob: data:; object-src 'self' blob:; frame-src 'self' blob: http://localhost:8800; connect-src 'self' ws: ws://localhost:* http://localhost:* https://localhost:* https://fonts.googleapis.com https://unpkg.com; worker-src 'self' blob:; base-uri 'self'; form-action 'self';";
+        console.log(`🔧 Development CSP applied`);
+      } else {
+        // CSP pour production - strict et sécurisé
+        cspValue = "default-src 'self'; script-src 'self'; style-src 'self' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob:; object-src 'self' blob:; frame-src 'self' blob: https://api.liryna.app; connect-src 'self' https://api.liryna.app https://fonts.googleapis.com https://unpkg.com; worker-src 'self' https://unpkg.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
+        console.log(`🔒 Production CSP applied`);
+      }
       
       return html.replace(
         '<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />',
         `<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
     
-    <!-- Content Security Policy - Force object-src 'self' -->
+    <!-- Content Security Policy - Environment specific -->
     <meta http-equiv="Content-Security-Policy" content="${cspValue}" />`
       );
     }
