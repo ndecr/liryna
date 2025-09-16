@@ -51,7 +51,7 @@ const generateCSP = () => {
       writeFileSync(join(__dirname, 'vercel.json'), JSON.stringify(vercelConfig, null, 2));
       console.log(`✅ CSP generated for production`);
     },
-    transformIndexHtml(html: string, context) {
+    transformIndexHtml(html: string, context: any) {
       // Déterminer l'environnement
       const isDev = context?.server !== undefined;
       
