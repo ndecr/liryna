@@ -31,16 +31,34 @@ export const getEnvironment = (): 'development' | 'production' => {
 };
 
 /**
+ * Génère la CSP (Content Security Policy) adaptée à l'environnement
+ */
+export const getCSP = (): string => {
+  const isDev = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+  const isDevPort = ["5173", "5174", "5175"].includes(window.location.port);
+  
+  if (isDev && isDevPort) {
+    // Environnement de développement - inclure localhost:8800
+    return "frame-src 'self' http://localhost:8800; connect-src 'self' http://localhost:8800; img-src 'self' data: http://localhost:8800;";
+  } else {
+    // Production - utiliser uniquement le domaine de production
+    return "frame-src 'self' https://api.liryna.app; connect-src 'self' https://api.liryna.app; img-src 'self' data: https://api.liryna.app;";
+  }
+};
+
+/**
  * Logs des informations sur l'environnement au démarrage
  */
 export const logEnvironmentInfo = (): void => {
   const env = getEnvironment();
   const apiUrl = getApiBaseUrl();
+  const csp = getCSP();
   
   console.group('🌍 Configuration Environnement');
   console.log('Environnement:', env);
   console.log('Hostname:', window.location.hostname);
   console.log('Port:', window.location.port);
   console.log('API Backend:', apiUrl);
+  console.log('CSP:', csp);
   console.groupEnd();
 };
