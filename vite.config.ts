@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
+import type { IndexHtmlTransformContext } from 'vite';
 
 // Plugin pour générer CSP adaptée à l'environnement
 const generateCSP = () => {
@@ -51,7 +52,7 @@ const generateCSP = () => {
       writeFileSync(join(__dirname, 'vercel.json'), JSON.stringify(vercelConfig, null, 2));
       console.log(`✅ CSP generated for production`);
     },
-    transformIndexHtml(html: string, context: any) {
+    transformIndexHtml(html: string, context: IndexHtmlTransformContext) {
       // Déterminer l'environnement
       const isDev = context?.server !== undefined;
       
