@@ -37,6 +37,9 @@ import { useCourrierFieldOptions } from "../../../utils/hooks/useCourrierFieldOp
 import { downloadCourrierService, getCourrierByIdService } from "../../../API/services/courrier.service.ts";
 import { generateViewUrlService } from "../../../API/services/viewUrl.service.ts";
 
+// Alert service
+import { showError, showSuccess } from "../../../utils/services/alertService";
+
 interface SelectOption {
   value: string;
   label: string;
@@ -179,7 +182,7 @@ function UpdateCourrier(): ReactElement {
     // Validation
     const validation = validateCourrierUpdateForm(formData);
     if (!validation.isValid) {
-      alert(validation.errorMessage);
+      await showError(validation.errorMessage, 'Erreur de validation');
       return;
     }
     
@@ -197,12 +200,12 @@ function UpdateCourrier(): ReactElement {
       };
 
       await updateCourrier(courrier.id, updateData);
+      await showSuccess('Courrier modifié avec succès');
       navigate("/mail/list");
-      showErrorNotification('Courrier modifié avec succès', 'info');
     } catch (error: unknown) {
       logError('handleSubmit - updateCourrier', error);
       const errorMessage = handleCourrierUploadError(error);
-      showErrorNotification(errorMessage);
+      await showError(errorMessage, 'Erreur de modification');
     }
   };
 

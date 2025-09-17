@@ -201,11 +201,16 @@ export const addConnectionListeners = (
 };
 
 // Notification de mise à jour disponible
-const showUpdateAvailableNotification = (): void => {
-  // Créer une notification personnalisée ou utiliser une modal
-  const shouldUpdate = confirm(
-    '🔄 Une nouvelle version de l\'application est disponible.\n\nVoulez-vous l\'installer maintenant pour bénéficier des dernières améliorations ?'
-  );
+const showUpdateAvailableNotification = async (): Promise<void> => {
+  // Import dynamique pour éviter les problèmes de bundle
+  const { showPWAUpdatePrompt } = await import('../services/alertService');
+  
+  const shouldUpdate = await showPWAUpdatePrompt({
+    title: 'Mise à jour disponible',
+    message: 'Une nouvelle version de l\'application est disponible.\n\nVoulez-vous l\'installer maintenant pour bénéficier des dernières améliorations ?',
+    confirmText: 'Installer',
+    cancelText: 'Plus tard'
+  });
 
   if (shouldUpdate) {
     skipWaiting();
@@ -213,17 +218,19 @@ const showUpdateAvailableNotification = (): void => {
     // Proposer de rappeler plus tard
     console.log('[PWA] Update postponed by user');
     // Programmer une vérification dans 30 minutes
-    setTimeout(() => {
-      checkForNewVersion().then(hasUpdate => {
-        if (hasUpdate) {
-          const laterUpdate = confirm(
-            '🔄 Rappel: Une mise à jour est toujours disponible.\n\nSouhaitez-vous l\'installer maintenant ?'
-          );
-          if (laterUpdate) {
-            skipWaiting();
-          }
+    setTimeout(async () => {
+      const hasUpdate = await checkForNewVersion();
+      if (hasUpdate) {
+        const laterUpdate = await showPWAUpdatePrompt({
+          title: 'Rappel de mise à jour',
+          message: 'Une mise à jour est toujours disponible.\n\nSouhaitez-vous l\'installer maintenant ?',
+          confirmText: 'Installer',
+          cancelText: 'Ignorer'
+        });
+        if (laterUpdate) {
+          skipWaiting();
         }
-      });
+      }
     }, 30 * 60 * 1000); // 30 minutes
   }
 };
@@ -259,14 +266,20 @@ export const showInstallPrompt = (): Promise<boolean> => {
     let deferredPrompt: any = null;
 
     // Écouter l'événement beforeinstallprompt
-    const handleBeforeInstallPrompt = (e: Event) => {
+    const handleBeforeInstallPrompt = async (e: Event) => {
       e.preventDefault();
       deferredPrompt = e;
       
+      // Import dynamique pour éviter les problèmes de bundle
+      const { showPWAUpdatePrompt } = await import('../services/alertService');
+      
       // Montrer un bouton d'installation personnalisé
-      const shouldInstall = confirm(
-        'Voulez-vous installer Liryna sur votre appareil pour une meilleure expérience ?'
-      );
+      const shouldInstall = await showPWAUpdatePrompt({
+        title: 'Installation PWA',
+        message: 'Voulez-vous installer Liryna sur votre appareil pour une meilleure expérience ?',
+        confirmText: 'Installer',
+        cancelText: 'Non merci'
+      });
 
       if (shouldInstall && deferredPrompt) {
         deferredPrompt.prompt();

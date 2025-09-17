@@ -147,10 +147,42 @@ export const handleCourrierEmailError = (error: unknown): string => {
   return "Erreur lors de l'envoi de l'email. Veuillez réessayer.";
 };
 
-// Interface pour notifier l'utilisateur des erreurs
+// Interface pour notifier l'utilisateur des erreurs (legacy - synchrone)
 export const showErrorNotification = (message: string, type: 'error' | 'warning' | 'info' = 'error'): void => {
-  // TODO: Remplacer alert() par un système de notification plus élégant
-  // Pour l'instant, utiliser alert avec un préfixe pour le type
+  // Fallback pour la compatibilité - utilise l'ancien système
   const prefix = type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️';
+  
+  // Essayer d'utiliser notre nouveau système si disponible
+  if (typeof window !== 'undefined' && (window as any).liryna_alert_service) {
+    const alertService = (window as any).liryna_alert_service;
+    if (type === 'error') {
+      alertService.showError(message);
+    } else if (type === 'warning') {
+      alertService.showWarning(message);
+    } else {
+      alertService.showInfo(message);
+    }
+    return;
+  }
+  
+  // Fallback vers alert natif si le service n'est pas disponible
   alert(`${prefix} ${message}`);
+};
+
+// Nouvelle interface asynchrone pour les erreurs
+export const showErrorNotificationAsync = async (message: string, type: 'error' | 'warning' | 'info' = 'error'): Promise<void> => {
+  try {
+    const { showError, showWarning, showInfo } = await import('../services/alertService');
+    
+    if (type === 'error') {
+      await showError(message);
+    } else if (type === 'warning') {
+      await showWarning(message);
+    } else {
+      await showInfo(message);
+    }
+  } catch {
+    // Fallback si import échoue
+    showErrorNotification(message, type);
+  }
 };

@@ -5,6 +5,9 @@ import { MdWifi, MdWifiOff, MdUpdate, MdClear } from "react-icons/md";
 // hooks
 import { usePWA, useOnlineStatus } from "../../utils/hooks/usePWA";
 
+// Alert service
+import { confirm } from "../../utils/services/alertService";
+
 // components
 import Button from "../button/Button";
 
@@ -32,8 +35,9 @@ function PWAStatus({ className = "" }: PWAStatusProps): ReactElement {
   };
 
   const handleClearCache = async () => {
-    const confirmed = window.confirm(
-      'Êtes-vous sûr de vouloir vider le cache ? Cela rechargera l\'application.'
+    const confirmed = await confirm(
+      'Êtes-vous sûr de vouloir vider le cache ? Cela rechargera l\'application.',
+      'Vider le cache'
     );
     
     if (confirmed) {

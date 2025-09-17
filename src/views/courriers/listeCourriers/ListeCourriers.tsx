@@ -49,6 +49,9 @@ import {
   showErrorNotification 
 } from "../../../utils/scripts/errorHandling.ts";
 
+// Alert service
+import { confirm, showSuccess, showError } from "../../../utils/services/alertService";
+
 // types
 import { ICourrier } from "../../../utils/types/courrier.types.ts";
 
@@ -357,16 +360,17 @@ function ListeCourriers(): ReactElement {
   };
 
   const handleDelete = async (courrierid: number) => {
-    if (window.confirm('Êtes-vous sûr de vouloir supprimer ce courrier ?')) {
+    const confirmed = await confirm('Êtes-vous sûr de vouloir supprimer ce courrier ?', 'Confirmer la suppression');
+    if (confirmed) {
       try {
         await deleteCourrier(courrierid);
         // Recharger les courriers après suppression réussie
         await loadCourriers(currentPage);
-        showErrorNotification('Courrier supprimé avec succès', 'info');
+        await showSuccess('Courrier supprimé avec succès');
       } catch (error: unknown) {
         logError('handleDelete', error);
         const errorMessage = handleCourrierDeleteError(error);
-        showErrorNotification(errorMessage);
+        await showError(errorMessage, 'Erreur de suppression');
       }
     }
   };

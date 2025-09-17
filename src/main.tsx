@@ -5,6 +5,7 @@ import App from "./App.tsx";
 import { UserProvider } from "./context/user/UserProvider.tsx";
 import { CourrierProvider } from "./context/courrier/CourrierProvider.tsx";
 import LoaderProvider from "./context/loader/LoaderProvider.tsx";
+import { AlertProvider } from "./context/alert/AlertProvider.tsx";
 
 // PWA initialization
 import { initializePWA } from "./utils/scripts/serviceWorker.ts";
@@ -30,7 +31,9 @@ createRoot(document.getElementById("root")!).render(
   <UserProvider>
     <CourrierProvider>
       <LoaderProvider>
-        <App />
+        <AlertProvider>
+          <App />
+        </AlertProvider>
       </LoaderProvider>
     </CourrierProvider>
   </UserProvider>,
