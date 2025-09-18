@@ -20,27 +20,33 @@
 .subNavContainer {
   @include mixins.centeredContainer(1440px);
   @include mixins.flexContainer(row, 1em);
-  align-items: center;
-  justify-content: flex-start;
-  padding: 0 1em;
-  height: 100%;
+  
+  & {
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 1em;
+    height: 100%;
+  }
 }
 
 .subNavItem {
   @include mixins.flexContainer(row, 0.5rem);
-  align-items: center;
-  border: none;
-  background: transparent;
-  color: vars.$navTextColor;
-  font-size: 0.95rem;
-  font-weight: 500;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: all vars.$transitionSmooth;
-  position: relative;
-  overflow: hidden;
-  white-space: nowrap;
-  flex-shrink: 0;
+  
+  & {
+    align-items: center;
+    border: none;
+    background: transparent;
+    color: vars.$navTextColor;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all vars.$transitionSmooth;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
   
   &::before {
     content: '';

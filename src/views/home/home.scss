@@ -9,10 +9,13 @@
     @include mixins.centeredContainer;
     @include mixins.flexContainerResponsive(column, row, 1.5em);
     @include mixins.responsivePadding(1em, 2em, 2em);
-    justify-content: center;
-    flex: 1;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
+    
+    & {
+      justify-content: center;
+      flex: 1;
+      padding-left: 0.5em;
+      padding-right: 0.5em;
+    }
     
     @media (min-width: vars.$tabletWidth) {
       padding-left: 1em;
@@ -26,8 +29,11 @@
       display: block;
       text-decoration: none;
       @include mixins.card(16px, light);
-      overflow: hidden;
-      transition: all vars.$transitionMedium;
+      
+      & {
+        overflow: hidden;
+        transition: all vars.$transitionMedium;
+      }
 
       &:hover {
         transform: translateY(-0.25em);

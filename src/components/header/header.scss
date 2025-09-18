@@ -21,12 +21,19 @@
 }
 
 .headerContainer {
-  @include mixins.centeredContainer(1440px);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 1em;
-  height: 100%;
+  @media (min-width: 1980px) {
+    padding: 0 !important;
+  }
+
+  & {
+
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 1rem !important;
+    justify-content: space-between !important;
+    height: 100% !important;
+    @include mixins.centeredContainer(1980px);
+  }
 }
 
 .headerBrand {
@@ -55,24 +62,26 @@
     transform: scaleX(1);
   }
 
-  font-size: 1.6em !important;
-  font-weight: 700;
-  text-transform: uppercase;
-  position: relative;
-  margin: 0;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  position: relative;
-  background-image: linear-gradient(-650deg,
-    #1ba69b 0%,
-    #4dd0e1 29%,
-    #26d0ce 67%,
-    #1a75bb 100%);
-  background-clip: border-box;
-  background-size: 200% auto;
-  -webkit-text-fill-color: transparent;
-  -webkit-background-clip: text;
-  animation: titleAnimation 2s ease infinite;
+  & {
+    font-size: 1.6em !important;
+    font-weight: 700;
+    text-transform: uppercase;
+    position: relative;
+    margin: 0;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    background-image: linear-gradient(-650deg,
+      #1ba69b 0%,
+      #4dd0e1 29%,
+      #26d0ce 67%,
+      #1a75bb 100%);
+    background-clip: border-box;
+    background-size: 200% auto;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    animation: titleAnimation 2s ease infinite;
+  }
 }
 
 @keyframes titleAnimation {
@@ -86,19 +95,22 @@
 }
 
 .headerRight {
+  align-items: center !important;
   @include mixins.flexContainer(row, 1rem);
-  align-items: center;
 }
 
 .userInfo {
-  display: none;
-  align-items: center;
-  gap: 0.75rem;
-
   @media (min-width: vars.$mobileWidth) {
     display: flex;
     gap: 1rem;
   }
+
+  & {
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
 
   .pwa-install-btn.compact.desktop {
     font-size: 0.8em;
@@ -108,22 +120,25 @@
 }
 
 .userGreeting {
-  font-size: 0.85em;
-  color: vars.$fontColorPrimary;
-
   @media (min-width: vars.$mobileWidth) {
     font-size: 0.9em;
   }
+
+  & {
+    font-size: 0.85em;
+    color: vars.$fontColorPrimary;
+  }
+
 }
 
 .logoutButton {
+  color: vars.$fontColorPrimary !important;
+  padding: 0.25em 0.5em !important;
+  font-size: 0.85em !important;
+  font-weight: 400 !important;
+  text-decoration: underline !important;
+  transition: color vars.$transitionFast !important;
   @include mixins.resetButton;
-  color: vars.$fontColorPrimary;
-  padding: 0.25em 0.5em;
-  font-size: 0.85em;
-  font-weight: 400;
-  text-decoration: underline;
-  transition: color vars.$transitionFast;
 
   &:hover {
     color: vars.$utilsDark;
@@ -131,28 +146,31 @@
 }
 
 .headerDesktop {
-  @include mixins.flexContainer(row, 0.5rem);
-  align-items: center;
-
   @media (max-width: vars.$mobileWidth) {
     display: none;
   }
+
+  & {
+    align-items: center !important;
+    @include mixins.flexContainer(row, 0.5rem);
+  }
+
 }
 
 .navItem {
+  align-items: center !important;
+  padding: 0.2em .5em !important;
+  border: none !important;
+  background: transparent !important;
+  color: vars.$navTextColor !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  border-radius: 25px !important;
+  cursor: pointer !important;
+  transition: all vars.$transitionSmooth !important;
+  position: relative !important;
+  overflow: hidden !important;
   @include mixins.flexContainer(row, 0.5rem);
-  align-items: center;
-  padding: 0.2em .5em;
-  border: none;
-  background: transparent;
-  color: vars.$navTextColor;
-  font-size: 0.95rem;
-  font-weight: 500;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: all vars.$transitionSmooth;
-  position: relative;
-  overflow: hidden;
 
   &::before {
     content: '';
@@ -207,22 +225,25 @@
 }
 
 .headerToggle {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  width: 2.5em;
-  height: 1.5em;
-  border: none;
-  background: transparent;
-  color: vars.$navTextColor;
-  font-size: 1.5rem;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: all vars.$transitionFast;
-
   @media (max-width: vars.$mobileWidth) {
     display: flex;
   }
+
+  & {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.5em;
+    height: 1.5em;
+    border: none;
+    background: transparent;
+    color: vars.$navTextColor;
+    font-size: 1.5rem;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all vars.$transitionFast;
+  }
+
 
   &:hover {
     background: rgba(0, 0, 0, 0.05);
@@ -266,11 +287,11 @@
 }
 
 .mobileMenuHeader {
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 1rem 1.5rem !important;
+  background: vars.$greyBackground !important;
   @include mixins.flexContainer(row, 1rem);
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1.5rem;
-  background: vars.$greyBackground;
 
   .mobileMenu & {
     &.utils {
@@ -313,10 +334,10 @@
 }
 
 .mobileUserInfo {
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 1rem;
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-radius: 12px !important;
+  padding: 1rem !important;
+  margin-bottom: 1rem !important;
   @include mixins.flexContainer(column, 0.75rem);
 
   .mobileUserGreeting {
@@ -332,12 +353,12 @@
   }
 
   .mobileLogoutButton {
+    color: #36395a !important;
+    padding: 0.25em 0.5em !important;
+    font-size: 0.8rem !important;
+    font-weight: 400 !important;
+    text-decoration: underline !important;
     @include mixins.resetButton;
-    color: #36395a;
-    padding: 0.25em 0.5em;
-    font-size: 0.8rem;
-    font-weight: 400;
-    text-decoration: underline;
 
     &:hover {
       color: #ff7e5f;
@@ -363,19 +384,19 @@
 }
 
 .mobileNavItem {
+  align-items: center !important;
+  width: 100% !important;
+  padding: 1rem 1.5rem !important;
+  border: none !important;
+  background: transparent !important;
+  color: vars.$fontColorPrimary !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  transition: all vars.$transitionFast !important;
+  text-align: left !important;
   @include mixins.flexContainer(row, 1rem);
-  align-items: center;
-  width: 100%;
-  padding: 1rem;
-  border: none;
-  background: transparent;
-  color: vars.$fontColorPrimary;
-  font-size: 1rem;
-  font-weight: 500;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all vars.$transitionFast;
-  text-align: left;
 
   &:hover:not(.active) {
     background: vars.$greyBackground;

@@ -4,7 +4,10 @@
 #listeCourriers {
   @include mixins.mainView;
   @include mixins.flexContainer(column, 0.75em);
-  position: relative;
+  
+  & {
+    position: relative;
+  }
   .mobileSearchContainer {
     position: sticky;
     top: 6dvh;
@@ -18,7 +21,7 @@
     
     .searchWrapper {
       position: relative;
-      max-width: 20em;
+      width: 95%;
       margin: 0 auto;
       padding: 0 0.5em;
       
@@ -32,11 +35,11 @@
       }
       
       .searchInput {
+        padding-left: 2.5em !important;
+        border-radius: 25px !important;
+        font-size: 0.9em !important;
+        width: 100%;
         @include mixins.formInput;
-        padding-left: 2.5em;
-        border-radius: 25px;
-        font-size: 0.9em;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
     }
   }
@@ -101,9 +104,9 @@
       }
       
       .searchInput {
+        padding-left: 2.5em !important;
+        font-size: 1em !important;
         @include mixins.formInput;
-        padding-left: 2.5em;
-        font-size: 1em;
       }
     }
     
@@ -114,10 +117,10 @@
       flex-shrink: 0;
       
       .paginationBtn {
+        padding: 0.5em 1em !important;
+        font-size: 0.85em !important;
+        white-space: nowrap !important;
         @include mixins.actionButton(vars.$utilsPrimary, vars.$utilsSecondary);
-        padding: 0.5em 1em;
-        font-size: 0.85em;
-        white-space: nowrap;
         
         &:disabled {
           background: vars.$borderColor;
@@ -193,12 +196,12 @@
     }
     
     .courriersTable {
+      border: 1px solid vars.$borderColor !important;
+      max-height: calc(100dvh - 6dvh - 4dvh - 12em) !important;
+      overflow: scroll !important;
+      display: flex !important;
+      flex-direction: column !important;
       @include mixins.card(12px, medium);
-      border: 1px solid vars.$borderColor;
-      max-height: calc(100dvh - 6dvh - 4dvh - 12em);
-      overflow: scroll;
-      display: flex;
-      flex-direction: column;
       
       .tableWrapper {
         flex: 1;
@@ -429,9 +432,9 @@
 
 
   @media (min-width: vars.$tabletWidth) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
     @include mixins.responsivePadding(1em, 1.5em, 2em);
-    padding-left: 0;
-    padding-right: 0;
     
     .listeCourrierHeader {
       .pageTitle {
@@ -474,8 +477,7 @@
     }
   }
 
-  @media (min-width: vars.$desktopWidth) {
-    
+  @media (min-width: vars.$desktopWidth) {    
     .courriersSection {
       .courriersTable {
         .courriersGrid {
@@ -712,10 +714,10 @@
     }
 
     .courrierCard {
+      border: 1px solid vars.$borderColor !important;
+      overflow: hidden !important;
+      transition: vars.$transitionMedium !important;
       @include mixins.card(12px, light);
-      border: 1px solid vars.$borderColor;
-      overflow: hidden;
-      transition: vars.$transitionMedium;
 
       &:hover {
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
@@ -827,6 +829,7 @@
           .infoRow {
             display: flex;
             align-items: flex-start;
+            justify-content: space-between;
             gap: 0.5em;
 
             .infoLabel {
@@ -842,7 +845,7 @@
             .infoValue {
               font-size: 0.85em;
               color: vars.$fontColorPrimary;
-              flex: 1;
+              text-align: right;
               word-break: break-word;
             }
 
@@ -971,11 +974,11 @@
       gap: 1em;
       
       .paginationBtn {
+        padding: 0.6em 1em !important;
+        border-radius: 20px !important;
+        font-size: 0.8em !important;
+        white-space: nowrap !important;
         @include mixins.actionButton(vars.$utilsPrimary, vars.$utilsSecondary);
-        padding: 0.6em 1em;
-        border-radius: 20px;
-        font-size: 0.8em;
-        white-space: nowrap;
         
         &:disabled {
           background: vars.$borderColor;
@@ -1049,7 +1052,9 @@
     transform: translateY(0);
   }
   
-  animation: fadeInUp 0.3s ease-out;
+  & {
+    animation: fadeInUp 0.3s ease-out;
+  }
   
   @keyframes fadeInUp {
     from {

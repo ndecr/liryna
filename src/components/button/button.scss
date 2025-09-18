@@ -3,17 +3,20 @@
 
 %buttonBase {
   @include mixins.flexContainer(column, 0.5em);
-  align-items: center;
-  padding: 0.375em 0.875em;
-  font-family: -apple-system, BlinkMacSystemFont, "Roboto", sans-serif;
-  border-radius: 6px;
-  border: none;
-  font-size: 1rem;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  cursor: pointer;
-  transition: all vars.$transitionMedium;
+  
+  & {
+    align-items: center;
+    padding: 0.375em 0.875em;
+    font-family: -apple-system, BlinkMacSystemFont, "Roboto", sans-serif;
+    border-radius: 6px;
+    border: none;
+    font-size: 1rem;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    cursor: pointer;
+    transition: all vars.$transitionMedium;
+  }
 
   @media (max-width: 1024px) {
     font-size: .8rem;

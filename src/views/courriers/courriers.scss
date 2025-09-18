@@ -66,13 +66,16 @@
       .actionBtn {
         @include mixins.card(10px, light);
         @include mixins.flexContainer(column, 0.75em);
-        align-items: center;
-        padding: 1.5em 1em;
-        cursor: pointer;
-        flex: 1;
-        min-width: 0;
-        border: none;
-        transition: all vars.$transitionMedium;
+        
+        & {
+          align-items: center;
+          padding: 1.5em 1em;
+          cursor: pointer;
+          flex: 1;
+          min-width: 0;
+          border: none;
+          transition: all vars.$transitionMedium;
+        }
         
         @media (min-width: vars.$tabletWidth) {
           border-radius: 12px;
@@ -157,10 +160,13 @@
       .statCard {
         @include mixins.card(10px, light);
         @include mixins.flexContainer(row, 1em);
-        align-items: center;
-        padding: 1.5em 1em;
-        transition: transform vars.$transitionMedium;
-        flex: 1;
+        
+        & {
+          align-items: center;
+          padding: 1.5em 1em;
+          transition: transform vars.$transitionMedium;
+          flex: 1;
+        }
         
         @media (min-width: vars.$tabletWidth) {
           border-radius: 12px;
@@ -228,8 +234,11 @@
   .courriersContent {
     .contentCard {
       @include mixins.card(10px, light);
-      padding: 1.5em;
-      text-align: center;
+      
+      & {
+        padding: 1.5em;
+        text-align: center;
+      }
 
       @media (min-width: vars.$tabletWidth) {
         border-radius: 12px;

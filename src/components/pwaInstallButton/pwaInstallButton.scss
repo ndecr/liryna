@@ -132,7 +132,9 @@
     transform: none !important;
   }
   
-  animation: fadeInSlide 0.3s ease-out;
+  & {
+    animation: fadeInSlide 0.3s ease-out;
+  }
 }
 
 @keyframes fadeInSlide {

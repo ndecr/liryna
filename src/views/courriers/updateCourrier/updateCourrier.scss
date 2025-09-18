@@ -8,8 +8,11 @@
   .updateCourrierContainer {
     @include mixins.centeredContainer(90em);
     @include mixins.flexContainer(column, 1em);
-    flex: 1;
-    padding: 0 0.5em;
+    
+    & {
+      flex: 1;
+      padding: 0 0.5em;
+    }
 
     @media (min-width: vars.$tabletWidth) {
       padding: 0 1em;
@@ -72,7 +75,10 @@
 
     .previewSection {
       @include mixins.card(12px, light);
-      overflow: hidden;
+      
+      & {
+        overflow: hidden;
+      }
 
       @media (min-width: vars.$desktopWidth) {
         flex: 0 0 40%;
@@ -123,7 +129,10 @@
 
     .formSection {
       @include mixins.card(12px, light);
-      overflow: hidden;
+      
+      & {
+        overflow: hidden;
+      }
 
       @media (min-width: vars.$desktopWidth) {
         flex: 1;
@@ -236,7 +245,10 @@
 
         .formActions {
           @include mixins.formActions;
-          margin-top: auto;
+          
+          & {
+            margin-top: auto;
+          }
 
           .btnCancel,
           .btnSubmit {
