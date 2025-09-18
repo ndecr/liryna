@@ -100,17 +100,16 @@
 }
 
 .userInfo {
-  @media (min-width: vars.$mobileWidth) {
-    display: flex;
-    gap: 1rem;
-  }
-
   & {
     display: none;
     align-items: center;
     gap: 0.75rem;
   }
 
+  @media (min-width: vars.$mobileWidth) {
+    display: flex;
+    gap: 1rem;
+  }
 
   .pwa-install-btn.compact.desktop {
     font-size: 0.8em;
@@ -225,10 +224,6 @@
 }
 
 .headerToggle {
-  @media (max-width: vars.$mobileWidth) {
-    display: flex;
-  }
-
   & {
     display: none;
     align-items: center;
@@ -242,6 +237,10 @@
     cursor: pointer;
     border-radius: 8px;
     transition: all vars.$transitionFast;
+  }
+
+  @media (max-width: vars.$mobileWidth) {
+    display: flex;
   }
 
 
