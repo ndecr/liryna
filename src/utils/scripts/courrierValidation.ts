@@ -7,14 +7,14 @@ export interface ValidationResult {
 
 // Fonction utilitaire pour nettoyer le nom de fichier
 export const sanitizeFileName = (fileName: string): string => {
-  // Remplacer les caractères interdits par des underscores (similaire au backend)
-  return fileName.replace(/[<>:"|?*'`´]/g, '_');
+  // Remplacer les caractères vraiment interdits par des underscores (autoriser : . , ')
+  return fileName.replace(/[<>"|?*`´]/g, '_');
 };
 
 // Fonction utilitaire pour valider les caractères des champs texte (kind, department, etc.)
 const validateTextFieldCharacters = (fieldValue: string, fieldName: string): ValidationResult => {
-  // Caractères vraiment dangereux pour les champs de métadonnées (accepter les apostrophes)
-  const invalidChars = /[<>:"|?*]/g;
+  // Caractères vraiment dangereux pour les champs de métadonnées (autoriser : . , ')
+  const invalidChars = /[<>"|?*]/g;
   const invalidMatches = fieldValue.match(invalidChars);
   
   if (invalidMatches) {
