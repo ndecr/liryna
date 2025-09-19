@@ -8,6 +8,9 @@ const DYNAMIC_CACHE = `liryna-dynamic-v${BUILD_VERSION}`;
 // Vérifier si nous sommes en mode développement
 const isDevelopment = self.location.hostname === 'localhost' && self.location.port === '5173';
 
+// Mode minimal pour débugger les problèmes de performance
+const MINIMAL_MODE = false; // Passer à true pour désactiver temporairement le cache
+
 // Si en développement, désactiver complètement le Service Worker
 if (isDevelopment) {
   console.log('[SW] Development mode detected - Service Worker will self-destruct');
@@ -98,44 +101,56 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Stratégie de mise en cache
+// Optimisation : Pre-compile des regex pour éviter de les recréer à chaque requête
+const DEV_PATTERNS = [
+  /\/@vite\//,
+  /\/@react-refresh/,
+  /\/src\//,
+  /\?t=/,
+  /\?import/,
+  /\.(tsx|ts|jsx)$/,
+  /\.js.*\?t=/
+];
+
+const EXTERNAL_HOSTS = new Set([
+  'fonts.googleapis.com',
+  'fonts.gstatic.com', 
+  'unpkg.com'
+]);
+
+// Throttling : Limiter le nombre d'opérations de cache simultanées
+let activeCacheOperations = 0;
+const MAX_CONCURRENT_CACHE_OPS = 3;
+
+// Stratégie de mise en cache optimisée
 self.addEventListener('fetch', (event) => {
   const { request } = event;
+  
+  // En mode développement ou minimal, ne pas intercepter les requêtes
+  if (isDevelopment || MINIMAL_MODE) {
+    return;
+  }
+  
+  // Optimisation : Vérifications rapides en premier
+  if (request.method !== 'GET' || !request.url.startsWith('http')) {
+    return;
+  }
+  
   const url = new URL(request.url);
   
-  // En mode développement, ne pas intercepter les requêtes
-  if (isDevelopment) {
+  // Optimisation : Utiliser Set.has() plus rapide que comparaisons multiples
+  if (EXTERNAL_HOSTS.has(url.hostname)) {
     return;
   }
   
-  // Ignorer les requêtes non-HTTP
-  if (!request.url.startsWith('http')) {
+  // Optimisation : Test regex optimisé pour le développement
+  if (DEV_PATTERNS.some(pattern => pattern.test(url.pathname + url.search))) {
     return;
   }
   
-  // Ignorer les requêtes POST, PUT, DELETE (API calls)
-  if (request.method !== 'GET') {
-    return;
-  }
-  
-  // Ignorer Google Fonts et autres CDNs externes (laisser le navigateur gérer)
-  if (url.hostname === 'fonts.googleapis.com' || 
-      url.hostname === 'fonts.gstatic.com' ||
-      url.hostname === 'unpkg.com') {
-    return;
-  }
-  
-  // Ignorer les requêtes Vite en développement (sécurité supplémentaire)
-  if (url.pathname.includes('/@vite/') || 
-      url.pathname.includes('/@react-refresh') ||
-      url.pathname.includes('/src/') ||
-      url.search.includes('?t=') ||
-      url.search.includes('?import') ||
-      url.pathname.endsWith('.tsx') ||
-      url.pathname.endsWith('.ts') ||
-      url.pathname.endsWith('.jsx') ||
-      url.pathname.endsWith('.js') && url.search.includes('?t=')) {
-    return;
+  // Optimisation : Throttling pour éviter trop d'opérations de cache simultanées
+  if (activeCacheOperations >= MAX_CONCURRENT_CACHE_OPS) {
+    return; // Laisser passer sans cache si trop d'opérations en cours
   }
   
   // Stratégie pour les fichiers statiques (HTML, CSS, JS, images)
@@ -151,11 +166,18 @@ self.addEventListener('fetch', (event) => {
         }
         
         return fetch(request).then((networkResponse) => {
-          // Mettre en cache la réponse pour les futures utilisations
-          if (networkResponse && networkResponse.status === 200) {
+          // Optimisation : Cache async non-bloquant avec throttling
+          if (networkResponse && networkResponse.status === 200 && activeCacheOperations < MAX_CONCURRENT_CACHE_OPS) {
+            activeCacheOperations++;
             const responseClone = networkResponse.clone();
+            
+            // Opération de cache asynchrone qui ne bloque pas la réponse
             caches.open(STATIC_CACHE).then((cache) => {
-              cache.put(request, responseClone);
+              return cache.put(request, responseClone);
+            }).catch((error) => {
+              console.warn('[SW] Cache operation failed:', error);
+            }).finally(() => {
+              activeCacheOperations--;
             });
           }
           return networkResponse;
@@ -171,16 +193,23 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  // Stratégie pour les appels API (Network First)
+  // Stratégie pour les appels API (Network First) - Optimisée
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(
       fetch(request)
         .then((networkResponse) => {
-          // Mettre en cache les réponses GET réussies uniquement
-          if (networkResponse && networkResponse.status === 200) {
+          // Optimisation : Cache async non-bloquant pour API avec throttling
+          if (networkResponse && networkResponse.status === 200 && activeCacheOperations < MAX_CONCURRENT_CACHE_OPS) {
+            activeCacheOperations++;
             const responseClone = networkResponse.clone();
+            
+            // Opération de cache asynchrone qui ne bloque pas la réponse
             caches.open(DYNAMIC_CACHE).then((cache) => {
-              cache.put(request, responseClone);
+              return cache.put(request, responseClone);
+            }).catch((error) => {
+              console.warn('[SW] API cache operation failed:', error);
+            }).finally(() => {
+              activeCacheOperations--;
             });
           }
           return networkResponse;
@@ -213,7 +242,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  // Stratégie par défaut (Cache First pour les autres ressources)
+  // Stratégie par défaut (Cache First pour les autres ressources) - Optimisée
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
       if (cachedResponse) {
@@ -221,10 +250,18 @@ self.addEventListener('fetch', (event) => {
       }
       
       return fetch(request).then((networkResponse) => {
-        if (networkResponse && networkResponse.status === 200) {
+        // Optimisation : Cache async non-bloquant avec throttling
+        if (networkResponse && networkResponse.status === 200 && activeCacheOperations < MAX_CONCURRENT_CACHE_OPS) {
+          activeCacheOperations++;
           const responseClone = networkResponse.clone();
+          
+          // Opération de cache asynchrone qui ne bloque pas la réponse
           caches.open(DYNAMIC_CACHE).then((cache) => {
-            cache.put(request, responseClone);
+            return cache.put(request, responseClone);
+          }).catch((error) => {
+            console.warn('[SW] Default cache operation failed:', error);
+          }).finally(() => {
+            activeCacheOperations--;
           });
         }
         return networkResponse;
