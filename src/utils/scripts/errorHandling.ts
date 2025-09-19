@@ -1,9 +1,16 @@
+interface ValidationError {
+  field: string;
+  message: string;
+  value?: any;
+}
+
 interface AxiosError {
   response?: {
     status?: number;
     data?: {
       message?: string;
       success?: boolean;
+      errors?: ValidationError[];
     };
   };
   message?: string;
@@ -14,6 +21,24 @@ export const handleCourrierUploadError = (error: unknown): string => {
     const axiosError = error as AxiosError;
     
     if (axiosError.response?.status === 400) {
+      // Si nous avons des erreurs de validation détaillées
+      if (axiosError.response.data?.errors && Array.isArray(axiosError.response.data.errors)) {
+        const validationErrors = axiosError.response.data.errors;
+        
+        if (validationErrors.length === 1) {
+          // Une seule erreur - message direct
+          const error = validationErrors[0];
+          return `${getFieldDisplayName(error.field)}: ${error.message}`;
+        } else if (validationErrors.length > 1) {
+          // Plusieurs erreurs - liste numérotée
+          const errorMessages = validationErrors.map((err, index) => 
+            `${index + 1}. ${getFieldDisplayName(err.field)}: ${err.message}`
+          ).join('\n');
+          return `Erreurs de validation:\n${errorMessages}`;
+        }
+      }
+      
+      // Fallback si pas d'erreurs détaillées
       return `Erreur de validation: ${axiosError.response.data?.message || "Données invalides"}`;
     } else if (axiosError.response?.status === 413) {
       return "Le fichier est trop volumineux (max 50MB)";
@@ -23,6 +48,24 @@ export const handleCourrierUploadError = (error: unknown): string => {
   }
   
   return "Erreur lors de la création du courrier. Veuillez réessayer.";
+};
+
+// Fonction utilitaire pour convertir les noms de champs techniques en noms affichables
+const getFieldDisplayName = (fieldName: string): string => {
+  const fieldDisplayNames: Record<string, string> = {
+    'customFileName': 'Nom du fichier',
+    'kind': 'Type de courrier',
+    'department': 'Service/Département',
+    'emitter': 'Expéditeur',
+    'recipient': 'Destinataire',
+    'description': 'Description',
+    'direction': 'Direction',
+    'priority': 'Priorité',
+    'courrierDate': 'Date du courrier',
+    'receptionDate': 'Date de réception'
+  };
+  
+  return fieldDisplayNames[fieldName] || fieldName;
 };
 
 // Gestion d'erreurs pour le chargement des courriers
