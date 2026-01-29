@@ -17,6 +17,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { PieLabelRenderProps } from "recharts";
 
 // components
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
@@ -85,7 +86,17 @@ function BudgetDashboard(): ReactElement {
       }))
     : [];
 
-  const tooltipFormatter = (value: number): string => formatCurrency(value);
+  const tooltipFormatter = (value?: number | string | (number | string)[]): string => {
+    if (typeof value === "number") return formatCurrency(value);
+    if (value === undefined) return "";
+    return String(value);
+  };
+
+  const renderPieLabel = (props: PieLabelRenderProps): string => {
+    const name = props.name ?? "";
+    const percent = typeof props.percent === "number" ? props.percent : 0;
+    return `${name} ${(percent * 100).toFixed(0)}%`;
+  };
 
   return (
     <>
@@ -198,9 +209,7 @@ function BudgetDashboard(): ReactElement {
                               outerRadius={100}
                               innerRadius={50}
                               dataKey="value"
-                              label={({ name, percent }: { name: string; percent: number }) =>
-                                `${name} ${(percent * 100).toFixed(0)}%`
-                              }
+                              label={renderPieLabel}
                               labelLine={false}
                             >
                               {chargesChartData.map((_, index) => (
@@ -228,9 +237,7 @@ function BudgetDashboard(): ReactElement {
                               outerRadius={100}
                               innerRadius={50}
                               dataKey="value"
-                              label={({ name, percent }: { name: string; percent: number }) =>
-                                `${name} ${(percent * 100).toFixed(0)}%`
-                              }
+                              label={renderPieLabel}
                               labelLine={false}
                             >
                               {revenusChartData.map((_, index) => (
