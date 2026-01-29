@@ -4,13 +4,14 @@ import "./subNav.scss";
 // hooks | libraries
 import { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
-import { IoHome, IoMail } from "react-icons/io5";
+import { IoHome, IoMail, IoWallet } from "react-icons/io5";
 
 interface ISection {
   id: string;
   name: string;
   path: string;
   icon: ReactElement;
+  theme: "utils" | "webdev";
 }
 
 export default function SubNav(): ReactElement | null {
@@ -22,12 +23,21 @@ export default function SubNav(): ReactElement | null {
       name: "Accueil",
       path: "/home",
       icon: <IoHome />,
+      theme: "utils",
     },
     {
       id: "2",
       name: "Courriers",
       path: "/mail",
       icon: <IoMail />,
+      theme: "utils",
+    },
+    {
+      id: "3",
+      name: "Budget",
+      path: "/budget",
+      icon: <IoWallet />,
+      theme: "webdev",
     },
   ];
 
@@ -49,7 +59,7 @@ export default function SubNav(): ReactElement | null {
         {sections.map((app: ISection) => (
           <button
             key={app.id}
-            className={`subNavItem ${
+            className={`subNavItem ${app.theme} ${
               app?.id === currentApp?.id ? "active" : ""
             }`}
             onClick={() => handleAppChange(app)}

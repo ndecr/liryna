@@ -1,0 +1,371 @@
+@use "../../../utils/styles/mixins" as mixins;
+@use "../../../utils/styles/variables" as vars;
+
+#budgetDashboard {
+  @include mixins.mainView;
+  & { @include mixins.responsivePadding(1em, 1.5em, 2em); }
+
+  .dashboardContainer {
+    @include mixins.centeredContainer;
+    @include mixins.flexContainer(column, 2em);
+    flex: 1;
+
+    @media (min-width: vars.$tabletWidth) {
+      gap: 2.5em;
+    }
+  }
+
+  .dashboardHeader {
+    @include mixins.flexContainer(column, 1em);
+    align-items: center;
+
+    .dashboardTitle {
+      font-size: 1.75em;
+      font-weight: 700;
+      background: vars.$webdevGradient;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+
+      @media (min-width: vars.$tabletWidth) {
+        font-size: 2.25em;
+      }
+    }
+
+    .editBtn {
+      @include mixins.resetButton;
+
+      & {
+        @include mixins.flexContainer(row, 0.5em);
+        align-items: center;
+        padding: 0.5em 1.25em;
+        background: vars.$webdevGradient;
+        color: white;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform vars.$transitionFast;
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  .loadingState,
+  .errorState {
+    @include mixins.card(10px, light);
+
+    & {
+      padding: 3em;
+      text-align: center;
+      color: vars.$fontColorSecondary;
+    }
+
+    .createBtn {
+      @include mixins.resetButton;
+
+      & {
+        padding: 0.75em 1.5em;
+        background: vars.$webdevGradient;
+        color: white;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        margin: 1em 0 0;
+        transition: transform vars.$transitionFast;
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  .summaryCards {
+    @include mixins.flexContainer(column, 1em);
+
+    @media (min-width: vars.$tabletWidth) {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 1.5em;
+    }
+
+    .summaryCard {
+      @include mixins.card(10px, light);
+
+      & {
+        padding: 1.5em;
+        flex: 1;
+        text-align: center;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        flex: 1 1 calc(50% - 0.75em);
+        border-radius: 12px;
+      }
+
+      @media (min-width: vars.$desktopWidth) {
+        flex: 1 1 calc(25% - 1.125em);
+      }
+
+      h3 {
+        font-size: 0.9em;
+        color: vars.$fontColorSecondary;
+        margin: 0 0 0.5em;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .amount {
+        font-size: 1.5em;
+        font-weight: 700;
+        margin: 0;
+
+        @media (min-width: vars.$tabletWidth) {
+          font-size: 1.75em;
+        }
+      }
+
+      &.revenus .amount {
+        color: #2e7d32;
+      }
+
+      &.charges-fixes .amount {
+        color: vars.$webdevPrimary;
+      }
+
+      &.charges-variables .amount {
+        color: #e65100;
+      }
+
+      &.dettes .amount {
+        color: #c62828;
+      }
+    }
+  }
+
+  .resteAVivre {
+    .resteCard {
+      @include mixins.card(10px, light);
+
+      & {
+        padding: 2em;
+        text-align: center;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        border-radius: 12px;
+      }
+
+      &.positive {
+        border-left: 4px solid #4caf50;
+      }
+
+      &.negative {
+        border-left: 4px solid #f44336;
+      }
+
+      h2 {
+        font-size: 1em;
+        color: vars.$fontColorSecondary;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin: 0 0 0.5em;
+      }
+
+      .resteAmount {
+        font-size: 2.5em;
+        font-weight: 800;
+        margin: 0;
+
+        @media (min-width: vars.$tabletWidth) {
+          font-size: 3em;
+        }
+      }
+
+      &.positive .resteAmount {
+        color: #2e7d32;
+      }
+
+      &.negative .resteAmount {
+        color: #c62828;
+      }
+
+      .resteDetail {
+        font-size: 0.9em;
+        color: vars.$fontColorSecondary;
+        margin: 0.5em 0 0;
+      }
+    }
+  }
+
+  .indicateurs {
+    @include mixins.flexContainer(column, 1em);
+
+    @media (min-width: vars.$tabletWidth) {
+      flex-direction: row;
+      gap: 1.5em;
+    }
+
+    .indicateurCard {
+      @include mixins.card(10px, light);
+
+      & {
+        @include mixins.flexContainer(row, 1em);
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.25em 1.5em;
+        flex: 1;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        border-radius: 12px;
+      }
+
+      .indicateurLabel {
+        font-size: 0.9em;
+        color: vars.$fontColorSecondary;
+      }
+
+      .indicateurValue {
+        font-size: 1.25em;
+        font-weight: 700;
+
+        &.ok {
+          color: #2e7d32;
+        }
+
+        &.danger {
+          color: #c62828;
+        }
+      }
+    }
+  }
+
+  .recommandation {
+    @include mixins.card(10px, light);
+
+    & {
+      padding: 1.25em 1.5em;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    @media (min-width: vars.$tabletWidth) {
+      border-radius: 12px;
+    }
+
+    &.success {
+      background: rgba(76, 175, 80, 0.1);
+      color: #2e7d32;
+      border-left: 4px solid #4caf50;
+    }
+
+    &.warning {
+      background: rgba(255, 152, 0, 0.1);
+      color: #e65100;
+      border-left: 4px solid #ff9800;
+    }
+
+    &.danger {
+      background: rgba(244, 67, 54, 0.1);
+      color: #c62828;
+      border-left: 4px solid #f44336;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .chartsSection {
+    .chartsGrid {
+      @include mixins.flexContainer(column, 1.5em);
+
+      @media (min-width: vars.$tabletWidth) {
+        flex-direction: row;
+        gap: 2em;
+      }
+    }
+
+    .chartCard {
+      @include mixins.card(10px, light);
+
+      & {
+        padding: 1.5em;
+        flex: 1;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        border-radius: 12px;
+        padding: 2em;
+      }
+
+      .chartTitle {
+        font-size: 1.1em;
+        font-weight: 700;
+        color: vars.$fontColorPrimary;
+        margin: 0 0 1em;
+        text-align: center;
+      }
+
+      .chartWrapper {
+        width: 100%;
+        overflow: hidden;
+      }
+    }
+
+    .barChartCard {
+      margin: 1.5em 0 0;
+
+      @media (min-width: vars.$tabletWidth) {
+        margin-top: 2em;
+      }
+    }
+  }
+
+  .detailSection {
+    .detailTitle {
+      font-size: 1.25em;
+      color: vars.$fontColorPrimary;
+      margin: 0 0 1em;
+
+      @media (min-width: vars.$tabletWidth) {
+        font-size: 1.5em;
+      }
+    }
+
+    .detailGrid {
+      @include mixins.flexContainer(column, 0.5em);
+
+      .detailRow {
+        @include mixins.card(8px, light);
+
+        & {
+          @include mixins.flexContainer(row, 1em);
+          align-items: center;
+          justify-content: space-between;
+          padding: 1em 1.25em;
+        }
+
+        @media (min-width: vars.$tabletWidth) {
+          border-radius: 10px;
+        }
+
+        .detailLabel {
+          font-size: 0.95em;
+          color: vars.$fontColorPrimary;
+        }
+
+        .detailAmount {
+          font-size: 1em;
+          font-weight: 600;
+          color: vars.$webdevPrimary;
+        }
+      }
+    }
+  }
+}

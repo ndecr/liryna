@@ -68,10 +68,18 @@
     color: vars.$navTextColorActive;
     box-shadow: vars.$shadowMedium;
     background: vars.$utilsGradient;
-    
+
     &::before {
       background: vars.$utilsGradientReverse;
       left: 0;
+    }
+
+    &.webdev {
+      background: vars.$webdevGradient;
+
+      &::before {
+        background: vars.$webdevGradientReverse;
+      }
     }
   }
   
