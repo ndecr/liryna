@@ -28,6 +28,9 @@ import CourriersWithAuth from "./views/courriers/Courriers.tsx";
 import NouveauCourrierWithAuth from "./views/courriers/nouveauCourrier/NouveauCourrier.tsx";
 import ListeCourriersWithAuth from "./views/courriers/listeCourriers/ListeCourriers.tsx";
 import UpdateCourrierWithAuth from "./views/courriers/updateCourrier/UpdateCourrier.tsx";
+import BudgetWithAuth from "./views/budget/Budget.tsx";
+import BudgetDashboardWithAuth from "./views/budget/budgetDashboard/BudgetDashboard.tsx";
+import BudgetEditWithAuth from "./views/budget/budgetEdit/BudgetEdit.tsx";
 
 // Component to manage body classes based on current route
 function BodyClassManager(): ReactElement | null {
@@ -40,7 +43,7 @@ function BodyClassManager(): ReactElement | null {
     // Determine current section and add appropriate classes
     if (location.pathname === '/' || location.pathname === '/home') {
       document.body.classList.add('section-home');
-    } else if (location.pathname.includes('/web_dev')) {
+    } else if (location.pathname.includes('/web_dev') || location.pathname.startsWith('/budget')) {
       document.body.classList.add('section-webdev');
     } else if (location.pathname.includes('/utils')) {
       document.body.classList.add('section-utils');
@@ -85,6 +88,9 @@ function App(): ReactElement {
         <Route path={"mail/list"} element={<ListeCourriersWithAuth />}></Route>
         <Route path={"mail/new"} element={<NouveauCourrierWithAuth />}></Route>
         <Route path={"mail/update/:id"} element={<UpdateCourrierWithAuth />}></Route>
+        <Route path={"budget"} element={<BudgetWithAuth />}></Route>
+        <Route path={"budget/dashboard"} element={<BudgetDashboardWithAuth />}></Route>
+        <Route path={"budget/edit"} element={<BudgetEditWithAuth />}></Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       

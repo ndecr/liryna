@@ -5,7 +5,8 @@ import "./header.scss";
 import { ReactElement, useState, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
-import { IoHome, IoAdd, IoList } from "react-icons/io5";
+import { IoHome, IoAdd, IoList, IoWallet, IoCreate } from "react-icons/io5";
+import { MdDashboard } from "react-icons/md";
 import { UserContext } from "../../context/user/UserContext.tsx";
 
 // components
@@ -130,6 +131,38 @@ export default function Header(): ReactElement {
                 >
                   <IoList className="mobileNavIcon" />
                   <span className="mobileNavText">Liste des courriers</span>
+                </button>
+              </div>
+
+              {/* Navigation du budget */}
+              <div className="mobileSection">
+                <h3 className="mobileSectionTitle">Gestion du budget</h3>
+                <button
+                  className={`mobileNavItem ${
+                    location.pathname === "/budget" ? "active" : ""
+                  }`}
+                  onClick={() => handleNavigate("/budget")}
+                >
+                  <IoWallet className="mobileNavIcon" />
+                  <span className="mobileNavText">Budget</span>
+                </button>
+                <button
+                  className={`mobileNavItem ${
+                    location.pathname.startsWith("/budget/dashboard") ? "active" : ""
+                  }`}
+                  onClick={() => handleNavigate("/budget/dashboard")}
+                >
+                  <MdDashboard className="mobileNavIcon" />
+                  <span className="mobileNavText">Tableau de bord</span>
+                </button>
+                <button
+                  className={`mobileNavItem ${
+                    location.pathname.startsWith("/budget/edit") ? "active" : ""
+                  }`}
+                  onClick={() => handleNavigate("/budget/edit")}
+                >
+                  <IoCreate className="mobileNavIcon" />
+                  <span className="mobileNavText">Editer le budget</span>
                 </button>
               </div>
             </div>

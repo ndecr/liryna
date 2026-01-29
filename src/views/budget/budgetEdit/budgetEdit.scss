@@ -1,0 +1,442 @@
+@use "../../../utils/styles/mixins" as mixins;
+@use "../../../utils/styles/variables" as vars;
+
+#budgetEdit {
+  @include mixins.mainView;
+  & { @include mixins.responsivePadding(1em, 1.5em, 2em); }
+
+  .editContainer {
+    @include mixins.centeredContainer;
+    @include mixins.flexContainer(column, 1.5em);
+    flex: 1;
+
+    @media (min-width: vars.$tabletWidth) {
+      gap: 2em;
+    }
+  }
+
+  .loadingText {
+    text-align: center;
+    color: vars.$fontColorSecondary;
+    padding: 3em;
+  }
+
+  .editHeader {
+    text-align: center;
+
+    .editTitle {
+      font-size: 1.75em;
+      font-weight: 700;
+      background: vars.$webdevGradient;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      @media (min-width: vars.$tabletWidth) {
+        font-size: 2.25em;
+      }
+    }
+  }
+
+  .messageBox {
+    padding: 1em 1.5em;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+
+    &.error {
+      background: rgba(244, 67, 54, 0.1);
+      color: #c62828;
+      border-left: 4px solid #f44336;
+    }
+
+    &.success {
+      background: rgba(76, 175, 80, 0.1);
+      color: #2e7d32;
+      border-left: 4px solid #4caf50;
+    }
+  }
+
+  .formSection {
+    @include mixins.card(10px, light);
+
+    & {
+      @include mixins.flexContainer(column, 1em);
+      padding: 1.5em;
+    }
+
+    @media (min-width: vars.$tabletWidth) {
+      border-radius: 12px;
+      padding: 2em;
+    }
+
+    .sectionHeader {
+      @include mixins.flexContainer(row, 1em);
+      align-items: center;
+      justify-content: space-between;
+
+      .sectionTotal {
+        font-size: 1.25em;
+        font-weight: 700;
+        color: vars.$webdevPrimary;
+      }
+    }
+
+    .sectionTitle {
+      font-size: 1.25em;
+      font-weight: 700;
+      color: vars.$fontColorPrimary;
+      margin: 0;
+
+      @media (min-width: vars.$tabletWidth) {
+        font-size: 1.5em;
+      }
+    }
+
+    .categoryBlock {
+      @include mixins.flexContainer(column, 0.5em);
+      padding: 0 0 0 1em;
+      border-left: 3px solid vars.$webdevSecondary;
+
+      .categoryTitle {
+        font-size: 0.95em;
+        font-weight: 600;
+        color: vars.$webdevPrimary;
+        margin: 0;
+      }
+    }
+  }
+
+  .paramsGrid {
+    @include mixins.flexContainer(column, 1em);
+
+    @media (min-width: vars.$tabletWidth) {
+      flex-direction: row;
+    }
+
+    .paramField {
+      @include mixins.flexContainer(column, 0.25em);
+      flex: 1;
+
+      label {
+        font-size: 0.85em;
+        font-weight: 600;
+        color: vars.$fontColorSecondary;
+      }
+
+      input {
+        @include mixins.inputBase;
+
+        & {
+          padding: 0.6em 0.75em;
+          border: 1px solid vars.$borderColor;
+          border-radius: 8px;
+          font-size: 1em;
+          width: 100%;
+        }
+
+        &:focus {
+          border-color: vars.$webdevPrimary;
+          outline: none;
+          box-shadow: 0 0 0 3px rgba(vars.$webdevPrimary, 0.15);
+        }
+      }
+
+      .react-select-container {
+        width: 100%;
+      }
+    }
+  }
+
+  .paramField.notes {
+    textarea {
+      @include mixins.inputBase;
+
+      & {
+        padding: 0.6em 0.75em;
+        border: 1px solid vars.$borderColor;
+        border-radius: 8px;
+        font-size: 1em;
+        width: 100%;
+        resize: vertical;
+        font-family: inherit;
+      }
+
+      &:focus {
+        border-color: vars.$webdevPrimary;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(vars.$webdevPrimary, 0.15);
+      }
+    }
+
+    label {
+      font-size: 0.85em;
+      font-weight: 600;
+      color: vars.$fontColorSecondary;
+    }
+  }
+
+  .duplicateBtn {
+    @include mixins.resetButton;
+
+    & {
+      @include mixins.flexContainer(row, 0.5em);
+      align-items: center;
+      align-self: flex-start;
+      padding: 0.6em 1.25em;
+      background: transparent;
+      color: vars.$webdevPrimary;
+      border: 2px solid vars.$webdevPrimary;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all vars.$transitionFast;
+    }
+
+    &:hover {
+      background: vars.$webdevGradient;
+      color: white;
+      border-color: transparent;
+    }
+  }
+
+  .entryRow {
+    @include mixins.flexContainer(row, 0.5em);
+    align-items: center;
+
+    .entryLabel {
+      @include mixins.inputBase;
+
+      & {
+        flex: 2;
+        padding: 0.5em 0.75em;
+        border: 1px solid vars.$borderColor;
+        border-radius: 8px;
+        font-size: 0.95em;
+      }
+
+      &:focus {
+        border-color: vars.$webdevPrimary;
+        outline: none;
+      }
+    }
+
+    .entryAmount {
+      @include mixins.inputBase;
+
+      & {
+        flex: 1;
+        padding: 0.5em 0.75em;
+        border: 1px solid vars.$borderColor;
+        border-radius: 8px;
+        font-size: 0.95em;
+        text-align: right;
+        max-width: 8em;
+      }
+
+      &:focus {
+        border-color: vars.$webdevPrimary;
+        outline: none;
+      }
+    }
+
+    .removeBtn {
+      @include mixins.resetButton;
+
+      & {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #e53935;
+        cursor: pointer;
+        transition: background vars.$transitionFast;
+        flex-shrink: 0;
+      }
+
+      &:hover {
+        background: rgba(229, 57, 53, 0.1);
+      }
+    }
+  }
+
+  .debtRow {
+    @include mixins.flexContainer(row, 0.5em);
+    align-items: flex-start;
+
+    .debtFields {
+      @include mixins.flexContainer(column, 0.5em);
+      flex: 1;
+
+      @media (min-width: vars.$tabletWidth) {
+        flex-direction: row;
+      }
+
+      input {
+        @include mixins.inputBase;
+
+        & {
+          flex: 1;
+          padding: 0.5em 0.75em;
+          border: 1px solid vars.$borderColor;
+          border-radius: 8px;
+          font-size: 0.95em;
+        }
+
+        &:focus {
+          border-color: vars.$webdevPrimary;
+          outline: none;
+        }
+
+        &[type="number"] {
+          text-align: right;
+          max-width: 100%;
+
+          @media (min-width: vars.$tabletWidth) {
+            max-width: 10em;
+          }
+        }
+      }
+    }
+
+    .removeBtn {
+      @include mixins.resetButton;
+
+      & {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #e53935;
+        cursor: pointer;
+        transition: background vars.$transitionFast;
+        flex-shrink: 0;
+        margin-top: 0.25em;
+      }
+
+      &:hover {
+        background: rgba(229, 57, 53, 0.1);
+      }
+    }
+  }
+
+  .addBtn {
+    @include mixins.resetButton;
+
+    & {
+      @include mixins.flexContainer(row, 0.35em);
+      align-items: center;
+      align-self: flex-start;
+      padding: 0.4em 0.75em;
+      color: vars.$webdevPrimary;
+      font-size: 0.9em;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background vars.$transitionFast;
+    }
+
+    &:hover {
+      background: rgba(vars.$webdevPrimary, 0.08);
+    }
+  }
+
+  .resume {
+    .resumeGrid {
+      @include mixins.flexContainer(column, 0.5em);
+
+      .resumeRow {
+        @include mixins.flexContainer(row, 1em);
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75em 1em;
+        border-radius: 8px;
+
+        &.total {
+          font-size: 1.25em;
+          font-weight: 800;
+          padding: 1em;
+          border-radius: 10px;
+
+          &.positive {
+            background: rgba(76, 175, 80, 0.1);
+          }
+
+          &.negative {
+            background: rgba(244, 67, 54, 0.1);
+          }
+        }
+
+        &.detail {
+          font-size: 0.9em;
+          color: vars.$fontColorSecondary;
+        }
+
+        .positive {
+          color: #2e7d32;
+          font-weight: 700;
+        }
+
+        .negative {
+          color: #c62828;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+
+  .formActions {
+    @include mixins.flexContainer(row, 1em);
+    justify-content: flex-end;
+    padding: 0 0 2em;
+
+    .cancelBtn {
+      @include mixins.resetButton;
+
+      & {
+        padding: 0.75em 1.5em;
+        border: 2px solid vars.$borderColor;
+        border-radius: 8px;
+        color: vars.$fontColorSecondary;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all vars.$transitionFast;
+      }
+
+      &:hover {
+        border-color: vars.$fontColorPrimary;
+        color: vars.$fontColorPrimary;
+      }
+    }
+
+    .saveBtn {
+      @include mixins.resetButton;
+
+      & {
+        @include mixins.flexContainer(row, 0.5em);
+        align-items: center;
+        padding: 0.75em 2em;
+        background: vars.$webdevGradient;
+        color: white;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform vars.$transitionFast;
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+    }
+  }
+}
