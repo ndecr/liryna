@@ -3,7 +3,7 @@
 
 #courriers {
   @include mixins.mainView;
-  @include mixins.responsivePadding(1em, 1.5em, 2em);
+  & { @include mixins.responsivePadding(1em, 1.5em, 2em); }
 
   .courriersContainer {
     @include mixins.centeredContainer;
@@ -65,9 +65,9 @@
 
       .actionBtn {
         @include mixins.card(10px, light);
-        @include mixins.flexContainer(column, 0.75em);
-        
+
         & {
+          @include mixins.flexContainer(column, 0.75em);
           align-items: center;
           padding: 1.5em 1em;
           cursor: pointer;
@@ -159,9 +159,9 @@
 
       .statCard {
         @include mixins.card(10px, light);
-        @include mixins.flexContainer(row, 1em);
-        
+
         & {
+          @include mixins.flexContainer(row, 1em);
           align-items: center;
           padding: 1.5em 1em;
           transition: transform vars.$transitionMedium;

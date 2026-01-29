@@ -30,7 +30,7 @@ $subnav-height: 4dvh;
 @mixin fullViewport {
   min-height: calc(100dvh - #{$header-height} - #{$subnav-height});
   padding-top: calc(#{$header-height} + #{$subnav-height});
-  
+
   &.no-subnav {
     min-height: calc(100dvh - #{$header-height});
     padding-top: $header-height;
@@ -69,7 +69,7 @@ $subnav-height: 4dvh;
   min-height: calc(100dvh - #{$header-height});
   background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 50%, #f0f3f7 100%);
   margin-top: #{$header-height};
-  
+
   @media (min-width: 1024px) {
     min-height: calc(100dvh - #{$header-height} - #{$subnav-height});
     margin-top: calc(#{$header-height} + #{$subnav-height});
@@ -88,7 +88,7 @@ $subnav-height: 4dvh;
   flex-direction: column-reverse;
   gap: 1em;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
-  
+
   @media (min-width: 1024px) {
     flex-direction: row;
     justify-content: flex-end;
@@ -109,12 +109,12 @@ $subnav-height: 4dvh;
   align-items: center;
   justify-content: center;
   gap: 0.5em;
-  
+
   &:hover:not(:disabled) {
     background: $hover-color;
     transform: translateY(-1px);
   }
-  
+
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -129,13 +129,13 @@ $subnav-height: 4dvh;
   font-size: 0.95em;
   transition: all 0.3s ease;
   background: white;
-  
+
   &:focus {
     outline: none;
     border-color: #26d0ce;
     box-shadow: 0 0 0 3px rgba(38, 208, 206, 0.1);
   }
-  
+
   &::placeholder {
     color: #5a6c7d;
   }
@@ -150,76 +150,76 @@ $subnav-height: 4dvh;
     height: 50px;
     transition: all 0.3s ease;
     box-shadow: none;
-    
+
     &:hover {
       border-color: rgba(0, 0, 0, 0.1);
     }
-    
+
     &--is-focused {
       border-color: #26d0ce;
       box-shadow: 0 0 0 3px rgba(38, 208, 206, 0.1);
-      
+
       &:hover {
         border-color: #26d0ce;
       }
     }
   }
-  
+
   .react-select__value-container {
     padding: 0 1em;
     height: 50px;
     display: flex;
     align-items: center;
   }
-  
+
   .react-select__single-value {
     color: #2c3e50;
     font-size: 0.95em;
   }
-  
+
   .react-select__placeholder {
     color: #5a6c7d;
     font-size: 0.95em;
   }
-  
+
   .react-select__indicator-separator {
     display: none;
   }
-  
+
   .react-select__dropdown-indicator {
     color: #5a6c7d;
     padding: 0.5em;
-    
+
     &:hover {
       color: #26d0ce;
     }
   }
-  
+
   .react-select__indicators {
     height: 46px;
   }
-  
+
   .react-select__menu {
     border: 2px solid rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     box-shadow: 0 0.25em 1.25em rgba(0, 0, 0, 0.08);
     margin-top: 0.25em;
   }
-  
+
   .react-select__option {
     font-size: 0.95em;
     color: #2c3e50;
-    
+
     &--is-selected {
       background-color: #26d0ce;
       color: white;
     }
-    
+
     &--is-focused {
       background-color: rgba(38, 208, 206, 0.1);
       color: #2c3e50;
     }
-    
+
     &:hover {
       background-color: rgba(38, 208, 206, 0.1);
     }
@@ -234,12 +234,12 @@ $subnav-height: 4dvh;
 
 @mixin flexContainerResponsive($mobile-direction: column, $tablet-direction: row, $gap: 1em) {
   @include flexContainer($mobile-direction, $gap);
-  
+
   @media (min-width: 1024px) {
     flex-direction: $tablet-direction;
     gap: calc(#{$gap} * 1.5);
   }
-  
+
   @media (min-width: 1440px) {
     gap: calc(#{$gap} * 2);
   }
@@ -247,11 +247,11 @@ $subnav-height: 4dvh;
 
 @mixin responsivePadding($mobile: 1em, $tablet: 1.5em, $desktop: 2em) {
   padding: $mobile 0.5em;
-  
+
   @media (min-width: 1024px) {
     padding: $tablet 1em;
   }
-  
+
   @media (min-width: 1440px) {
     padding: $desktop 1.5em;
   }
@@ -260,23 +260,31 @@ $subnav-height: 4dvh;
 @mixin card($radius: 0.75em, $shadow: light) {
   background: white;
   border-radius: $radius;
-  
-  @if $shadow == light {
+
+  @if $shadow ==light {
     box-shadow: 0 0.125em 0.5em rgba(0, 0, 0, 0.08);
-  } @else if $shadow == medium {
+  }
+
+  @else if $shadow ==medium {
     box-shadow: 0 0.25em 1em rgba(0, 0, 0, 0.1);
-  } @else if $shadow == heavy {
+  }
+
+  @else if $shadow ==heavy {
     box-shadow: 0 0.5em 2em rgba(0, 0, 0, 0.15);
   }
-  
+
   @media (min-width: 1024px) {
     border-radius: calc(#{$radius} * 1.2);
-    
-    @if $shadow == light {
+
+    @if $shadow ==light {
       box-shadow: 0 0.25em 1em rgba(0, 0, 0, 0.1);
-    } @else if $shadow == medium {
+    }
+
+    @else if $shadow ==medium {
       box-shadow: 0 0.5em 1.5em rgba(0, 0, 0, 0.12);
-    } @else if $shadow == heavy {
+    }
+
+    @else if $shadow ==heavy {
       box-shadow: 0 1em 3em rgba(0, 0, 0, 0.18);
     }
   }

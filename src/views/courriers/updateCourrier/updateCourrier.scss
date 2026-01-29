@@ -3,7 +3,7 @@
 
 #updateCourrier {
   @include mixins.mainView;
-  @include mixins.responsivePadding(1em, 1.5em, 2em);
+  & { @include mixins.responsivePadding(1em, 1.5em, 2em); }
 
   .updateCourrierContainer {
     @include mixins.centeredContainer(90em);

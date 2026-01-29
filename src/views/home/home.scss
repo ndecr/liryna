@@ -3,12 +3,12 @@
 
 #home {
   @include mixins.mainView;
-  @include mixins.responsivePadding(1em, 1.5em, 2em);
+  & { @include mixins.responsivePadding(1em, 1.5em, 2em); }
 
   .mainWrapper {
     @include mixins.centeredContainer;
     @include mixins.flexContainerResponsive(column, row, 1.5em);
-    @include mixins.responsivePadding(1em, 2em, 2em);
+    & { @include mixins.responsivePadding(1em, 2em, 2em); }
     
     & {
       justify-content: center;
