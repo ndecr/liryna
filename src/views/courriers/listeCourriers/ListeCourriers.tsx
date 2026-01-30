@@ -526,14 +526,20 @@ function ListeCourriers(): ReactElement {
     { value: 'interne', label: 'Interne' },
   ];
 
-  const filteredCourriers = courriers.filter(courrier =>
-    courrier.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    courrier.kind?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    courrier.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    courrier.emitter?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    courrier.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    courrier.recipient?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const normalize = (str: string): string =>
+    str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+  const filteredCourriers = courriers.filter(courrier => {
+    const term = normalize(searchTerm);
+    return (
+      normalize(courrier.fileName).includes(term) ||
+      normalize(courrier.kind ?? '').includes(term) ||
+      normalize(courrier.department ?? '').includes(term) ||
+      normalize(courrier.emitter ?? '').includes(term) ||
+      normalize(courrier.description ?? '').includes(term) ||
+      normalize(courrier.recipient ?? '').includes(term)
+    );
+  });
 
   return (
     <>
