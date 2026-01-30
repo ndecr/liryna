@@ -4,7 +4,7 @@ import "./courriers.scss";
 // hooks | libraries
 import { ReactElement, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { MdAdd, MdList, MdArchive } from "react-icons/md";
+import { MdAdd, MdList } from "react-icons/md";
 import { IoMail, IoMailOpen } from "react-icons/io5";
 import { FiCalendar, FiFileText } from "react-icons/fi";
 
@@ -48,12 +48,6 @@ function Courriers(): ReactElement {
       id: '2',
       label: 'Liste des courriers',
       icon: <MdList />,
-      primary: false
-    },
-    {
-      id: '3',
-      label: 'Archives',
-      icon: <MdArchive />,
       primary: false
     }
   ];

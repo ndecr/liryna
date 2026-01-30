@@ -73,8 +73,16 @@ function BudgetDashboard(): ReactElement {
       ].filter((d) => d.value > 0)
     : [];
 
-  const revenusChartData: ChartEntry[] = dashboard?.details?.revenusParCategorie
-    ? Object.entries(dashboard.details.revenusParCategorie)
+  // Si nombrePersonnes >= 2 et qu'il y a des entrees individuelles, afficher par entree
+  // sinon afficher par categorie
+  const revenusSource = dashboard && dashboard.budget.nombrePersonnes >= 2
+    && dashboard?.details?.revenusParEntree
+    && Object.keys(dashboard.details.revenusParEntree).length > 1
+    ? dashboard.details.revenusParEntree
+    : dashboard?.details?.revenusParCategorie;
+
+  const revenusChartData: ChartEntry[] = revenusSource
+    ? Object.entries(revenusSource)
         .map(([name, value]) => ({ name, value }))
         .filter((d) => d.value > 0)
     : [];
