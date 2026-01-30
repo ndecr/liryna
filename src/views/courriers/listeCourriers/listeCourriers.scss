@@ -254,6 +254,14 @@
         .react-select__value-container {
           height: 2.4em;
           padding: 0 0.75em;
+          flex-wrap: nowrap;
+        }
+
+        .react-select__single-value {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          max-width: calc(100% - 0.5em);
         }
 
         .react-select__indicators {

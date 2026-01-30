@@ -88,5 +88,6 @@ export interface IBudgetDashboard {
   details: {
     chargesFixesParCategorie: Record<string, number>;
     revenusParCategorie: Record<string, number>;
+    revenusParEntree?: Record<string, number>;
   };
 }
