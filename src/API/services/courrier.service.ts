@@ -1,7 +1,7 @@
 import { getRequest, postRequest, postFormDataRequest, patchRequest, deleteRequest } from "../APICalls.ts";
 import { AxiosResponse } from "axios";
 import axios from "axios";
-import { ICourrier, ICourrierUploadData, IApiResponse, ICourrierSearchParams, IPagination, ICourrierStats } from "../../utils/types/courrier.types.ts";
+import { ICourrier, ICourrierUploadData, IApiResponse, ICourrierSearchParams, IPagination, ICourrierStats, ICourrierListParams } from "../../utils/types/courrier.types.ts";
 import { courrierModel } from "../models/courrier.model.ts";
 
 export const uploadCourrierService = async (
@@ -28,10 +28,20 @@ export const uploadCourrierService = async (
 };
 
 export const getAllCourriersService = async (
-  page: number = 1, 
-  limit: number = 10
+  params: ICourrierListParams = {}
 ): Promise<{ courriers: ICourrier[], pagination: IPagination | null }> => {
-  const response: AxiosResponse<IApiResponse<ICourrier[]>> = await getRequest(`/courriers?page=${page}&limit=${limit}`);
+  const { page = 1, limit = 10, sortBy, sortOrder, filterKind, filterDepartment, filterEmitter, filterRecipient, filterDirection } = params;
+  const queryParams = new URLSearchParams();
+  queryParams.set('page', String(page));
+  queryParams.set('limit', String(limit));
+  if (sortBy) queryParams.set('sortBy', sortBy);
+  if (sortOrder) queryParams.set('sortOrder', sortOrder);
+  if (filterKind) queryParams.set('filterKind', filterKind);
+  if (filterDepartment) queryParams.set('filterDepartment', filterDepartment);
+  if (filterEmitter) queryParams.set('filterEmitter', filterEmitter);
+  if (filterRecipient) queryParams.set('filterRecipient', filterRecipient);
+  if (filterDirection) queryParams.set('filterDirection', filterDirection);
+  const response: AxiosResponse<IApiResponse<ICourrier[]>> = await getRequest(`/courriers?${queryParams.toString()}`);
   
   if (response.data.success && response.data.data) {
     return {

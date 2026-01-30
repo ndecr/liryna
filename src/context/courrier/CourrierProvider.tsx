@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, ReactElement } from "react";
 import { CourrierContext } from "./CourrierContext.tsx";
-import { ICourrier, ICourrierUploadData, ICourrierSearchParams, IPagination, ICourrierStats } from "../../utils/types/courrier.types.ts";
+import { ICourrier, ICourrierUploadData, ICourrierSearchParams, IPagination, ICourrierStats, ICourrierListParams } from "../../utils/types/courrier.types.ts";
 import {
   uploadCourrierService,
   getAllCourriersService,
@@ -38,10 +38,10 @@ export const CourrierProvider = ({
     }
   }, []);
 
-  const getAllCourriers = useCallback(async (page: number = 1, limit: number = 10): Promise<void> => {
+  const getAllCourriers = useCallback(async (params: ICourrierListParams = {}): Promise<void> => {
     setIsLoading(true);
     try {
-      const response = await getAllCourriersService(page, limit);
+      const response = await getAllCourriersService(params);
       setCourriers(response.courriers);
       setPagination(response.pagination);
     } catch (error) {

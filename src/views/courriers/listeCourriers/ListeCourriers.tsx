@@ -4,12 +4,12 @@ import "./listeCourriers.scss";
 // hooks | libraries
 import { ReactElement, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { 
-  MdArrowBack, 
-  MdDownload, 
-  MdEdit, 
-  MdDelete, 
-  MdEmail, 
+import {
+  MdArrowBack,
+  MdDownload,
+  MdEdit,
+  MdDelete,
+  MdEmail,
   MdSearch,
   MdNavigateNext,
   MdNavigateBefore,
@@ -17,8 +17,13 @@ import {
   MdArchive,
   MdOutlineMarkEmailRead,
   MdSelectAll,
-  MdKeyboardArrowUp
+  MdKeyboardArrowUp,
+  MdArrowUpward,
+  MdArrowDownward,
+  MdFilterList,
+  MdFilterListOff
 } from "react-icons/md";
+import Select from "react-select";
 import { FiFileText } from "react-icons/fi";
 
 // components
@@ -53,7 +58,10 @@ import {
 import { confirm, showSuccess, showError } from "../../../utils/services/alertService";
 
 // types
-import { ICourrier } from "../../../utils/types/courrier.types.ts";
+import { ICourrier, CourrierSortColumn, SortOrder, IColumnFilters } from "../../../utils/types/courrier.types.ts";
+
+// hooks
+import { useCourrierFieldOptions } from "../../../utils/hooks/useCourrierFieldOptions.ts";
 
 function ListeCourriers(): ReactElement {
   const navigate = useNavigate();
@@ -84,17 +92,24 @@ function ListeCourriers(): ReactElement {
     isLoading: false
   });
   const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
+  const [sortBy, setSortBy] = useState<CourrierSortColumn | ''>('');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('DESC');
+  const [columnFilters, setColumnFilters] = useState<IColumnFilters>({ kind: '', department: '', emitter: '', recipient: '', direction: '' });
+  const [showFilters, setShowFilters] = useState<boolean>(false);
+
+  // Charger les options pour les filtres
+  const kindOptions = useCourrierFieldOptions('kind');
+  const departmentOptions = useCourrierFieldOptions('department');
+  const emitterOptions = useCourrierFieldOptions('emitter');
+  const recipientOptions = useCourrierFieldOptions('recipient');
 
   useEffect(() => {
     if (searchTerm.trim() && searchTerm.trim().length >= 3) {
-      // Si recherche active avec au moins 3 caractères, charger avec limite backend max
-      loadCourriers(1, 100); // Utiliser la limite maximum autorisée par le backend
+      loadCourriers(1, 100);
     } else if (!searchTerm.trim()) {
-      // Si pas de recherche, pagination normale
       loadCourriers(currentPage);
     }
-    // Si recherche < 3 caractères, ne rien faire
-  }, [currentPage, searchTerm]);
+  }, [currentPage, searchTerm, sortBy, sortOrder, columnFilters]);
 
   // Gérer l'affichage du bouton Back to Top
   useEffect(() => {
@@ -120,7 +135,17 @@ function ListeCourriers(): ReactElement {
 
   const loadCourriers = async (page: number, limit: number = 10) => {
     try {
-      await getAllCourriers(page, limit);
+      await getAllCourriers({
+        page,
+        limit,
+        sortBy: sortBy || undefined,
+        sortOrder: sortBy ? sortOrder : undefined,
+        filterKind: columnFilters.kind || undefined,
+        filterDepartment: columnFilters.department || undefined,
+        filterEmitter: columnFilters.emitter || undefined,
+        filterRecipient: columnFilters.recipient || undefined,
+        filterDirection: (columnFilters.direction as 'entrant' | 'sortant' | 'interne') || undefined,
+      });
     } catch (error: unknown) {
       logError('loadCourriers', error);
       const errorMessage = handleCourrierLoadError(error);
@@ -453,11 +478,61 @@ function ListeCourriers(): ReactElement {
     });
   };
 
+  const handleSort = (column: CourrierSortColumn) => {
+    if (sortBy === column) {
+      if (sortOrder === 'ASC') {
+        setSortOrder('DESC');
+      } else {
+        setSortBy('');
+        setSortOrder('DESC');
+      }
+    } else {
+      setSortBy(column);
+      setSortOrder('ASC');
+    }
+    setCurrentPage(1);
+  };
+
+  const handleFilterChange = (field: keyof IColumnFilters, value: string) => {
+    setColumnFilters(prev => ({ ...prev, [field]: value }));
+    setCurrentPage(1);
+  };
+
+  const clearAllFilters = () => {
+    setColumnFilters({ kind: '', department: '', emitter: '', recipient: '', direction: '' });
+    setCurrentPage(1);
+  };
+
+  const hasActiveFilters = Object.values(columnFilters).some(v => v !== '');
+
+  const renderSortIcon = (column: CourrierSortColumn) => {
+    if (sortBy !== column) return null;
+    return sortOrder === 'ASC'
+      ? <MdArrowUpward className="sortIcon" />
+      : <MdArrowDownward className="sortIcon" />;
+  };
+
+  interface ISelectOption {
+    value: string;
+    label: string;
+  }
+
+  const toSelectOptions = (options: string[]): ISelectOption[] =>
+    options.map(o => ({ value: o, label: o }));
+
+  const directionSelectOptions: ISelectOption[] = [
+    { value: 'entrant', label: 'Entrant' },
+    { value: 'sortant', label: 'Sortant' },
+    { value: 'interne', label: 'Interne' },
+  ];
+
   const filteredCourriers = courriers.filter(courrier =>
     courrier.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     courrier.kind?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     courrier.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    courrier.emitter?.toLowerCase().includes(searchTerm.toLowerCase())
+    courrier.emitter?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    courrier.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    courrier.recipient?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -501,13 +576,25 @@ function ListeCourriers(): ReactElement {
               <MdSearch className="searchIcon" />
               <input
                 type="text"
-                placeholder="Nom, type, service..."
+                placeholder="Nom, type, service, description..."
                 value={searchTerm}
                 onChange={handleSearchChange}
                 className="searchInput"
               />
             </div>
-            
+
+            {/* Bouton filtres */}
+            <button
+              type="button"
+              className={`filterToggleBtn ${showFilters ? 'active' : ''} ${hasActiveFilters ? 'hasFilters' : ''}`}
+              onClick={() => setShowFilters(!showFilters)}
+              title={showFilters ? 'Masquer les filtres' : 'Afficher les filtres'}
+            >
+              {showFilters ? <MdFilterListOff /> : <MdFilterList />}
+              <span>Filtres</span>
+              {hasActiveFilters && <span className="filterBadge" />}
+            </button>
+
             {/* Résultats de recherche */}
             {searchTerm.trim() && (
               <div className="searchResults">
@@ -516,8 +603,8 @@ function ListeCourriers(): ReactElement {
                 </span>
               </div>
             )}
-            
-            
+
+
             {/* Pagination Controls - Masquée pendant la recherche */}
             {!searchTerm.trim() && pagination && pagination.totalPages > 1 && (
               <div className="paginationControls">
@@ -526,15 +613,15 @@ function ListeCourriers(): ReactElement {
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
                 >
-                  <MdNavigateBefore /> 
+                  <MdNavigateBefore />
                   Précédent
                 </button>
-                
+
                 <div className="paginationInfo">
                   <span>Page {currentPage} sur {pagination.totalPages}</span>
                   <span className="totalItems">{pagination.total} courrier{pagination.total > 1 ? 's' : ''}</span>
                 </div>
-                
+
                 <button
                   className="paginationBtn"
                   onClick={() => handlePageChange(currentPage + 1)}
@@ -546,6 +633,77 @@ function ListeCourriers(): ReactElement {
               </div>
             )}
           </section>
+
+          {/* Section filtres */}
+          {showFilters && (
+            <section className="filterSection" data-aos="fade-down">
+              <div className="filterSelect">
+                <Select<ISelectOption>
+                  value={columnFilters.kind ? { value: columnFilters.kind, label: columnFilters.kind } : null}
+                  onChange={(opt) => handleFilterChange('kind', opt?.value || '')}
+                  options={toSelectOptions(kindOptions.options)}
+                  isClearable
+                  placeholder="Type..."
+                  className="react-select-container"
+                  classNamePrefix="react-select"
+                  isLoading={kindOptions.isLoading}
+                />
+              </div>
+              <div className="filterSelect">
+                <Select<ISelectOption>
+                  value={columnFilters.department ? { value: columnFilters.department, label: columnFilters.department } : null}
+                  onChange={(opt) => handleFilterChange('department', opt?.value || '')}
+                  options={toSelectOptions(departmentOptions.options)}
+                  isClearable
+                  placeholder="Service..."
+                  className="react-select-container"
+                  classNamePrefix="react-select"
+                  isLoading={departmentOptions.isLoading}
+                />
+              </div>
+              <div className="filterSelect">
+                <Select<ISelectOption>
+                  value={columnFilters.emitter ? { value: columnFilters.emitter, label: columnFilters.emitter } : null}
+                  onChange={(opt) => handleFilterChange('emitter', opt?.value || '')}
+                  options={toSelectOptions(emitterOptions.options)}
+                  isClearable
+                  placeholder="Expediteur..."
+                  className="react-select-container"
+                  classNamePrefix="react-select"
+                  isLoading={emitterOptions.isLoading}
+                />
+              </div>
+              <div className="filterSelect">
+                <Select<ISelectOption>
+                  value={columnFilters.recipient ? { value: columnFilters.recipient, label: columnFilters.recipient } : null}
+                  onChange={(opt) => handleFilterChange('recipient', opt?.value || '')}
+                  options={toSelectOptions(recipientOptions.options)}
+                  isClearable
+                  placeholder="Destinataire..."
+                  className="react-select-container"
+                  classNamePrefix="react-select"
+                  isLoading={recipientOptions.isLoading}
+                />
+              </div>
+              <div className="filterSelect">
+                <Select<ISelectOption>
+                  value={columnFilters.direction ? directionSelectOptions.find(o => o.value === columnFilters.direction) || null : null}
+                  onChange={(opt) => handleFilterChange('direction', opt?.value || '')}
+                  options={directionSelectOptions}
+                  isClearable
+                  placeholder="Direction..."
+                  className="react-select-container"
+                  classNamePrefix="react-select"
+                />
+              </div>
+              {hasActiveFilters && (
+                <button type="button" className="clearFiltersBtn" onClick={clearAllFilters}>
+                  <MdFilterListOff />
+                  <span>Effacer</span>
+                </button>
+              )}
+            </section>
+          )}
 
           {/* Courriers List */}
           <section className="courriersSection" data-aos="fade-up" data-aos-delay="200">
@@ -707,13 +865,27 @@ function ListeCourriers(): ReactElement {
                             />
                           </label>
                         </th>
-                        <th>Nom du fichier</th>
-                        <th>Direction</th>
-                        <th>Type</th>
-                        <th>Service</th>
-                        <th>Expéditeur</th>
-                        <th className="dateColumn">Date courrier</th>
-                        <th>Description</th>
+                        <th className={`sortable ${sortBy === 'fileName' ? 'sorted' : ''}`} onClick={() => handleSort('fileName')}>
+                          Nom du fichier {renderSortIcon('fileName')}
+                        </th>
+                        <th className={`sortable ${sortBy === 'direction' ? 'sorted' : ''}`} onClick={() => handleSort('direction')}>
+                          Direction {renderSortIcon('direction')}
+                        </th>
+                        <th className={`sortable ${sortBy === 'kind' ? 'sorted' : ''}`} onClick={() => handleSort('kind')}>
+                          Type {renderSortIcon('kind')}
+                        </th>
+                        <th className={`sortable ${sortBy === 'department' ? 'sorted' : ''}`} onClick={() => handleSort('department')}>
+                          Service {renderSortIcon('department')}
+                        </th>
+                        <th className={`sortable ${sortBy === 'emitter' ? 'sorted' : ''}`} onClick={() => handleSort('emitter')}>
+                          Expediteur {renderSortIcon('emitter')}
+                        </th>
+                        <th className={`sortable dateColumn ${sortBy === 'courrierDate' ? 'sorted' : ''}`} onClick={() => handleSort('courrierDate')}>
+                          Date courrier {renderSortIcon('courrierDate')}
+                        </th>
+                        <th className={`sortable ${sortBy === 'description' ? 'sorted' : ''}`} onClick={() => handleSort('description')}>
+                          Description {renderSortIcon('description')}
+                        </th>
                         <th>Actions</th>
                       </tr>
                     </thead>
