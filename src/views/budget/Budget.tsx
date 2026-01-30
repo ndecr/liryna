@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { IoWallet, IoTrendingUp, IoTrendingDown } from "react-icons/io5";
 import { MdDashboard } from "react-icons/md";
 import { IoCreate } from "react-icons/io5";
-import { FiDollarSign } from "react-icons/fi";
+import { FiDollarSign, FiDownload } from "react-icons/fi";
 
 // components
 import WithAuth from "../../utils/middleware/WithAuth.tsx";
@@ -21,6 +21,7 @@ function Budget(): ReactElement {
   const navigate = useNavigate();
   const { dashboard, getBudgetDashboard } = useContext(BudgetContext);
   const [dashboardLoading, setDashboardLoading] = useState<boolean>(true);
+  const [isExporting, setIsExporting] = useState<boolean>(false);
 
   useEffect(() => {
     const loadDashboard = async () => {
@@ -47,6 +48,12 @@ function Budget(): ReactElement {
       id: "edit",
       label: "Editer le budget",
       icon: <IoCreate />,
+      primary: false,
+    },
+    {
+      id: "export",
+      label: isExporting ? "Generation..." : "Exporter en PDF",
+      icon: <FiDownload />,
       primary: false,
     },
   ];
@@ -105,6 +112,19 @@ function Budget(): ReactElement {
     },
   ];
 
+  const handleExportPdf = async () => {
+    if (!dashboard || isExporting) return;
+    setIsExporting(true);
+    try {
+      const { generateBudgetPdf } = await import("../../utils/services/budgetPdfService.ts");
+      await generateBudgetPdf(dashboard);
+    } catch (error) {
+      console.error("PDF export error:", error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const handleActionClick = (
     event: React.MouseEvent,
     actionId: string
@@ -115,6 +135,8 @@ function Budget(): ReactElement {
       navigate("/budget/dashboard");
     } else if (actionId === "edit") {
       navigate("/budget/edit");
+    } else if (actionId === "export") {
+      handleExportPdf();
     }
   };
 
@@ -141,8 +163,9 @@ function Budget(): ReactElement {
                 <button
                   key={action.id}
                   type="button"
-                  className={`actionBtn ${action.primary ? "primary" : ""}`}
+                  className={`actionBtn ${action.primary ? "primary" : ""} ${action.id === "export" && isExporting ? "exporting" : ""}`}
                   onClick={(event) => handleActionClick(event, action.id)}
+                  disabled={action.id === "export" && (!dashboard || isExporting)}
                   data-aos="fade-up"
                   data-aos-delay={150 + index * 50}
                 >

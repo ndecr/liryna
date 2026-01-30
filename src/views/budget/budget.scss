@@ -117,6 +117,23 @@
             font-size: 1.1em;
           }
         }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          transform: none;
+        }
+
+        &.exporting {
+          opacity: 0.7;
+          cursor: wait;
+          animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% { opacity: 0.7; }
+          50% { opacity: 0.4; }
+        }
       }
     }
   }
