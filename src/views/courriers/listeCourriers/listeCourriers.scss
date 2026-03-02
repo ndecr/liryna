@@ -274,6 +274,80 @@
       }
     }
 
+    .filterDateGroup {
+      & {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3em;
+        flex: 1;
+        min-width: 12em;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        min-width: 16em;
+        max-width: 20em;
+      }
+
+      .filterDateLabel {
+        & {
+          font-size: 0.72em;
+          font-weight: 600;
+          color: vars.$fontColorSecondary;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          padding-left: 0.25em;
+        }
+      }
+
+      .filterDateInputs {
+        & {
+          display: flex;
+          align-items: center;
+          gap: 0.4em;
+        }
+
+        .filterDateInput {
+          & {
+            flex: 1;
+            min-width: 0;
+            height: 2.4em;
+            padding: 0 0.5em;
+            border: 1px solid vars.$borderColor;
+            border-radius: 6px;
+            font-size: 0.82em;
+            color: vars.$fontColorPrimary;
+            background: white;
+            cursor: pointer;
+            transition: vars.$transitionMedium;
+            font-family: inherit;
+          }
+
+          &:hover {
+            border-color: vars.$utilsPrimary;
+          }
+
+          &:focus {
+            outline: none;
+            border-color: vars.$utilsPrimary;
+            box-shadow: 0 0 0 2px rgba(vars.$utilsPrimary, 0.15);
+          }
+
+          &::-webkit-calendar-picker-indicator {
+            opacity: 0.5;
+            cursor: pointer;
+          }
+        }
+
+        .filterDateSeparator {
+          & {
+            color: vars.$fontColorSecondary;
+            font-size: 0.85em;
+            flex-shrink: 0;
+          }
+        }
+      }
+    }
+
     .clearFiltersBtn {
       & {
         display: flex;

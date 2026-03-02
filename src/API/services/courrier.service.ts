@@ -30,7 +30,7 @@ export const uploadCourrierService = async (
 export const getAllCourriersService = async (
   params: ICourrierListParams = {}
 ): Promise<{ courriers: ICourrier[], pagination: IPagination | null }> => {
-  const { page = 1, limit = 10, sortBy, sortOrder, filterKind, filterDepartment, filterEmitter, filterRecipient, filterDirection } = params;
+  const { page = 1, limit = 10, sortBy, sortOrder, filterKind, filterDepartment, filterEmitter, filterRecipient, filterDirection, filterDateMin, filterDateMax } = params;
   const queryParams = new URLSearchParams();
   queryParams.set('page', String(page));
   queryParams.set('limit', String(limit));
@@ -41,6 +41,8 @@ export const getAllCourriersService = async (
   if (filterEmitter) queryParams.set('filterEmitter', filterEmitter);
   if (filterRecipient) queryParams.set('filterRecipient', filterRecipient);
   if (filterDirection) queryParams.set('filterDirection', filterDirection);
+  if (filterDateMin) queryParams.set('filterDateMin', filterDateMin);
+  if (filterDateMax) queryParams.set('filterDateMax', filterDateMax);
   const response: AxiosResponse<IApiResponse<ICourrier[]>> = await getRequest(`/courriers?${queryParams.toString()}`);
   
   if (response.data.success && response.data.data) {

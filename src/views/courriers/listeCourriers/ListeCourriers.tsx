@@ -94,7 +94,7 @@ function ListeCourriers(): ReactElement {
   const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<CourrierSortColumn | ''>('');
   const [sortOrder, setSortOrder] = useState<SortOrder>('DESC');
-  const [columnFilters, setColumnFilters] = useState<IColumnFilters>({ kind: '', department: '', emitter: '', recipient: '', direction: '' });
+  const [columnFilters, setColumnFilters] = useState<IColumnFilters>({ kind: '', department: '', emitter: '', recipient: '', direction: '', dateMin: '', dateMax: '' });
   const [showFilters, setShowFilters] = useState<boolean>(false);
 
   // Charger les options pour les filtres
@@ -145,6 +145,8 @@ function ListeCourriers(): ReactElement {
         filterEmitter: columnFilters.emitter || undefined,
         filterRecipient: columnFilters.recipient || undefined,
         filterDirection: (columnFilters.direction as 'entrant' | 'sortant' | 'interne') || undefined,
+        filterDateMin: columnFilters.dateMin || undefined,
+        filterDateMax: columnFilters.dateMax || undefined,
       });
     } catch (error: unknown) {
       logError('loadCourriers', error);
@@ -499,7 +501,7 @@ function ListeCourriers(): ReactElement {
   };
 
   const clearAllFilters = () => {
-    setColumnFilters({ kind: '', department: '', emitter: '', recipient: '', direction: '' });
+    setColumnFilters({ kind: '', department: '', emitter: '', recipient: '', direction: '', dateMin: '', dateMax: '' });
     setCurrentPage(1);
   };
 
@@ -582,7 +584,7 @@ function ListeCourriers(): ReactElement {
               <MdSearch className="searchIcon" />
               <input
                 type="text"
-                placeholder="Nom, type, service, description..."
+                placeholder="Nom, type, service..."
                 value={searchTerm}
                 onChange={handleSearchChange}
                 className="searchInput"
@@ -701,6 +703,28 @@ function ListeCourriers(): ReactElement {
                   className="react-select-container"
                   classNamePrefix="react-select"
                 />
+              </div>
+              <div className="filterDateGroup">
+                <span className="filterDateLabel">Date de réception</span>
+                <div className="filterDateInputs">
+                  <input
+                    type="date"
+                    value={columnFilters.dateMin}
+                    onChange={(e) => handleFilterChange('dateMin', e.target.value)}
+                    className="filterDateInput"
+                    max={columnFilters.dateMax || undefined}
+                    title="Date minimum"
+                  />
+                  <span className="filterDateSeparator">→</span>
+                  <input
+                    type="date"
+                    value={columnFilters.dateMax}
+                    onChange={(e) => handleFilterChange('dateMax', e.target.value)}
+                    className="filterDateInput"
+                    min={columnFilters.dateMin || undefined}
+                    title="Date maximum"
+                  />
+                </div>
               </div>
               {hasActiveFilters && (
                 <button type="button" className="clearFiltersBtn" onClick={clearAllFilters}>

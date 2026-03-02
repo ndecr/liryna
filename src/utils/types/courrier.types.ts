@@ -100,6 +100,8 @@ export interface ICourrierListParams {
   filterEmitter?: string;
   filterRecipient?: string;
   filterDirection?: 'entrant' | 'sortant' | 'interne';
+  filterDateMin?: string;
+  filterDateMax?: string;
 }
 
 export interface IColumnFilters {
@@ -108,4 +110,6 @@ export interface IColumnFilters {
   emitter: string;
   recipient: string;
   direction: string;
+  dateMin: string;
+  dateMax: string;
 }
