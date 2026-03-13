@@ -168,6 +168,42 @@ export const downloadBulkCourriersService = async (courrierIds: number[]): Promi
   return response.data;
 };
 
+export interface IConvertCropData {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/**
+ * Convertit une image en PDF (téléchargement direct — rien conservé sur le serveur)
+ */
+export const convertImageToPdfService = async (
+  file: File,
+  cropData: IConvertCropData,
+  customFileName: string
+): Promise<Blob> => {
+  const formData = new FormData();
+  formData.append('image', file);
+  formData.append('cropX', cropData.x.toString());
+  formData.append('cropY', cropData.y.toString());
+  formData.append('cropWidth', cropData.width.toString());
+  formData.append('cropHeight', cropData.height.toString());
+  formData.append('customFileName', customFileName);
+
+  // L'interceptor axios dans APICalls.ts ajoute automatiquement le CSRF
+  const response: AxiosResponse<Blob> = await axios.post('/courriers/convert-image', formData, {
+    responseType: 'blob',
+    withCredentials: true,
+  });
+
+  if (!(response.data instanceof Blob) || response.data.size === 0) {
+    throw new Error('Réponse invalide du serveur');
+  }
+
+  return response.data;
+};
+
 export const sendBulkCourrierEmailService = async (
   courrierIds: number[],
   emailData: { to: string; subject: string; message: string }

@@ -4,7 +4,7 @@ import "./courriers.scss";
 // hooks | libraries
 import { ReactElement, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { MdAdd, MdList } from "react-icons/md";
+import { MdAdd, MdList, MdPhotoCamera } from "react-icons/md";
 import { IoMail, IoMailOpen } from "react-icons/io5";
 import { FiCalendar, FiFileText } from "react-icons/fi";
 
@@ -48,6 +48,12 @@ function Courriers(): ReactElement {
       id: '2',
       label: 'Liste des courriers',
       icon: <MdList />,
+      primary: false
+    },
+    {
+      id: '3',
+      label: 'Photo → PDF',
+      icon: <MdPhotoCamera />,
       primary: false
     }
   ];
@@ -94,6 +100,8 @@ function Courriers(): ReactElement {
     } else if (actionId === '2') {
       console.log("Navigating to list courriers"); // Debug
       navigate("/mail/list");
+    } else if (actionId === '3') {
+      navigate("/mail/convert");
     } else {
       console.log("Setting active action:", actionId); // Debug
       setActiveAction(actionId);
