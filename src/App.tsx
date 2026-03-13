@@ -28,6 +28,7 @@ import CourriersWithAuth from "./views/courriers/Courriers.tsx";
 import NouveauCourrierWithAuth from "./views/courriers/nouveauCourrier/NouveauCourrier.tsx";
 import ListeCourriersWithAuth from "./views/courriers/listeCourriers/ListeCourriers.tsx";
 import UpdateCourrierWithAuth from "./views/courriers/updateCourrier/UpdateCourrier.tsx";
+import ConvertisseurImageWithAuth from "./views/courriers/convertisseurImage/ConvertisseurImage.tsx";
 import BudgetWithAuth from "./views/budget/Budget.tsx";
 import BudgetDashboardWithAuth from "./views/budget/budgetDashboard/BudgetDashboard.tsx";
 import BudgetEditWithAuth from "./views/budget/budgetEdit/BudgetEdit.tsx";
@@ -88,6 +89,7 @@ function App(): ReactElement {
         <Route path={"mail/list"} element={<ListeCourriersWithAuth />}></Route>
         <Route path={"mail/new"} element={<NouveauCourrierWithAuth />}></Route>
         <Route path={"mail/update/:id"} element={<UpdateCourrierWithAuth />}></Route>
+        <Route path={"mail/convert"} element={<ConvertisseurImageWithAuth />}></Route>
         <Route path={"budget"} element={<BudgetWithAuth />}></Route>
         <Route path={"budget/dashboard"} element={<BudgetDashboardWithAuth />}></Route>
         <Route path={"budget/edit"} element={<BudgetEditWithAuth />}></Route>

@@ -21,7 +21,8 @@ import {
   MdArrowUpward,
   MdArrowDownward,
   MdFilterList,
-  MdFilterListOff
+  MdFilterListOff,
+  MdPhotoCamera
 } from "react-icons/md";
 import Select from "react-select";
 import { FiFileText } from "react-icons/fi";
@@ -565,7 +566,7 @@ function ListeCourriers(): ReactElement {
         <div className="listeCourrierContainer">
           {/* Header */}
           <header className="listeCourrierHeader" data-aos="fade-down">
-            <Button 
+            <Button
               style="back"
               onClick={handleBackClick}
               type="button"
@@ -574,6 +575,14 @@ function ListeCourriers(): ReactElement {
               <span>Retour</span>
             </Button>
             <h1 className="pageTitle">Liste des courriers</h1>
+            <Button
+              style="seaGreen"
+              onClick={() => navigate("/mail/convert")}
+              type="button"
+            >
+              <MdPhotoCamera />
+              <span className="desktopOnly">Photo → PDF</span>
+            </Button>
           </header>
 
           {/* Search and Pagination */}
