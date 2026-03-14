@@ -178,7 +178,7 @@ function ConvertisseurImage(): ReactElement {
         <div className="converterContainer">
           {/* Header */}
           <header className="converterHeader" data-aos="fade-down">
-            <Button style="back" onClick={() => navigate("/mail/list")} type="button">
+            <Button style="back" onClick={() => navigate("/mail")} type="button">
               <MdArrowBack />
               <span>Retour</span>
             </Button>
@@ -355,8 +355,8 @@ function ConvertisseurImage(): ReactElement {
                   <button type="button" className="btnSecondary" onClick={handleReset}>
                     <MdRefresh /> Convertir une autre image
                   </button>
-                  <button type="button" className="btnPrimary" onClick={() => navigate("/mail/list")}>
-                    Retour à la liste
+                  <button type="button" className="btnPrimary" onClick={() => navigate("/mail")}>
+                    Retour à l'accueil
                   </button>
                 </div>
               </div>
