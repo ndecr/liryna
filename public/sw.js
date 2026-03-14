@@ -153,25 +153,50 @@ self.addEventListener('fetch', (event) => {
     return; // Laisser passer sans cache si trop d'opérations en cours
   }
   
-  // Stratégie pour les fichiers statiques (HTML, CSS, JS, images)
-  if (STATIC_FILES.includes(url.pathname) || 
-      request.destination === 'style' ||
+  // Stratégie Network First pour les documents HTML
+  // Indispensable pour éviter de servir un index.html périmé après un déploiement
+  // (ce qui provoquerait des requêtes vers d'anciens fichiers JS hashés inexistants)
+  if (request.destination === 'document') {
+    event.respondWith(
+      fetch(request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200 && activeCacheOperations < MAX_CONCURRENT_CACHE_OPS) {
+          activeCacheOperations++;
+          const responseClone = networkResponse.clone();
+          caches.open(STATIC_CACHE).then((cache) => {
+            return cache.put(request, responseClone);
+          }).catch((error) => {
+            console.warn('[SW] Cache operation failed:', error);
+          }).finally(() => {
+            activeCacheOperations--;
+          });
+        }
+        return networkResponse;
+      }).catch(() => {
+        // Fallback cache uniquement si offline
+        return caches.match(request)
+          .then((cached) => cached || caches.match('/offline') || caches.match('/index.html'));
+      })
+    );
+    return;
+  }
+
+  // Stratégie Cache First pour les assets statiques (CSS, JS hashés, images)
+  if (request.destination === 'style' ||
       request.destination === 'script' ||
       request.destination === 'image') {
-    
+
     event.respondWith(
       caches.match(request).then((cachedResponse) => {
         if (cachedResponse) {
           return cachedResponse;
         }
-        
+
         return fetch(request).then((networkResponse) => {
           // Optimisation : Cache async non-bloquant avec throttling
           if (networkResponse && networkResponse.status === 200 && activeCacheOperations < MAX_CONCURRENT_CACHE_OPS) {
             activeCacheOperations++;
             const responseClone = networkResponse.clone();
-            
-            // Opération de cache asynchrone qui ne bloque pas la réponse
+
             caches.open(STATIC_CACHE).then((cache) => {
               return cache.put(request, responseClone);
             }).catch((error) => {
@@ -182,14 +207,9 @@ self.addEventListener('fetch', (event) => {
           }
           return networkResponse;
         });
-      }).catch(() => {
-        // Fallback pour les pages HTML quand offline
-        if (request.destination === 'document') {
-          return caches.match('/offline') || caches.match('/index.html');
-        }
       })
     );
-    
+
     return;
   }
   
