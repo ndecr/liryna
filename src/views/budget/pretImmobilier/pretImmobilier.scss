@@ -16,6 +16,11 @@
     padding: 2em;
   }
 
+  // ── Override bouton retour (couleur section budget)
+  .backButton {
+    @include mixins.actionButton(vars.$webdevPrimary, vars.$webdevDark);
+  }
+
   // ── En-tête ───────────────────────────────────────────────────────────────
 
   .pretHeader {
