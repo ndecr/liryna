@@ -13,6 +13,7 @@ import { FiDollarSign, FiDownload } from "react-icons/fi";
 import WithAuth from "../../utils/middleware/WithAuth.tsx";
 import Header from "../../components/header/Header.tsx";
 import SubNav from "../../components/subNav/SubNav.tsx";
+import PretImmobilier from "./pretImmobilier/PretImmobilier.tsx";
 
 // context
 import { BudgetContext } from "../../context/budget/BudgetContext.tsx";
@@ -217,6 +218,8 @@ function Budget(): ReactElement {
               <p>{dashboard.recommandation.message}</p>
             </section>
           )}
+
+          {dashboard && <PretImmobilier />}
         </div>
       </main>
     </>
