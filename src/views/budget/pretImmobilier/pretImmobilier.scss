@@ -777,6 +777,16 @@
       }
     }
 
+    .geoErrorText {
+      font-size: 0.9em;
+      color: #c62828;
+      background: rgba(244, 67, 54, 0.08);
+      border-radius: 6px;
+      padding: 0.75em 1em;
+      margin: 0;
+      font-weight: 600;
+    }
+
     .loadingText,
     .noResultsText {
       font-size: 0.9em;
