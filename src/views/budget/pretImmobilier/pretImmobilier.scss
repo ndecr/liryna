@@ -1,0 +1,844 @@
+@use "../../../utils/styles/variables" as vars;
+@use "../../../utils/styles/mixins" as mixins;
+
+#pretImmobilier {
+  & {
+    width: 100%;
+  }
+
+  // ── En-tête ───────────────────────────────────────────────────────────────
+
+  .pretHeader {
+    & {
+      @include mixins.flexContainer(column, 1em);
+      align-items: flex-start;
+    }
+
+    @media (min-width: vars.$tabletWidth) {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .pretHeaderLeft {
+      & {
+        @include mixins.flexContainer(row, 0.75em);
+        align-items: center;
+      }
+
+      .pretIcon {
+        font-size: 2em;
+        color: vars.$webdevPrimary;
+        flex-shrink: 0;
+      }
+
+      .pretTitle {
+        font-size: 1.5em;
+        font-weight: 700;
+        background: vars.$webdevGradient;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin: 0;
+
+        @media (min-width: vars.$tabletWidth) {
+          font-size: 1.75em;
+        }
+      }
+
+      .pretSubtitle {
+        font-size: 0.9em;
+        color: vars.$fontColorSecondary;
+        margin: 0.2em 0 0;
+      }
+    }
+
+    .saveBtn {
+      @include mixins.resetButton;
+
+      & {
+        @include mixins.flexContainer(row, 0.5em);
+        align-items: center;
+        padding: 0.6em 1.25em;
+        background: vars.$webdevGradient;
+        color: white;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform vars.$transitionFast;
+        white-space: nowrap;
+      }
+
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .saveMsg {
+    & {
+      padding: 0.5em 1em;
+      border-radius: 6px;
+      font-size: 0.9em;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    &.success {
+      background: rgba(76, 175, 80, 0.1);
+      color: #2e7d32;
+    }
+
+    &.error {
+      background: rgba(244, 67, 54, 0.1);
+      color: #c62828;
+    }
+  }
+
+  // ── Grille principale ─────────────────────────────────────────────────────
+
+  .pretGrid {
+    & {
+      @include mixins.flexContainer(column, 1.5em);
+    }
+
+    @media (min-width: vars.$desktopWidth) {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 2em;
+    }
+
+    .pretLeft {
+      & {
+        @include mixins.flexContainer(column, 1.5em);
+        width: 100%;
+      }
+
+      @media (min-width: vars.$desktopWidth) {
+        flex: 0 0 42%;
+      }
+    }
+
+    .pretRight {
+      & {
+        @include mixins.flexContainer(column, 1.5em);
+        width: 100%;
+      }
+
+      @media (min-width: vars.$desktopWidth) {
+        flex: 1;
+      }
+    }
+  }
+
+  // ── Carte générique ───────────────────────────────────────────────────────
+
+  .pretCard {
+    @include mixins.card(10px, light);
+
+    & {
+      @include mixins.flexContainer(column, 1.25em);
+      padding: 1.5em;
+    }
+
+    @media (min-width: vars.$tabletWidth) {
+      border-radius: 12px;
+      padding: 2em;
+    }
+
+    .cardTitle {
+      & {
+        @include mixins.flexContainer(row, 0.5em);
+        align-items: center;
+        font-size: 1.1em;
+        font-weight: 700;
+        color: vars.$fontColorPrimary;
+        margin: 0;
+      }
+    }
+  }
+
+  // ── Scénarios ─────────────────────────────────────────────────────────────
+
+  .scenariosRow {
+    & {
+      @include mixins.flexContainer(row, 0.5em);
+      flex-wrap: wrap;
+    }
+
+    .scenarioBtn {
+      @include mixins.resetButton;
+
+      & {
+        padding: 0.4em 0.8em;
+        border-radius: 20px;
+        border: 1.5px solid vars.$webdevPrimary;
+        color: vars.$webdevPrimary;
+        font-size: 0.82em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all vars.$transitionFast;
+        white-space: nowrap;
+      }
+
+      &.active,
+      &:hover {
+        background: vars.$webdevGradient;
+        color: white;
+        border-color: transparent;
+      }
+    }
+  }
+
+  // ── Cartes emprunteurs ────────────────────────────────────────────────────
+
+  .borrowersGrid {
+    & {
+      @include mixins.flexContainer(column, 1em);
+    }
+
+    @media (min-width: vars.$tabletWidth) {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .borrowerCard {
+      @include mixins.card(8px, light);
+
+      & {
+        @include mixins.flexContainer(column, 0.75em);
+        padding: 1em 1.25em;
+        flex: 1 1 calc(50% - 0.5em);
+        min-width: 12em;
+        border-left: 3px solid vars.$webdevPrimary;
+      }
+
+      .borrowerName {
+        font-weight: 700;
+        color: vars.$fontColorPrimary;
+        font-size: 1em;
+        margin: 0;
+      }
+
+      .statusBtns {
+        & {
+          @include mixins.flexContainer(row, 0.4em);
+        }
+
+        .statusBtn {
+          @include mixins.resetButton;
+
+          & {
+            padding: 0.3em 0.7em;
+            border-radius: 4px;
+            border: 1.5px solid #e0e0e0;
+            font-size: 0.8em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all vars.$transitionFast;
+            color: vars.$fontColorSecondary;
+          }
+
+          &.active {
+            color: white;
+            border-color: transparent;
+
+            &.CDI { background: #2e7d32; }
+            &.CDD { background: #e65100; }
+            &.chomage { background: #c62828; }
+          }
+
+          &:hover:not(.active) {
+            border-color: vars.$webdevPrimary;
+            color: vars.$webdevPrimary;
+          }
+        }
+      }
+
+      .revenueRow {
+        & {
+          @include mixins.flexContainer(row, 0.5em);
+          align-items: center;
+        }
+
+        .revenueLabel {
+          font-size: 0.8em;
+          color: vars.$fontColorSecondary;
+          flex-shrink: 0;
+          flex: 1;
+        }
+
+        .revenueInput {
+          width: 5em;
+          padding: 0.3em 0.5em;
+          border: 1.5px solid #e0e7ff;
+          border-radius: 6px;
+          font-size: 0.9em;
+          text-align: right;
+          color: vars.$fontColorPrimary;
+          transition: border-color vars.$transitionFast;
+
+          &:focus {
+            outline: none;
+            border-color: vars.$webdevPrimary;
+          }
+        }
+
+        .revenueSuffix {
+          font-size: 0.8em;
+          color: vars.$fontColorSecondary;
+          white-space: nowrap;
+        }
+      }
+
+      .statusWarning {
+        font-size: 0.75em;
+        color: #e65100;
+        margin: 0;
+        font-style: italic;
+      }
+    }
+  }
+
+  // ── Sliders ───────────────────────────────────────────────────────────────
+
+  .paramRow {
+    & {
+      @include mixins.flexContainer(column, 0.5em);
+    }
+
+    .paramLabel {
+      font-size: 0.9em;
+      font-weight: 600;
+      color: vars.$fontColorPrimary;
+    }
+
+    .toggleGroup {
+      & {
+        @include mixins.flexContainer(row, 0.5em);
+      }
+
+      .toggleBtn {
+        @include mixins.resetButton;
+
+        & {
+          padding: 0.5em 1em;
+          border-radius: 8px;
+          border: 1.5px solid #e0e0e0;
+          cursor: pointer;
+          font-size: 0.9em;
+          font-weight: 600;
+          color: vars.$fontColorSecondary;
+          transition: all vars.$transitionFast;
+          flex: 1;
+          text-align: center;
+        }
+
+        &.active {
+          background: vars.$webdevGradient;
+          color: white;
+          border-color: transparent;
+        }
+
+        &:hover:not(.active) {
+          border-color: vars.$webdevPrimary;
+          color: vars.$webdevPrimary;
+        }
+
+        .toggleNote {
+          font-size: 0.75em;
+          opacity: 0.8;
+          font-weight: 400;
+        }
+      }
+    }
+  }
+
+  .sliderRow {
+    & {
+      @include mixins.flexContainer(column, 0.4em);
+    }
+
+    .sliderHeader {
+      & {
+        @include mixins.flexContainer(row, 0.5em);
+        justify-content: space-between;
+        align-items: baseline;
+      }
+
+      .sliderLabel {
+        font-size: 0.9em;
+        font-weight: 600;
+        color: vars.$fontColorPrimary;
+      }
+
+      .sliderValue {
+        font-size: 1em;
+        font-weight: 700;
+        color: vars.$webdevPrimary;
+      }
+    }
+
+    .slider {
+      width: 100%;
+      accent-color: vars.$webdevPrimary;
+      cursor: pointer;
+      height: 4px;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .sliderTicks,
+    .sliderHints {
+      & {
+        @include mixins.flexContainer(row, 0);
+        justify-content: space-between;
+        font-size: 0.75em;
+        color: vars.$fontColorSecondary;
+      }
+    }
+
+    .hint {
+      font-style: italic;
+      color: vars.$webdevPrimary;
+    }
+
+    .apportInput {
+      & {
+        @include mixins.flexContainer(row, 0.5em);
+        align-items: center;
+      }
+
+      input {
+        width: 7em;
+        padding: 0.3em 0.6em;
+        border: 1.5px solid #e0e7ff;
+        border-radius: 6px;
+        font-size: 0.9em;
+        text-align: right;
+        color: vars.$fontColorPrimary;
+
+        &:focus {
+          outline: none;
+          border-color: vars.$webdevPrimary;
+        }
+      }
+
+      span {
+        font-size: 0.9em;
+        color: vars.$fontColorSecondary;
+      }
+    }
+  }
+
+  // ── Résultats ─────────────────────────────────────────────────────────────
+
+  .resultsCard {
+    .resultsGrid {
+      & {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75em;
+      }
+
+      .resultItem {
+        & {
+          @include mixins.flexContainer(column, 0.2em);
+          padding: 0.75em 1em;
+          background: rgba(0, 0, 0, 0.03);
+          border-radius: 8px;
+        }
+
+        &.highlight {
+          background: rgba(255, 107, 71, 0.07);
+          border: 1px solid rgba(255, 107, 71, 0.2);
+        }
+
+        &.positive {
+          background: rgba(76, 175, 80, 0.07);
+          border: 1px solid rgba(76, 175, 80, 0.2);
+        }
+
+        &.negative {
+          background: rgba(244, 67, 54, 0.07);
+          border: 1px solid rgba(244, 67, 54, 0.2);
+        }
+
+        .resultLabel {
+          font-size: 0.78em;
+          color: vars.$fontColorSecondary;
+          line-height: 1.3;
+        }
+
+        .resultValue {
+          font-size: 1.1em;
+          font-weight: 700;
+          color: vars.$fontColorPrimary;
+
+          &.big {
+            font-size: 1.3em;
+            color: vars.$webdevPrimary;
+          }
+
+          &.secondary {
+            color: vars.$fontColorSecondary;
+            font-weight: 600;
+          }
+
+          &.success {
+            color: #2e7d32;
+          }
+        }
+
+        .resultWarn {
+          & {
+            @include mixins.flexContainer(row, 0.3em);
+            align-items: center;
+            font-size: 0.75em;
+            color: #c62828;
+            font-weight: 600;
+          }
+        }
+      }
+    }
+
+    .divider {
+      height: 1px;
+      background: rgba(0, 0, 0, 0.08);
+      border: none;
+      margin: 0.25em 0;
+    }
+
+    .loyerComparison {
+      & {
+        @include mixins.flexContainer(column, 0.75em);
+        padding: 1em;
+        background: rgba(0, 0, 0, 0.03);
+        border-radius: 8px;
+      }
+
+      .loyerTitle {
+        font-size: 0.85em;
+        font-weight: 700;
+        color: vars.$fontColorPrimary;
+        margin: 0;
+      }
+
+      .loyerBars {
+        & {
+          @include mixins.flexContainer(column, 0.5em);
+        }
+
+        .loyerBar {
+          & {
+            @include mixins.flexContainer(row, 0.75em);
+            align-items: center;
+          }
+
+          .loyerBarLabel {
+            font-size: 0.8em;
+            color: vars.$fontColorSecondary;
+            width: 8em;
+            flex-shrink: 0;
+          }
+
+          .barTrack {
+            flex: 1;
+            height: 10px;
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 5px;
+            overflow: hidden;
+
+            .barFill {
+              height: 100%;
+              border-radius: 5px;
+              transition: width 0.4s ease;
+
+              &.loyer {
+                background: #4caf50;
+              }
+
+              &.mensualite {
+                background: vars.$webdevPrimary;
+              }
+            }
+          }
+
+          .loyerBarValue {
+            font-size: 0.85em;
+            font-weight: 700;
+            color: vars.$fontColorPrimary;
+            width: 5em;
+            text-align: right;
+            flex-shrink: 0;
+          }
+        }
+      }
+    }
+  }
+
+  // ── Geo / Recherche ville ─────────────────────────────────────────────────
+
+  .geoCard {
+    .citySearchRow {
+      & {
+        @include mixins.flexContainer(column, 0.75em);
+      }
+
+      .cityInputWrapper {
+        position: relative;
+        width: 100%;
+
+        .cityInput {
+          width: 100%;
+          padding: 0.7em 1em;
+          border: 2px solid #e0e7ff;
+          border-radius: 8px;
+          font-size: 1em;
+          color: vars.$fontColorPrimary;
+          transition: border-color vars.$transitionFast;
+          box-sizing: border-box;
+
+          &:focus {
+            outline: none;
+            border-color: vars.$webdevPrimary;
+          }
+        }
+
+        .citySuggestions {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: white;
+          border: 1px solid #e5e7eb;
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          z-index: 100;
+          list-style: none;
+          padding: 0.25em;
+          margin: 0.25em 0 0;
+          max-height: 15em;
+          overflow-y: auto;
+
+          .citySuggestion {
+            & {
+              @include mixins.flexContainer(column, 0.1em);
+              padding: 0.6em 0.75em;
+              border-radius: 6px;
+              cursor: pointer;
+              transition: background vars.$transitionFast;
+            }
+
+            &:hover {
+              background: rgba(255, 107, 71, 0.08);
+            }
+
+            .cityName {
+              font-weight: 600;
+              font-size: 0.95em;
+              color: vars.$fontColorPrimary;
+            }
+
+            .cityInfo {
+              font-size: 0.78em;
+              color: vars.$fontColorSecondary;
+            }
+          }
+        }
+      }
+
+      .radiusRow {
+        & {
+          @include mixins.flexContainer(row, 0.4em);
+          flex-wrap: wrap;
+        }
+
+        .radiusBtn {
+          @include mixins.resetButton;
+
+          & {
+            padding: 0.35em 0.8em;
+            border-radius: 20px;
+            border: 1.5px solid #e0e0e0;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            color: vars.$fontColorSecondary;
+            transition: all vars.$transitionFast;
+          }
+
+          &.active {
+            background: vars.$webdevGradient;
+            color: white;
+            border-color: transparent;
+          }
+
+          &:hover:not(.active) {
+            border-color: vars.$webdevPrimary;
+            color: vars.$webdevPrimary;
+          }
+        }
+      }
+
+      .searchBtn {
+        @include mixins.resetButton;
+        @include mixins.actionButton(vars.$webdevPrimary, vars.$webdevDark);
+
+        & {
+          padding: 0.7em 1.5em;
+          border-radius: 8px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all vars.$transitionFast;
+          align-self: flex-start;
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    .loadingText,
+    .noResultsText {
+      font-size: 0.9em;
+      color: vars.$fontColorSecondary;
+      text-align: center;
+      padding: 1em 0;
+      font-style: italic;
+      margin: 0;
+    }
+
+    .communesTable {
+      & {
+        @include mixins.flexContainer(column, 0);
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .communesHeader {
+        & {
+          display: grid;
+          grid-template-columns: 2fr 0.8fr 1.2fr 0.8fr 1fr;
+          gap: 0.5em;
+          padding: 0.6em 1em;
+          background: rgba(0, 0, 0, 0.04);
+          font-size: 0.78em;
+          font-weight: 700;
+          color: vars.$fontColorSecondary;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+      }
+
+      .communeRow {
+        & {
+          display: grid;
+          grid-template-columns: 2fr 0.8fr 1.2fr 0.8fr 1fr;
+          gap: 0.5em;
+          padding: 0.75em 1em;
+          border-top: 1px solid #f0f0f0;
+          align-items: center;
+          transition: background vars.$transitionFast;
+        }
+
+        &:hover {
+          background: rgba(255, 107, 71, 0.04);
+        }
+
+        .communeNameCell {
+          & {
+            @include mixins.flexContainer(column, 0.1em);
+          }
+
+          .communeName {
+            font-weight: 600;
+            font-size: 0.9em;
+            color: vars.$fontColorPrimary;
+          }
+
+          .communePop {
+            font-size: 0.72em;
+            color: vars.$fontColorSecondary;
+          }
+        }
+
+        .communeDistance,
+        .communeSurface {
+          font-size: 0.9em;
+          color: vars.$fontColorPrimary;
+        }
+
+        .communePrice {
+          & {
+            @include mixins.flexContainer(column, 0.1em);
+          }
+
+          font-size: 0.88em;
+          color: vars.$fontColorPrimary;
+          font-weight: 600;
+
+          .txCount {
+            font-size: 0.75em;
+            color: vars.$fontColorSecondary;
+            font-weight: 400;
+          }
+
+          .noData {
+            color: vars.$fontColorSecondary;
+            font-weight: 400;
+          }
+        }
+
+        .probabilityCell {
+          .probabilityBadge {
+            & {
+              display: inline-flex;
+              align-items: center;
+              gap: 0.3em;
+              padding: 0.25em 0.6em;
+              border-radius: 20px;
+              font-size: 0.8em;
+              font-weight: 700;
+            }
+
+            &.excellent {
+              background: rgba(46, 125, 50, 0.12);
+              color: #2e7d32;
+            }
+
+            &.bon {
+              background: rgba(76, 175, 80, 0.12);
+              color: #388e3c;
+            }
+
+            &.modere {
+              background: rgba(255, 152, 0, 0.12);
+              color: #e65100;
+            }
+
+            &.faible {
+              background: rgba(244, 67, 54, 0.12);
+              color: #c62828;
+            }
+
+            .probabilityPct {
+              opacity: 0.75;
+              font-weight: 400;
+            }
+          }
+        }
+      }
+    }
+  }
+}
