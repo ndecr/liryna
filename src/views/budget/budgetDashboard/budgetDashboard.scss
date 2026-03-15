@@ -20,6 +20,10 @@
     align-items: center;
     justify-content: space-between;
 
+    .backButton {
+      @include mixins.actionButton(vars.$webdevPrimary, vars.$webdevDark);
+    }
+
     .dashboardTitle {
       font-size: 1.75em;
       font-weight: 700;
