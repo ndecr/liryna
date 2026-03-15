@@ -410,23 +410,6 @@ function BudgetEdit(): ReactElement {
                 />
               </div>
             </div>
-            <div className="paramField">
-              <label htmlFor="budgetDecouvert">Decouvert mensuel (€)</label>
-              <input
-                id="budgetDecouvert"
-                type="number"
-                className="decouvertInput"
-                placeholder="0"
-                step="1"
-                min="0"
-                value={decouvert || ""}
-                onChange={(e) => setDecouvert(parseFloat(e.target.value) || 0)}
-              />
-              <p className="paramHint">
-                Montant prelevé chaque mois (ex: remboursement de decouvert bancaire).
-                Reduit le reste a vivre.
-              </p>
-            </div>
             <div className="paramField notes">
               <label htmlFor="budgetNotes">Notes</label>
               <textarea
@@ -458,6 +441,21 @@ function BudgetEdit(): ReactElement {
                 </button>
               </div>
             ))}
+            <div className="categoryBlock decouvertBlock">
+              <h3 className="categoryTitle">Decouvert bancaire</h3>
+              <div className="entryRow">
+                <span className="entryLabel decouvertLabel">Decouvert mensuel</span>
+                <input
+                  type="number"
+                  className="entryAmount"
+                  placeholder="0"
+                  step="1"
+                  min="0"
+                  value={decouvert || ""}
+                  onChange={(e) => setDecouvert(parseFloat(e.target.value) || 0)}
+                />
+              </div>
+            </div>
           </section>
 
           {/* Charges Fixes */}
