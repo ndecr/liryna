@@ -3,8 +3,16 @@ import "./pretImmobilier.scss";
 
 // hooks | libraries
 import { ReactElement, useContext, useEffect, useState, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { FiHome, FiSave, FiSearch, FiInfo } from "react-icons/fi";
 import { IoPersonOutline } from "react-icons/io5";
+import { MdArrowBack } from "react-icons/md";
+
+// components
+import WithAuth from "../../../utils/middleware/WithAuth.tsx";
+import Header from "../../../components/header/Header.tsx";
+import SubNav from "../../../components/subNav/SubNav.tsx";
+import Button from "../../../components/button/Button.tsx";
 
 // context
 import { BudgetContext } from "../../../context/budget/BudgetContext.tsx";
@@ -22,7 +30,6 @@ import {
   IBorrower,
   BorrowerStatus,
   PropertyType,
-  IScenario,
   ICommuneResult,
   ISimulationResults,
   IGeoCommune,
@@ -95,57 +102,15 @@ const formatCurrency = (v: number): string =>
 const formatPct = (v: number, decimals = 2): string =>
   `${(v * 100).toFixed(decimals)} %`;
 
-// ─── Génération des scénarios ─────────────────────────────────────────────────
-
-const generateScenarios = (count: number): IScenario[] => {
-  if (count === 1) {
-    return [
-      { id: "cdi", label: "CDI", statuses: ["CDI"] },
-      { id: "cdd", label: "CDD", statuses: ["CDD"] },
-      { id: "chomage", label: "Chômage", statuses: ["chomage"] },
-    ];
-  }
-
-  if (count === 2) {
-    return [
-      { id: "all_cdi", label: "A CDI · B CDI", statuses: ["CDI", "CDI"] },
-      { id: "a_cdi_b_cdd", label: "A CDI · B CDD", statuses: ["CDI", "CDD"] },
-      { id: "a_cdd_b_cdi", label: "A CDD · B CDI", statuses: ["CDD", "CDI"] },
-      { id: "a_cdi_b_chomage", label: "A CDI · B chômage", statuses: ["CDI", "chomage"] },
-      { id: "all_cdd", label: "A CDD · B CDD", statuses: ["CDD", "CDD"] },
-    ];
-  }
-
-  // 3+ personnes : générer "Tous CDI", "1 CDD", "2 CDD", "Tous CDD"
-  const scenarios: IScenario[] = [];
-  const allCdi = Array<BorrowerStatus>(count).fill("CDI");
-  scenarios.push({ id: "all_cdi", label: "Tous CDI", statuses: allCdi });
-
-  for (let i = 0; i < count; i++) {
-    const s = [...allCdi] as BorrowerStatus[];
-    s[i] = "CDD";
-    scenarios.push({
-      id: `p${i + 1}_cdd`,
-      label: `P${i + 1} CDD · autres CDI`,
-      statuses: s,
-    });
-  }
-
-  const allCdd = Array<BorrowerStatus>(count).fill("CDD");
-  scenarios.push({ id: "all_cdd", label: "Tous CDD", statuses: allCdd });
-
-  return scenarios;
-};
-
 // ─── Composant ───────────────────────────────────────────────────────────────
 
 function PretImmobilier(): ReactElement {
+  const navigate = useNavigate();
   const { dashboard } = useContext(BudgetContext);
   const { simulation, getSimulation, upsertSimulation } = useContext(PretImmobilierContext);
 
   // ── Borrowers
   const [borrowers, setBorrowers] = useState<IBorrower[]>([]);
-  const [activeScenario, setActiveScenario] = useState<string>("all_cdi");
 
   // ── Sliders
   const [loanDuration, setLoanDuration] = useState<number>(20);
@@ -203,7 +168,6 @@ function PretImmobilier(): ReactElement {
 
     setBorrowers(newBorrowers);
     if (simulation) {
-      setActiveScenario(simulation.activeScenario || "all_cdi");
       setLoanDuration(simulation.loanDuration || 20);
       setLoanRate(Number(simulation.loanRate) || 0.035);
       setInsuranceRate(Number(simulation.insuranceRate) || 0.003);
@@ -223,17 +187,6 @@ function PretImmobilier(): ReactElement {
       }
     }
   }, [dashboard, simulation]);
-
-  // ── Application d'un scénario
-  const applyScenario = useCallback((scenario: IScenario) => {
-    setActiveScenario(scenario.id);
-    setBorrowers(prev =>
-      prev.map((b, i) => ({
-        ...b,
-        status: scenario.statuses[i] ?? b.status,
-      }))
-    );
-  }, []);
 
   // ── Calcul principal
   useEffect(() => {
@@ -274,6 +227,7 @@ function PretImmobilier(): ReactElement {
     // Reste à vivre après remboursement (loyer remplacé par mensualité)
     const chargesHorsLoyer = dashboard.totaux.totalCharges - loyerActuel;
     const resteAVivreAfter = eligibleRevenue - chargesHorsLoyer - totalMonthlyCharge;
+    const currentDebtRatio = eligibleRevenue > 0 ? existingDebts / eligibleRevenue : 0;
     const debtRatioAfter = eligibleRevenue > 0
       ? (existingDebts + totalMonthlyCharge) / eligibleRevenue
       : 0;
@@ -299,6 +253,7 @@ function PretImmobilier(): ReactElement {
       totalMonthlyCharge,
       totalCreditCost,
       totalInterests,
+      currentDebtRatio,
       resteAVivreAfter,
       debtRatioAfter,
       communes: communeResults.map(c => {
@@ -386,7 +341,6 @@ function PretImmobilier(): ReactElement {
     try {
       const payload: Partial<IPretImmobilierFormData> = {
         borrowers,
-        activeScenario,
         loanDuration,
         loanRate,
         insuranceRate,
@@ -409,18 +363,24 @@ function PretImmobilier(): ReactElement {
     }
   };
 
-  const scenarios = generateScenarios(borrowers.length);
-
   if (!dashboard) return <></>;
 
   return (
-    <section id="pretImmobilier" data-aos="fade-up" data-aos-delay="500">
+    <>
+      <Header />
+      <SubNav />
+      <main id="pretImmobilier">
+      <div className="pretContainer">
       {/* ── En-tête ── */}
-      <div className="pretHeader">
-        <div className="pretHeaderLeft">
+      <div className="pretHeader" data-aos="fade-down">
+        <Button style="back" onClick={() => navigate("/budget")} type="button">
+          <MdArrowBack />
+          <span>Retour</span>
+        </Button>
+        <div className="pretHeaderCenter">
           <FiHome className="pretIcon" />
           <div>
-            <h2 className="pretTitle">Simulateur de prêt immobilier</h2>
+            <h1 className="pretTitle">Simulateur de prêt immobilier</h1>
             <p className="pretSubtitle">
               Estimez votre capacité d'emprunt et analysez le marché local
             </p>
@@ -455,20 +415,6 @@ function PretImmobilier(): ReactElement {
               <IoPersonOutline /> Profil des emprunteurs
             </h3>
 
-            {/* Boutons scénarios */}
-            <div className="scenariosRow">
-              {scenarios.map(s => (
-                <button
-                  key={s.id}
-                  type="button"
-                  className={`scenarioBtn ${activeScenario === s.id ? "active" : ""}`}
-                  onClick={() => applyScenario(s)}
-                >
-                  {s.label}
-                </button>
-              ))}
-            </div>
-
             {/* Cartes emprunteurs */}
             <div className="borrowersGrid">
               {borrowers.map((b, i) => (
@@ -484,7 +430,6 @@ function PretImmobilier(): ReactElement {
                           setBorrowers(prev =>
                             prev.map((x, j) => j === i ? { ...x, status: s } : x)
                           );
-                          setActiveScenario("custom");
                         }}
                       >
                         {STATUS_LABELS[s]}
@@ -543,6 +488,11 @@ function PretImmobilier(): ReactElement {
                   Neuf <span className="toggleNote">(frais ~2,5%)</span>
                 </button>
               </div>
+              <p className="propertyLegend">
+                {propertyType === "ancien"
+                  ? "Bien ayant déjà été possédé ou achevé depuis + de 5 ans. S'applique à la grande majorité des transactions immobilières."
+                  : "Construction neuve ou achat en VEFA (sur plan), jamais occupé, achevé depuis moins de 5 ans. Frais de notaire réduits car moins de taxes de mutation."}
+              </p>
             </div>
 
             {/* Durée */}
@@ -666,6 +616,33 @@ function PretImmobilier(): ReactElement {
                 </div>
               </div>
 
+              {/* Détail du calcul */}
+              <div className="loanBreakdown">
+                <p className="loanBreakdownTitle"><FiInfo /> Comment est calculé le montant empruntable ?</p>
+                <div className="loanBreakdownSteps">
+                  <div className="loanStep">
+                    <span className="loanStepLabel">Revenus éligibles</span>
+                    <span className="loanStepValue">{formatCurrency(results.eligibleRevenue)} / mois</span>
+                  </div>
+                  <div className="loanStep operator">
+                    <span className="loanStepLabel">× 35% (seuil légal d'endettement)</span>
+                    <span className="loanStepValue">{formatCurrency(results.eligibleRevenue * 0.35)} / mois</span>
+                  </div>
+                  <div className="loanStep operator">
+                    <span className="loanStepLabel">− Crédits en cours</span>
+                    <span className="loanStepValue">− {formatCurrency(results.existingDebts)} / mois</span>
+                  </div>
+                  <div className="loanStep result">
+                    <span className="loanStepLabel">= Capacité mensuelle pour le prêt</span>
+                    <span className="loanStepValue">{formatCurrency(results.maxMonthlyPayment)} / mois</span>
+                  </div>
+                  <div className="loanStep result">
+                    <span className="loanStepLabel">→ Montant empruntable (formule actuarielle, {loanDuration} ans)</span>
+                    <span className="loanStepValue">{formatCurrency(results.loanAmount)}</span>
+                  </div>
+                </div>
+              </div>
+
               <div className="divider" />
 
               <div className="resultsGrid">
@@ -706,8 +683,12 @@ function PretImmobilier(): ReactElement {
                   <span className="resultLabel">Reste à vivre après remboursement</span>
                   <span className="resultValue">{formatCurrency(results.resteAVivreAfter)}</span>
                 </div>
+                <div className="resultItem">
+                  <span className="resultLabel">Taux d'endettement actuel</span>
+                  <span className="resultValue secondary">{formatPct(results.currentDebtRatio)}</span>
+                </div>
                 <div className={`resultItem ${results.debtRatioAfter > 0.35 ? "negative" : "positive"}`}>
-                  <span className="resultLabel">Taux d'endettement final</span>
+                  <span className="resultLabel">Taux d'endettement après prêt</span>
                   <span className="resultValue">{formatPct(results.debtRatioAfter)}</span>
                   {results.debtRatioAfter > 0.35 && (
                     <span className="resultWarn">
@@ -872,8 +853,11 @@ function PretImmobilier(): ReactElement {
           </div>
         </div>
       </div>
-    </section>
+      </div>
+    </main>
+  </>
   );
 }
 
-export default PretImmobilier;
+const PretImmobilierWithAuth = WithAuth(PretImmobilier);
+export default PretImmobilierWithAuth;

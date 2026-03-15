@@ -7,13 +7,12 @@ import { useNavigate } from "react-router-dom";
 import { IoWallet, IoTrendingUp, IoTrendingDown } from "react-icons/io5";
 import { MdDashboard } from "react-icons/md";
 import { IoCreate } from "react-icons/io5";
-import { FiDollarSign, FiDownload } from "react-icons/fi";
+import { FiDollarSign, FiDownload, FiHome } from "react-icons/fi";
 
 // components
 import WithAuth from "../../utils/middleware/WithAuth.tsx";
 import Header from "../../components/header/Header.tsx";
 import SubNav from "../../components/subNav/SubNav.tsx";
-import PretImmobilier from "./pretImmobilier/PretImmobilier.tsx";
 
 // context
 import { BudgetContext } from "../../context/budget/BudgetContext.tsx";
@@ -55,6 +54,12 @@ function Budget(): ReactElement {
       id: "export",
       label: isExporting ? "Generation..." : "Exporter en PDF",
       icon: <FiDownload />,
+      primary: false,
+    },
+    {
+      id: "pret",
+      label: "Simulateur immobilier",
+      icon: <FiHome />,
       primary: false,
     },
   ];
@@ -138,6 +143,8 @@ function Budget(): ReactElement {
       navigate("/budget/edit");
     } else if (actionId === "export") {
       handleExportPdf();
+    } else if (actionId === "pret") {
+      navigate("/budget/pret-immobilier");
     }
   };
 
@@ -166,7 +173,7 @@ function Budget(): ReactElement {
                   type="button"
                   className={`actionBtn ${action.primary ? "primary" : ""} ${action.id === "export" && isExporting ? "exporting" : ""}`}
                   onClick={(event) => handleActionClick(event, action.id)}
-                  disabled={action.id === "export" && (!dashboard || isExporting)}
+                  disabled={(action.id === "export" && (!dashboard || isExporting)) || (action.id === "pret" && !dashboard)}
                   data-aos="fade-up"
                   data-aos-delay={150 + index * 50}
                 >
@@ -219,7 +226,6 @@ function Budget(): ReactElement {
             </section>
           )}
 
-          {dashboard && <PretImmobilier />}
         </div>
       </main>
     </>
