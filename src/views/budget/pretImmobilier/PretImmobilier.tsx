@@ -2,7 +2,7 @@
 import "./pretImmobilier.scss";
 
 // hooks | libraries
-import { ReactElement, useContext, useEffect, useState, useCallback, useRef } from "react";
+import { ReactElement, useContext, useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiHome, FiSave, FiSearch, FiInfo } from "react-icons/fi";
 import { IoPersonOutline } from "react-icons/io5";
@@ -24,6 +24,12 @@ import {
   getCommunesInRadiusService,
   getDvfPricesService
 } from "../../../API/services/pretImmobilier.service.ts";
+import {
+  calculateSimulation,
+  calcMinSurface,
+  calcProbabilityLevel,
+} from "../../../utils/services/pretImmobilierCalculator.service.ts";
+import { formatCurrency, formatPct } from "../../../utils/helpers/formatters.ts";
 
 // types
 import {
@@ -31,7 +37,6 @@ import {
   BorrowerStatus,
   PropertyType,
   ICommuneResult,
-  ISimulationResults,
   IGeoCommune,
   IPretImmobilierFormData
 } from "../../../utils/types/pretImmobilier.types.ts";
@@ -44,63 +49,7 @@ const STATUS_LABELS: Record<BorrowerStatus, string> = {
   chomage: "Chômage",
 };
 
-const STATUS_COEFFICIENT: Record<BorrowerStatus, number> = {
-  CDI: 1.0,
-  CDD: 0.5,
-  chomage: 0.0,
-};
-
 const RADIUS_OPTIONS = [5, 10, 30, 50, 100];
-
-const MIN_SURFACE_PER_PERSON = 25;
-const MIN_SURFACE_PER_CHILD = 10;
-
-// ─── Helpers de calcul ────────────────────────────────────────────────────────
-
-const calcMaxLoan = (
-  monthlyPaymentCapacity: number,
-  annualLoanRate: number,
-  annualInsuranceRate: number,
-  years: number
-): number => {
-  const r = annualLoanRate / 12;
-  const n = years * 12;
-  const ins = annualInsuranceRate / 12;
-  if (r === 0 && ins === 0) return monthlyPaymentCapacity * n;
-  const divisor = r > 0
-    ? r / (1 - Math.pow(1 + r, -n)) + ins
-    : ins;
-  return monthlyPaymentCapacity / divisor;
-};
-
-const calcMonthlyPayment = (
-  principal: number,
-  annualLoanRate: number,
-  years: number
-): number => {
-  const r = annualLoanRate / 12;
-  const n = years * 12;
-  if (r === 0) return principal / n;
-  return principal * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
-};
-
-const probabilityLevel = (index: number): ICommuneResult["probabilityLevel"] => {
-  if (index >= 80) return "excellent";
-  if (index >= 50) return "bon";
-  if (index >= 25) return "modere";
-  return "faible";
-};
-
-const formatCurrency = (v: number): string =>
-  new Intl.NumberFormat("fr-FR", {
-    style: "currency",
-    currency: "EUR",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(v);
-
-const formatPct = (v: number, decimals = 2): string =>
-  `${(v * 100).toFixed(decimals)} %`;
 
 // ─── Composant ───────────────────────────────────────────────────────────────
 
@@ -131,9 +80,6 @@ function PretImmobilier(): ReactElement {
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [saveMsg, setSaveMsg] = useState<string>("");
   const [geoError, setGeoError] = useState<string>("");
-
-  // ── Résultats calculés
-  const [results, setResults] = useState<ISimulationResults | null>(null);
 
   const searchDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -189,87 +135,18 @@ function PretImmobilier(): ReactElement {
     }
   }, [dashboard, simulation]);
 
-  // ── Calcul principal
-  useEffect(() => {
-    if (!dashboard) return;
-
-    const eligibleRevenue = borrowers.reduce(
-      (sum, b) => sum + b.revenue * STATUS_COEFFICIENT[b.status],
-      0
-    );
-
-    // Loyer actuel dans les charges fixes catégorie Logement
-    const loyerActuel = dashboard.details?.chargesFixesParCategorie?.["Logement"] || 0;
-
-    // Dettes existantes (crédits) — hors loyer car il disparaît
-    const existingDebts = dashboard.totaux.totalMensualitesDettes;
-
-    // Capacité mensuelle pour le prêt (taux d'endettement 35%)
-    const maxMonthlyPayment = Math.max(0, eligibleRevenue * 0.35 - existingDebts);
-
-    // Montant empruntable
-    const loanAmount = Math.max(0, calcMaxLoan(maxMonthlyPayment, loanRate, insuranceRate, loanDuration));
-    const totalBudget = loanAmount + apport;
-
-    // Frais notaire
-    const notaryRate = propertyType === "neuf" ? 0.025 : 0.075;
-    const propertyBudget = totalBudget / (1 + notaryRate);
-    const notaryFees = totalBudget - propertyBudget;
-
-    // Mensualité réelle
-    const monthlyPayment = calcMonthlyPayment(loanAmount, loanRate, loanDuration);
-    const monthlyInsurance = (loanAmount * insuranceRate) / 12;
-    const totalMonthlyCharge = monthlyPayment + monthlyInsurance;
-
-    // Coût total
-    const totalCreditCost = totalMonthlyCharge * loanDuration * 12;
-    const totalInterests = totalCreditCost - loanAmount;
-
-    // Reste à vivre après remboursement (loyer remplacé par mensualité)
-    const chargesHorsLoyer = dashboard.totaux.totalCharges - loyerActuel;
-    const resteAVivreAfter = eligibleRevenue - chargesHorsLoyer - totalMonthlyCharge;
-    const currentDebtRatio = eligibleRevenue > 0 ? existingDebts / eligibleRevenue : 0;
-    const debtRatioAfter = eligibleRevenue > 0
-      ? (existingDebts + totalMonthlyCharge) / eligibleRevenue
-      : 0;
-
-    const minSurface = Math.max(
-      30,
-      (dashboard.budget.nombrePersonnes || 1) * MIN_SURFACE_PER_PERSON +
-      (dashboard.budget.nombreEnfants || 0) * MIN_SURFACE_PER_CHILD
-    );
-
-    setResults({
-      eligibleRevenue,
-      existingDebts,
-      loyerActuel,
-      maxMonthlyPayment,
-      loanAmount,
-      totalBudget,
-      notaryFees,
-      notaryRate,
-      propertyBudget,
-      monthlyPayment,
-      monthlyInsurance,
-      totalMonthlyCharge,
-      totalCreditCost,
-      totalInterests,
-      currentDebtRatio,
-      resteAVivreAfter,
-      debtRatioAfter,
-      communes: communeResults.map(c => {
-        if (c.avgPricePerM2) {
-          const surface = Math.round(propertyBudget / c.avgPricePerM2);
-          const idx = Math.min(100, Math.round((propertyBudget / (c.avgPricePerM2 * minSurface)) * 100));
-          return {
-            ...c,
-            surfaceAchetable: surface,
-            probabilityIndex: idx,
-            probabilityLevel: probabilityLevel(idx),
-          };
-        }
-        return c;
-      }),
+  // ── Calcul principal (dérivé pur, pas d'effet de bord)
+  const results = useMemo(() => {
+    if (!dashboard) return null;
+    return calculateSimulation({
+      dashboard,
+      borrowers,
+      loanDuration,
+      loanRate,
+      insuranceRate,
+      apport,
+      propertyType,
+      communeResults,
     });
   }, [dashboard, borrowers, loanDuration, loanRate, insuranceRate, apport, propertyType, communeResults]);
 
@@ -307,10 +184,9 @@ function PretImmobilier(): ReactElement {
         return;
       }
 
-      const minSurface = Math.max(
-        30,
-        (dashboard?.budget.nombrePersonnes || 1) * MIN_SURFACE_PER_PERSON +
-        (dashboard?.budget.nombreEnfants || 0) * MIN_SURFACE_PER_CHILD
+      const minSurface = calcMinSurface(
+        dashboard?.budget.nombrePersonnes || 1,
+        dashboard?.budget.nombreEnfants || 0
       );
 
       const settledPrices = await Promise.allSettled(
@@ -340,7 +216,7 @@ function PretImmobilier(): ReactElement {
           surfaceAchetable: surface,
           propertyBudgetLocal: results?.propertyBudget ?? null,
           probabilityIndex: idx,
-          probabilityLevel: probabilityLevel(idx),
+          probabilityLevel: calcProbabilityLevel(idx),
         };
       });
 
