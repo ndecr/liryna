@@ -23,13 +23,9 @@ import { ICourrierFormData } from "../../../utils/types/courrier.types.ts";
 
 // utils
 import { handleCourrierUploadError, logError, showErrorNotification } from "../../../utils/scripts/errorHandling.ts";
+import { DIRECTION_OPTIONS, PRIORITY_OPTIONS } from "../../../utils/constants/courrierOptions.ts";
 import { validateCourrierForm } from "../../../utils/scripts/courrierValidation.ts";
 import { useCourrierFieldOptions } from "../../../utils/hooks/useCourrierFieldOptions.ts";
-
-interface SelectOption {
-  value: string;
-  label: string;
-}
 
 function NouveauCourrier(): ReactElement {
   const navigate = useNavigate();
@@ -55,19 +51,6 @@ function NouveauCourrier(): ReactElement {
   });
   const [dragActive, setDragActive] = useState(false);
 
-  const directionOptions: SelectOption[] = [
-    { value: 'entrant', label: 'Entrant' },
-    { value: 'sortant', label: 'Sortant' },
-    { value: 'interne', label: 'Interne' }
-  ];
-
-  const priorityOptions: SelectOption[] = [
-    { value: 'low', label: 'Basse' },
-    { value: 'normal', label: 'Normale' },
-    { value: 'high', label: 'Haute' },
-    { value: 'urgent', label: 'Urgente' }
-  ];
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -84,7 +67,7 @@ function NouveauCourrier(): ReactElement {
     }));
   };
 
-  const handleSelectChange = (selectedOption: SelectOption | null, name: string) => {
+  const handleSelectChange = (selectedOption: { value: string; label: string } | null, name: string) => {
     if (selectedOption) {
       setFormData(prev => ({
         ...prev,
@@ -202,13 +185,13 @@ function NouveauCourrier(): ReactElement {
                     <label htmlFor="direction">Direction *</label>
                     <Select
                       inputId="direction"
-                      value={directionOptions.find(
+                      value={DIRECTION_OPTIONS.find(
                         (option) => option.value === formData.direction
                       )}
                       onChange={(selectedOption) =>
                         handleSelectChange(selectedOption, "direction")
                       }
-                      options={directionOptions}
+                      options={DIRECTION_OPTIONS}
                       className="react-select-container"
                       classNamePrefix="react-select"
                       placeholder="Sélectionner..."
@@ -311,13 +294,13 @@ function NouveauCourrier(): ReactElement {
                     </label>
                     <Select
                       inputId="priority"
-                      value={priorityOptions.find(
+                      value={PRIORITY_OPTIONS.find(
                         (option) => option.value === formData.priority
                       )}
                       onChange={(selectedOption) =>
                         handleSelectChange(selectedOption, "priority")
                       }
-                      options={priorityOptions}
+                      options={PRIORITY_OPTIONS}
                       className="react-select-container"
                       classNamePrefix="react-select"
                       placeholder="Sélectionner..."

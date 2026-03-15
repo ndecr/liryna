@@ -92,18 +92,13 @@ function Courriers(): ReactElement {
   const handleActionClick = (event: React.MouseEvent, actionId: string) => {
     event.preventDefault();
     event.stopPropagation();
-    console.log("Action clicked:", actionId); // Debug
-    console.log("Current location:", window.location.pathname); // Debug
     if (actionId === '1') {
-      console.log("Navigating to new courrier"); // Debug
       navigate("/mail/new");
     } else if (actionId === '2') {
-      console.log("Navigating to list courriers"); // Debug
       navigate("/mail/list");
     } else if (actionId === '3') {
       navigate("/mail/convert");
     } else {
-      console.log("Setting active action:", actionId); // Debug
       setActiveAction(actionId);
     }
   };

@@ -16,6 +16,7 @@ import SubNav from "../../components/subNav/SubNav.tsx";
 
 // context
 import { BudgetContext } from "../../context/budget/BudgetContext.tsx";
+import { formatCurrency } from "../../utils/helpers/formatters.ts";
 
 function Budget(): ReactElement {
   const navigate = useNavigate();
@@ -63,15 +64,6 @@ function Budget(): ReactElement {
       primary: false,
     },
   ];
-
-  const formatCurrency = (value: number): string => {
-    return new Intl.NumberFormat("fr-FR", {
-      style: "currency",
-      currency: "EUR",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
 
   const statsDisplay = [
     {

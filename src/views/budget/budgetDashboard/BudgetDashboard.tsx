@@ -28,14 +28,15 @@ import Button from "../../../components/button/Button.tsx";
 
 // context
 import { BudgetContext } from "../../../context/budget/BudgetContext.tsx";
+import { formatCurrency } from "../../../utils/helpers/formatters.ts";
+import {
+  buildChargesChartData,
+  buildRevenusChartData,
+  buildBarChartData,
+} from "../../../utils/helpers/budgetChartHelpers.ts";
 
 const PIE_COLORS = ["#ff6b47", "#ff9800", "#e65100", "#c62828"];
 const REVENUS_COLORS = ["#2e7d32", "#4caf50", "#66bb6a", "#81c784"];
-
-interface ChartEntry {
-  name: string;
-  value: number;
-}
 
 function BudgetDashboard(): ReactElement {
   const navigate = useNavigate();
@@ -59,42 +60,9 @@ function BudgetDashboard(): ReactElement {
     load();
   }, [getBudgetDashboard]);
 
-  const formatCurrency = (value: number): string => {
-    return new Intl.NumberFormat("fr-FR", {
-      style: "currency",
-      currency: "EUR",
-      minimumFractionDigits: 2,
-    }).format(value);
-  };
-
-  const chargesChartData: ChartEntry[] = dashboard
-    ? [
-        { name: "Charges fixes", value: dashboard.totaux.chargesFixes },
-        { name: "Charges variables", value: dashboard.totaux.chargesVariables },
-        { name: "Dettes", value: dashboard.totaux.totalMensualitesDettes },
-      ].filter((d) => d.value > 0)
-    : [];
-
-  // Si nombrePersonnes >= 2 et qu'il y a des entrees individuelles, afficher par entree
-  // sinon afficher par categorie
-  const revenusSource = dashboard && dashboard.budget.nombrePersonnes >= 2
-    && dashboard?.details?.revenusParEntree
-    && Object.keys(dashboard.details.revenusParEntree).length > 1
-    ? dashboard.details.revenusParEntree
-    : dashboard?.details?.revenusParCategorie;
-
-  const revenusChartData: ChartEntry[] = revenusSource
-    ? Object.entries(revenusSource)
-        .map(([name, value]) => ({ name, value }))
-        .filter((d) => d.value > 0)
-    : [];
-
-  const barData = dashboard?.details?.chargesFixesParCategorie
-    ? Object.entries(dashboard.details.chargesFixesParCategorie).map(([name, value]) => ({
-        name,
-        montant: value,
-      }))
-    : [];
+  const chargesChartData = dashboard ? buildChargesChartData(dashboard) : [];
+  const revenusChartData = dashboard ? buildRevenusChartData(dashboard) : [];
+  const barData = dashboard ? buildBarChartData(dashboard) : [];
 
   const tooltipFormatter = (value?: number | string | (number | string)[]): string => {
     if (typeof value === "number") return formatCurrency(value);
@@ -158,28 +126,28 @@ function BudgetDashboard(): ReactElement {
               <section className="summaryCards" data-aos="fade-up" data-aos-delay="100">
                 <div className="summaryCard revenus">
                   <h3>Revenus</h3>
-                  <p className="amount">{formatCurrency(dashboard.totaux.revenus)}</p>
+                  <p className="amount">{formatCurrency(dashboard.totaux.revenus, 2)}</p>
                 </div>
                 <div className="summaryCard charges-fixes">
                   <h3>Charges fixes</h3>
-                  <p className="amount">{formatCurrency(dashboard.totaux.chargesFixes)}</p>
+                  <p className="amount">{formatCurrency(dashboard.totaux.chargesFixes, 2)}</p>
                 </div>
                 <div className="summaryCard charges-variables">
                   <h3>Charges variables</h3>
-                  <p className="amount">{formatCurrency(dashboard.totaux.chargesVariables)}</p>
+                  <p className="amount">{formatCurrency(dashboard.totaux.chargesVariables, 2)}</p>
                 </div>
                 <div className="summaryCard dettes">
                   <h3>Dettes</h3>
-                  <p className="amount">{formatCurrency(dashboard.totaux.totalMensualitesDettes)}</p>
+                  <p className="amount">{formatCurrency(dashboard.totaux.totalMensualitesDettes, 2)}</p>
                 </div>
               </section>
 
               <section className="resteAVivre" data-aos="fade-up" data-aos-delay="200">
                 <div className={`resteCard ${dashboard.totaux.resteAVivre >= 0 ? "positive" : "negative"}`}>
                   <h2>Reste a vivre</h2>
-                  <p className="resteAmount">{formatCurrency(dashboard.totaux.resteAVivre)}</p>
+                  <p className="resteAmount">{formatCurrency(dashboard.totaux.resteAVivre, 2)}</p>
                   <p className="resteDetail">
-                    {formatCurrency(dashboard.totaux.resteAVivreParPersonne)} / personne
+                    {formatCurrency(dashboard.totaux.resteAVivreParPersonne, 2)} / personne
                     ({dashboard.budget.nombrePersonnes} pers.)
                   </p>
                 </div>
@@ -296,7 +264,7 @@ function BudgetDashboard(): ReactElement {
                     {Object.entries(dashboard.details.chargesFixesParCategorie).map(([cat, amount]) => (
                       <div key={cat} className="detailRow">
                         <span className="detailLabel">{cat}</span>
-                        <span className="detailAmount">{formatCurrency(amount)}</span>
+                        <span className="detailAmount">{formatCurrency(amount, 2)}</span>
                       </div>
                     ))}
                   </div>

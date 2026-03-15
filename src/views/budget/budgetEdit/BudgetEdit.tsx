@@ -22,6 +22,7 @@ import {
   IBudgetDebtFormData,
   BudgetSection,
 } from "../../../utils/types/budget.types.ts";
+import { formatCurrency } from "../../../utils/helpers/formatters.ts";
 
 const REVENUS_CATEGORIES = ["Salaires", "Allocations et aides"];
 const CHARGES_FIXES_CATEGORIES = [
@@ -304,14 +305,6 @@ function BudgetEdit(): ReactElement {
     }
   };
 
-  const formatCurrency = (value: number): string => {
-    return new Intl.NumberFormat("fr-FR", {
-      style: "currency",
-      currency: "EUR",
-      minimumFractionDigits: 2,
-    }).format(value);
-  };
-
   const renderEntryRows = (section: BudgetSection, category?: string) => {
     const filtered = entries.filter(
       (e) => e.section === section && (category === undefined || e.category === category)
@@ -426,7 +419,7 @@ function BudgetEdit(): ReactElement {
           <section className="formSection revenus" data-aos="fade-up" data-aos-delay="100">
             <div className="sectionHeader">
               <h2 className="sectionTitle">Revenus</h2>
-              <span className="sectionTotal">{formatCurrency(totalRevenus)}</span>
+              <span className="sectionTotal">{formatCurrency(totalRevenus, 2)}</span>
             </div>
             {REVENUS_CATEGORIES.map((cat) => (
               <div key={cat} className="categoryBlock">
@@ -462,7 +455,7 @@ function BudgetEdit(): ReactElement {
           <section className="formSection chargesFixes" data-aos="fade-up" data-aos-delay="200">
             <div className="sectionHeader">
               <h2 className="sectionTitle">Charges fixes</h2>
-              <span className="sectionTotal">{formatCurrency(totalChargesFixes)}</span>
+              <span className="sectionTotal">{formatCurrency(totalChargesFixes, 2)}</span>
             </div>
             {CHARGES_FIXES_CATEGORIES.map((cat) => (
               <div key={cat} className="categoryBlock">
@@ -483,7 +476,7 @@ function BudgetEdit(): ReactElement {
           <section className="formSection chargesVariables" data-aos="fade-up" data-aos-delay="300">
             <div className="sectionHeader">
               <h2 className="sectionTitle">Charges variables</h2>
-              <span className="sectionTotal">{formatCurrency(totalChargesVariables)}</span>
+              <span className="sectionTotal">{formatCurrency(totalChargesVariables, 2)}</span>
             </div>
             {renderEntryRows("charges_variables")}
             <button
@@ -499,7 +492,7 @@ function BudgetEdit(): ReactElement {
           <section className="formSection dettes" data-aos="fade-up" data-aos-delay="400">
             <div className="sectionHeader">
               <h2 className="sectionTitle">Dettes</h2>
-              <span className="sectionTotal">{formatCurrency(totalDettes)}/mois</span>
+              <span className="sectionTotal">{formatCurrency(totalDettes, 2)}/mois</span>
             </div>
             {debts.map((debt) => (
               <div key={debt.tempId} className="debtRow">
@@ -544,26 +537,26 @@ function BudgetEdit(): ReactElement {
             <div className="resumeGrid">
               <div className="resumeRow">
                 <span>Total revenus</span>
-                <span className="positive">{formatCurrency(totalRevenus)}</span>
+                <span className="positive">{formatCurrency(totalRevenus, 2)}</span>
               </div>
               <div className="resumeRow">
                 <span>Total charges</span>
-                <span className="negative">{formatCurrency(totalCharges)}</span>
+                <span className="negative">{formatCurrency(totalCharges, 2)}</span>
               </div>
               {decouvert > 0 && (
                 <div className="resumeRow">
                   <span>Decouvert mensuel</span>
-                  <span className="negative">−{formatCurrency(decouvert)}</span>
+                  <span className="negative">−{formatCurrency(decouvert, 2)}</span>
                 </div>
               )}
               <div className={`resumeRow total ${resteAVivre >= 0 ? "positive" : "negative"}`}>
                 <span>Reste a vivre</span>
-                <span>{formatCurrency(resteAVivre)}</span>
+                <span>{formatCurrency(resteAVivre, 2)}</span>
               </div>
               {nombrePersonnes > 1 && (
                 <div className="resumeRow detail">
                   <span>Par personne ({nombrePersonnes})</span>
-                  <span>{formatCurrency(resteAVivre / nombrePersonnes)}</span>
+                  <span>{formatCurrency(resteAVivre / nombrePersonnes, 2)}</span>
                 </div>
               )}
             </div>

@@ -25,6 +25,7 @@ import Button from "../../../components/button/Button.tsx";
 
 // services
 import { convertImageToPdfService, IConvertCropData } from "../../../API/services/courrier.service.ts";
+import { triggerBlobDownload } from "../../../utils/services/downloadService.ts";
 
 // utils
 import { logError } from "../../../utils/scripts/errorHandling.ts";
@@ -138,17 +139,7 @@ function ConvertisseurImage(): ReactElement {
       };
 
       const blob = await convertImageToPdfService(imageFile, cropData, customFileName.trim());
-
-      // Déclenchement automatique du téléchargement
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${customFileName.trim()}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-
+      triggerBlobDownload(blob, `${customFileName.trim()}.pdf`);
       setStep(4);
     } catch (error: unknown) {
       logError("convertImageToPdf", error);
