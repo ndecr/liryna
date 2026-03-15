@@ -6,17 +6,17 @@
   inset: 0 0 auto;
   z-index: 100;
   height: 6dvh;
-  background: rgba(vars.$utilsPrimary, 0.05);
+  background: rgba(vars.$courrierPrimary, 0.05);
   backdrop-filter: vars.$blurMedium;
   -webkit-backdrop-filter: vars.$blurMedium;
   transition: all vars.$transitionSmooth;
 
   &.webdev {
-    background: rgba(vars.$webdevPrimary, 0.05);
+    background: rgba(vars.$budgetPrimary, 0.05);
   }
 
   &.utils {
-    background: rgba(vars.$utilsPrimary, 0.05);
+    background: rgba(vars.$courrierPrimary, 0.05);
   }
 }
 
@@ -52,7 +52,7 @@
     inset: auto 0 0;
     height: 0.15em;
     border-radius: 8px;
-    background: linear-gradient(135deg, vars.$utilsPrimary, vars.$utilsSecondary);
+    background: linear-gradient(135deg, vars.$courrierPrimary, vars.$courrierSecondary);
     transform: scaleX(0.15);
     transform-origin: left;
     transition: transform vars.$transitionMedium;
@@ -140,7 +140,7 @@
   @include mixins.resetButton;
 
   &:hover {
-    color: vars.$utilsDark;
+    color: vars.$courrierDark;
   }
 }
 
@@ -194,19 +194,19 @@
     box-shadow: vars.$shadowMedium;
 
     #header.utils & {
-      background: vars.$utilsGradient;
+      background: vars.$courrierGradient;
 
       &::before {
-        background: vars.$utilsGradientReverse;
+        background: vars.$courrierGradientReverse;
         left: 0;
       }
     }
 
     #header.webdev & {
-      background: vars.$webdevGradient;
+      background: vars.$budgetGradient;
 
       &::before {
-        background: vars.$webdevGradientReverse;
+        background: vars.$budgetGradientReverse;
         left: 0;
       }
     }
@@ -277,11 +277,11 @@
   animation: slideInDown 0.3s ease;
 
   &.utils {
-    border-top: 4px solid vars.$utilsPrimary;
+    border-top: 4px solid vars.$courrierPrimary;
   }
 
   &.webdev {
-    border-top: 4px solid vars.$webdevPrimary;
+    border-top: 4px solid vars.$budgetPrimary;
   }
 }
 
@@ -376,7 +376,7 @@
 .mobileSectionTitle {
   font-size: 0.9rem;
   font-weight: 600;
-  color: vars.$utilsPrimary;
+  color: vars.$courrierPrimary;
   margin: 1rem 0 0.75rem 1rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -406,11 +406,11 @@
     color: vars.$whiteBackground;
 
     .mobileMenu.utils & {
-      background: vars.$utilsGradient;
+      background: vars.$courrierGradient;
     }
 
     .mobileMenu.webdev & {
-      background: vars.$webdevGradient;
+      background: vars.$budgetGradient;
     }
   }
 

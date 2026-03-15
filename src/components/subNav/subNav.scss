@@ -67,18 +67,18 @@
   &.active {
     color: vars.$navTextColorActive;
     box-shadow: vars.$shadowMedium;
-    background: vars.$utilsGradient;
+    background: vars.$courrierGradient;
 
     &::before {
-      background: vars.$utilsGradientReverse;
+      background: vars.$courrierGradientReverse;
       left: 0;
     }
 
     &.webdev {
-      background: vars.$webdevGradient;
+      background: vars.$budgetGradient;
 
       &::before {
-        background: vars.$webdevGradientReverse;
+        background: vars.$budgetGradientReverse;
       }
     }
   }

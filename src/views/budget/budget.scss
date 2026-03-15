@@ -26,7 +26,7 @@
     .budgetTitle {
       font-size: 2em;
       font-weight: 700;
-      background: vars.$webdevGradient;
+      background: vars.$budgetGradient;
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -91,13 +91,13 @@
         }
 
         &.primary {
-          background: vars.$webdevGradient;
+          background: vars.$budgetGradient;
           color: white;
         }
 
         .actionIcon {
           font-size: 1.75em;
-          color: vars.$webdevPrimary;
+          color: vars.$budgetPrimary;
 
           @media (min-width: vars.$tabletWidth) {
             font-size: 2em;
@@ -197,7 +197,7 @@
           font-size: 1.25em;
           color: white;
           flex-shrink: 0;
-          background: vars.$webdevGradient;
+          background: vars.$budgetGradient;
 
           @media (min-width: vars.$tabletWidth) {
             width: 60px;
@@ -212,7 +212,7 @@
         }
 
         &.warning .statIcon {
-          background: vars.$webdevGradient;
+          background: vars.$budgetGradient;
         }
 
         &.danger .statIcon {
