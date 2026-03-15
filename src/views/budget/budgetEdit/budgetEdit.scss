@@ -148,6 +148,17 @@
     }
   }
 
+  .paramField {
+    .paramHint {
+      & {
+        font-size: 0.8em;
+        color: vars.$fontColorSecondary;
+        font-style: italic;
+        margin: 0;
+      }
+    }
+  }
+
   .paramField.notes {
     textarea {
       @include mixins.inputBase;

@@ -28,6 +28,7 @@ export interface IBudget {
   userId: number;
   nombrePersonnes: number;
   nombreEnfants: number;
+  decouvert: number;
   notes: string | null;
   entries: IBudgetEntry[];
   debts: IBudgetDebt[];
@@ -53,6 +54,7 @@ export interface IBudgetDebtFormData {
 export interface IBudgetFormData {
   nombrePersonnes: number;
   nombreEnfants: number;
+  decouvert: number;
   notes: string;
   entries: IBudgetEntryFormData[];
   debts: IBudgetDebtFormData[];
@@ -64,6 +66,7 @@ export interface IBudgetDashboardTotaux {
   chargesVariables: number;
   totalMensualitesDettes: number;
   totalCharges: number;
+  decouvert: number;
   resteAVivre: number;
   resteAVivreParPersonne: number;
 }
@@ -83,6 +86,7 @@ export interface IBudgetDashboard {
     id: number;
     nombrePersonnes: number;
     nombreEnfants: number;
+    decouvert: number;
     notes: string | null;
   };
   totaux: IBudgetDashboardTotaux;

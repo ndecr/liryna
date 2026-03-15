@@ -167,15 +167,13 @@ function Budget(): ReactElement {
             data-aos-delay="100"
           >
             <div className="actionsGrid">
-              {actions.map((action, index) => (
+              {actions.map((action) => (
                 <button
                   key={action.id}
                   type="button"
                   className={`actionBtn ${action.primary ? "primary" : ""} ${action.id === "export" && isExporting ? "exporting" : ""}`}
                   onClick={(event) => handleActionClick(event, action.id)}
                   disabled={(action.id === "export" && (!dashboard || isExporting)) || (action.id === "pret" && !dashboard)}
-                  data-aos="fade-up"
-                  data-aos-delay={150 + index * 50}
                 >
                   <span className="actionIcon">{action.icon}</span>
                   <span className="actionText">{action.label}</span>
