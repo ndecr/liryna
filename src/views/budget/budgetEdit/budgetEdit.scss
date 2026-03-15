@@ -27,7 +27,7 @@
     .editTitle {
       font-size: 1.75em;
       font-weight: 700;
-      background: vars.$webdevGradient;
+      background: vars.$budgetGradient;
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -78,7 +78,7 @@
       .sectionTotal {
         font-size: 1.25em;
         font-weight: 700;
-        color: vars.$webdevPrimary;
+        color: vars.$budgetPrimary;
       }
     }
 
@@ -96,12 +96,12 @@
     .categoryBlock {
       @include mixins.flexContainer(column, 0.5em);
       padding: 0 0 0 1em;
-      border-left: 3px solid vars.$webdevSecondary;
+      border-left: 3px solid vars.$budgetSecondary;
 
       .categoryTitle {
         font-size: 0.95em;
         font-weight: 600;
-        color: vars.$webdevPrimary;
+        color: vars.$budgetPrimary;
         margin: 0;
       }
     }
@@ -136,9 +136,9 @@
         }
 
         &:focus {
-          border-color: vars.$webdevPrimary;
+          border-color: vars.$budgetPrimary;
           outline: none;
-          box-shadow: 0 0 0 3px rgba(vars.$webdevPrimary, 0.15);
+          box-shadow: 0 0 0 3px rgba(vars.$budgetPrimary, 0.15);
         }
       }
 
@@ -149,7 +149,7 @@
   }
 
   .decouvertBlock {
-    border-left-color: vars.$webdevPrimary;
+    border-left-color: vars.$budgetPrimary;
     border-left-style: dashed;
 
     .decouvertLabel {
@@ -178,9 +178,9 @@
       }
 
       &:focus {
-        border-color: vars.$webdevPrimary;
+        border-color: vars.$budgetPrimary;
         outline: none;
-        box-shadow: 0 0 0 3px rgba(vars.$webdevPrimary, 0.15);
+        box-shadow: 0 0 0 3px rgba(vars.$budgetPrimary, 0.15);
       }
     }
 
@@ -200,8 +200,8 @@
       align-self: flex-start;
       padding: 0.6em 1.25em;
       background: transparent;
-      color: vars.$webdevPrimary;
-      border: 2px solid vars.$webdevPrimary;
+      color: vars.$budgetPrimary;
+      border: 2px solid vars.$budgetPrimary;
       border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
@@ -209,7 +209,7 @@
     }
 
     &:hover {
-      background: vars.$webdevGradient;
+      background: vars.$budgetGradient;
       color: white;
       border-color: transparent;
     }
@@ -231,7 +231,7 @@
       }
 
       &:focus {
-        border-color: vars.$webdevPrimary;
+        border-color: vars.$budgetPrimary;
         outline: none;
       }
     }
@@ -250,7 +250,7 @@
       }
 
       &:focus {
-        border-color: vars.$webdevPrimary;
+        border-color: vars.$budgetPrimary;
         outline: none;
       }
     }
@@ -301,7 +301,7 @@
         }
 
         &:focus {
-          border-color: vars.$webdevPrimary;
+          border-color: vars.$budgetPrimary;
           outline: none;
         }
 
@@ -347,7 +347,7 @@
       align-items: center;
       align-self: flex-start;
       padding: 0.4em 0.75em;
-      color: vars.$webdevPrimary;
+      color: vars.$budgetPrimary;
       font-size: 0.9em;
       font-weight: 600;
       cursor: pointer;
@@ -356,7 +356,7 @@
     }
 
     &:hover {
-      background: rgba(vars.$webdevPrimary, 0.08);
+      background: rgba(vars.$budgetPrimary, 0.08);
     }
   }
 
@@ -435,7 +435,7 @@
         @include mixins.flexContainer(row, 0.5em);
         align-items: center;
         padding: 0.75em 2em;
-        background: vars.$webdevGradient;
+        background: vars.$budgetGradient;
         color: white;
         border-radius: 8px;
         font-weight: 600;

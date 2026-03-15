@@ -7,6 +7,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
 import { IoHome, IoAdd, IoList, IoWallet, IoCreate } from "react-icons/io5";
 import { MdDashboard } from "react-icons/md";
+import { FiHome } from "react-icons/fi";
 import { UserContext } from "../../context/user/UserContext.tsx";
 
 // components
@@ -163,6 +164,15 @@ export default function Header(): ReactElement {
                 >
                   <IoCreate className="mobileNavIcon" />
                   <span className="mobileNavText">Editer le budget</span>
+                </button>
+                <button
+                  className={`mobileNavItem ${
+                    location.pathname.startsWith("/budget/pret-immobilier") ? "active" : ""
+                  }`}
+                  onClick={() => handleNavigate("/budget/pret-immobilier")}
+                >
+                  <FiHome className="mobileNavIcon" />
+                  <span className="mobileNavText">Simulateur immobilier</span>
                 </button>
               </div>
             </div>

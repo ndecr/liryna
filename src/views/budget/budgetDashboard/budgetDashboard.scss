@@ -21,13 +21,13 @@
     justify-content: space-between;
 
     .backButton {
-      @include mixins.actionButton(vars.$webdevPrimary, vars.$webdevDark);
+      @include mixins.actionButton(vars.$budgetPrimary, vars.$budgetDark);
     }
 
     .dashboardTitle {
       font-size: 1.75em;
       font-weight: 700;
-      background: vars.$webdevGradient;
+      background: vars.$budgetGradient;
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -45,7 +45,7 @@
         @include mixins.flexContainer(row, 0.5em);
         align-items: center;
         padding: 0.5em 1.25em;
-        background: vars.$webdevGradient;
+        background: vars.$budgetGradient;
         color: white;
         border-radius: 8px;
         font-weight: 600;
@@ -74,7 +74,7 @@
 
       & {
         padding: 0.75em 1.5em;
-        background: vars.$webdevGradient;
+        background: vars.$budgetGradient;
         color: white;
         border-radius: 8px;
         font-weight: 600;
@@ -139,7 +139,7 @@
       }
 
       &.charges-fixes .amount {
-        color: vars.$webdevPrimary;
+        color: vars.$budgetPrimary;
       }
 
       &.charges-variables .amount {
@@ -368,7 +368,7 @@
         .detailAmount {
           font-size: 1em;
           font-weight: 600;
-          color: vars.$webdevPrimary;
+          color: vars.$budgetPrimary;
         }
       }
     }

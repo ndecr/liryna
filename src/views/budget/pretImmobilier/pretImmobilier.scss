@@ -18,7 +18,7 @@
 
   // ── Override bouton retour (couleur section budget)
   .backButton {
-    @include mixins.actionButton(vars.$webdevPrimary, vars.$webdevDark);
+    @include mixins.actionButton(vars.$budgetPrimary, vars.$budgetDark);
   }
 
   // ── En-tête ───────────────────────────────────────────────────────────────
@@ -45,14 +45,14 @@
 
       .pretIcon {
         font-size: 2em;
-        color: vars.$webdevPrimary;
+        color: vars.$budgetPrimary;
         flex-shrink: 0;
       }
 
       .pretTitle {
         font-size: 1.5em;
         font-weight: 700;
-        background: vars.$webdevGradient;
+        background: vars.$budgetGradient;
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -77,7 +77,7 @@
         @include mixins.flexContainer(row, 0.5em);
         align-items: center;
         padding: 0.6em 1.25em;
-        background: vars.$webdevGradient;
+        background: vars.$budgetGradient;
         color: white;
         border-radius: 8px;
         font-weight: 600;
@@ -206,7 +206,7 @@
         padding: 1em 1.25em;
         flex: 1 1 calc(50% - 0.5em);
         min-width: 12em;
-        border-left: 3px solid vars.$webdevPrimary;
+        border-left: 3px solid vars.$budgetPrimary;
       }
 
       .borrowerName {
@@ -245,8 +245,8 @@
           }
 
           &:hover:not(.active) {
-            border-color: vars.$webdevPrimary;
-            color: vars.$webdevPrimary;
+            border-color: vars.$budgetPrimary;
+            color: vars.$budgetPrimary;
           }
         }
       }
@@ -276,7 +276,7 @@
 
           &:focus {
             outline: none;
-            border-color: vars.$webdevPrimary;
+            border-color: vars.$budgetPrimary;
           }
         }
 
@@ -331,14 +331,14 @@
         }
 
         &.active {
-          background: vars.$webdevGradient;
+          background: vars.$budgetGradient;
           color: white;
           border-color: transparent;
         }
 
         &:hover:not(.active) {
-          border-color: vars.$webdevPrimary;
-          color: vars.$webdevPrimary;
+          border-color: vars.$budgetPrimary;
+          color: vars.$budgetPrimary;
         }
 
         .toggleNote {
@@ -357,7 +357,7 @@
         padding: 0.6em 0.85em;
         background: rgba(0, 0, 0, 0.03);
         border-radius: 6px;
-        border-left: 3px solid vars.$webdevPrimary;
+        border-left: 3px solid vars.$budgetPrimary;
         margin: 0;
         font-style: italic;
       }
@@ -385,13 +385,13 @@
       .sliderValue {
         font-size: 1em;
         font-weight: 700;
-        color: vars.$webdevPrimary;
+        color: vars.$budgetPrimary;
       }
     }
 
     .slider {
       width: 100%;
-      accent-color: vars.$webdevPrimary;
+      accent-color: vars.$budgetPrimary;
       cursor: pointer;
       height: 4px;
 
@@ -412,7 +412,7 @@
 
     .hint {
       font-style: italic;
-      color: vars.$webdevPrimary;
+      color: vars.$budgetPrimary;
     }
 
     .apportInput {
@@ -432,7 +432,7 @@
 
         &:focus {
           outline: none;
-          border-color: vars.$webdevPrimary;
+          border-color: vars.$budgetPrimary;
         }
       }
 
@@ -489,7 +489,7 @@
 
           &.big {
             font-size: 1.3em;
-            color: vars.$webdevPrimary;
+            color: vars.$budgetPrimary;
           }
 
           &.secondary {
@@ -529,7 +529,7 @@
           align-items: center;
           font-size: 0.82em;
           font-weight: 700;
-          color: vars.$webdevPrimary;
+          color: vars.$budgetPrimary;
           margin: 0;
         }
       }
@@ -575,7 +575,7 @@
             }
 
             .loanStepValue {
-              color: vars.$webdevPrimary;
+              color: vars.$budgetPrimary;
               font-size: 1.05em;
             }
           }
@@ -640,7 +640,7 @@
               }
 
               &.mensualite {
-                background: vars.$webdevPrimary;
+                background: vars.$budgetPrimary;
               }
             }
           }
@@ -682,7 +682,7 @@
 
           &:focus {
             outline: none;
-            border-color: vars.$webdevPrimary;
+            border-color: vars.$budgetPrimary;
           }
         }
 
@@ -750,21 +750,21 @@
           }
 
           &.active {
-            background: vars.$webdevGradient;
+            background: vars.$budgetGradient;
             color: white;
             border-color: transparent;
           }
 
           &:hover:not(.active) {
-            border-color: vars.$webdevPrimary;
-            color: vars.$webdevPrimary;
+            border-color: vars.$budgetPrimary;
+            color: vars.$budgetPrimary;
           }
         }
       }
 
       .searchBtn {
         @include mixins.resetButton;
-        @include mixins.actionButton(vars.$webdevPrimary, vars.$webdevDark);
+        @include mixins.actionButton(vars.$budgetPrimary, vars.$budgetDark);
 
         & {
           padding: 0.7em 1.5em;

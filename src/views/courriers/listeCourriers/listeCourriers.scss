@@ -12,7 +12,7 @@
     position: sticky;
     top: 6dvh;
     z-index: 1000;
-    background: rgba(vars.$utilsPrimary, 0.05);
+    background: rgba(vars.$courrierPrimary, 0.05);
     backdrop-filter: vars.$blurMedium;
     -webkit-backdrop-filter: vars.$blurMedium;
     padding: 0.75em 0;
@@ -75,7 +75,7 @@
     
     
     .pageTitle {
-      color: vars.$utilsPrimary;
+      color: vars.$courrierPrimary;
       font-size: 1.8em;
       font-weight: 700;
       margin: 0;
@@ -120,7 +120,7 @@
         padding: 0.5em 1em !important;
         font-size: 0.85em !important;
         white-space: nowrap !important;
-        @include mixins.actionButton(vars.$utilsPrimary, vars.$utilsSecondary);
+        @include mixins.actionButton(vars.$courrierPrimary, vars.$courrierSecondary);
         
         &:disabled {
           background: vars.$borderColor;
@@ -165,14 +165,14 @@
       }
 
       &:hover {
-        border-color: vars.$utilsPrimary;
-        color: vars.$utilsPrimary;
+        border-color: vars.$courrierPrimary;
+        color: vars.$courrierPrimary;
       }
 
       &.active {
-        background: rgba(vars.$utilsPrimary, 0.1);
-        border-color: vars.$utilsPrimary;
-        color: vars.$utilsPrimary;
+        background: rgba(vars.$courrierPrimary, 0.1);
+        border-color: vars.$courrierPrimary;
+        color: vars.$courrierPrimary;
       }
 
       .filterBadge {
@@ -180,7 +180,7 @@
           width: 0.5em;
           height: 0.5em;
           border-radius: 50%;
-          background: vars.$utilsPrimary;
+          background: vars.$courrierPrimary;
           position: absolute;
           top: 0.4em;
           right: 0.4em;
@@ -219,8 +219,8 @@
       flex-direction: column;
       gap: 0.5em;
       padding: 0.75em;
-      background: rgba(vars.$utilsPrimary, 0.03);
-      border: 1px solid rgba(vars.$utilsPrimary, 0.1);
+      background: rgba(vars.$courrierPrimary, 0.03);
+      border: 1px solid rgba(vars.$courrierPrimary, 0.1);
       border-radius: 8px;
       position: relative;
       z-index: 20;
@@ -328,13 +328,13 @@
           }
 
           &:hover {
-            border-color: vars.$utilsPrimary;
+            border-color: vars.$courrierPrimary;
           }
 
           &:focus {
             outline: none;
-            border-color: vars.$utilsPrimary;
-            box-shadow: 0 0 0 2px rgba(vars.$utilsPrimary, 0.15);
+            border-color: vars.$courrierPrimary;
+            box-shadow: 0 0 0 2px rgba(vars.$courrierPrimary, 0.15);
           }
 
           &::-webkit-calendar-picker-indicator {
@@ -463,7 +463,7 @@
               }
 
               &:hover {
-                background-color: rgba(vars.$utilsPrimary, 0.08);
+                background-color: rgba(vars.$courrierPrimary, 0.08);
               }
 
               .sortIcon {
@@ -475,11 +475,11 @@
               }
 
               &.sorted {
-                color: vars.$utilsPrimary;
+                color: vars.$courrierPrimary;
 
                 .sortIcon {
                   opacity: 1;
-                  color: vars.$utilsPrimary;
+                  color: vars.$courrierPrimary;
                 }
               }
             }
@@ -511,7 +511,7 @@
                   position: relative;
                   
                   .fileIcon {
-                    color: vars.$utilsPrimary;
+                    color: vars.$courrierPrimary;
                     font-size: 1.1em;
                     flex-shrink: 0;
                   }
@@ -546,7 +546,7 @@
                   
                   &.badge-sortant {
                     background: rgba(38, 208, 206, 0.1);
-                    color: vars.$utilsPrimary;
+                    color: vars.$courrierPrimary;
                   }
                   
                   &.badge-interne {
@@ -608,10 +608,10 @@
                     
                     &.download {
                       background: rgba(38, 208, 206, 0.1);
-                      color: vars.$utilsPrimary;
+                      color: vars.$courrierPrimary;
                       
                       &:hover {
-                        background: vars.$utilsPrimary;
+                        background: vars.$courrierPrimary;
                         color: white;
                         transform: translateY(-1px);
                       }
@@ -630,10 +630,10 @@
                     
                     &.email {
                       background: rgba(77, 208, 225, 0.1);
-                      color: vars.$utilsSecondary;
+                      color: vars.$courrierSecondary;
                       
                       &:hover {
-                        background: vars.$utilsSecondary;
+                        background: vars.$courrierSecondary;
                         color: white;
                         transform: translateY(-1px);
                       }
@@ -751,8 +751,8 @@
   }
 
   .bulkActions {
-    background: rgba(vars.$utilsPrimary, 0.05);
-    border: 1px solid rgba(vars.$utilsPrimary, 0.15);
+    background: rgba(vars.$courrierPrimary, 0.05);
+    border: 1px solid rgba(vars.$courrierPrimary, 0.15);
     border-radius: 12px;
     padding: 1em;
     display: flex;
@@ -768,7 +768,7 @@
     .selectionInfo {
       .selectedCount {
         font-weight: 600;
-        color: vars.$utilsPrimary;
+        color: vars.$courrierPrimary;
         font-size: 0.9em;
       }
     }
@@ -793,24 +793,24 @@
         white-space: nowrap;
 
         &.download {
-          background: vars.$utilsSecondary;
+          background: vars.$courrierSecondary;
           color: white;
 
           &:hover {
-            background: vars.$utilsDark;
+            background: vars.$courrierDark;
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(vars.$utilsSecondary, 0.3);
+            box-shadow: 0 4px 12px rgba(vars.$courrierSecondary, 0.3);
           }
         }
 
         &.email {
-          background: vars.$utilsPrimary;
+          background: vars.$courrierPrimary;
           color: white;
 
           &:hover {
-            background: vars.$utilsDark;
+            background: vars.$courrierDark;
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(vars.$utilsPrimary, 0.3);
+            box-shadow: 0 4px 12px rgba(vars.$courrierPrimary, 0.3);
           }
         }
 
@@ -837,7 +837,7 @@
       appearance: none;
       width: 1.2em;
       height: 1.2em;
-      border: 2px solid vars.$utilsPrimary;
+      border: 2px solid vars.$courrierPrimary;
       border-radius: 4px;
       background: white;
       cursor: pointer;
@@ -845,8 +845,8 @@
       transition: all 0.2s ease;
 
       &:checked {
-        background: vars.$utilsPrimary;
-        border-color: vars.$utilsPrimary;
+        background: vars.$courrierPrimary;
+        border-color: vars.$courrierPrimary;
       }
 
       &:checked::after {
@@ -864,7 +864,7 @@
       }
 
       &:hover {
-        border-color: vars.$utilsDark;
+        border-color: vars.$courrierDark;
         transform: scale(1.05);
       }
     }
@@ -881,8 +881,8 @@
       transition: all 0.2s ease;
 
       &:checked {
-        background: vars.$utilsPrimary;
-        border-color: vars.$utilsPrimary;
+        background: vars.$courrierPrimary;
+        border-color: vars.$courrierPrimary;
       }
 
       &:checked::after {
@@ -900,7 +900,7 @@
       }
 
       &:hover {
-        border-color: vars.$utilsPrimary;
+        border-color: vars.$courrierPrimary;
         transform: scale(1.05);
       }
     }
@@ -909,7 +909,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: vars.$utilsPrimary;
+      color: vars.$courrierPrimary;
       font-size: 1.1em;
     }
 
@@ -919,11 +919,11 @@
   }
 
   .courrierRow.selected {
-    background: rgba(vars.$utilsPrimary, 0.08) !important;
-    border-left: 3px solid vars.$utilsPrimary;
+    background: rgba(vars.$courrierPrimary, 0.08) !important;
+    border-left: 3px solid vars.$courrierPrimary;
     
     &:hover {
-      background: rgba(vars.$utilsPrimary, 0.12) !important;
+      background: rgba(vars.$courrierPrimary, 0.12) !important;
     }
   }
 
@@ -943,7 +943,7 @@
       .selectAllText {
         font-size: 0.9em;
         font-weight: 500;
-        color: vars.$utilsPrimary;
+        color: vars.$courrierPrimary;
       }
     }
 
@@ -965,9 +965,9 @@
       }
 
       &.selected {
-        border-color: vars.$utilsPrimary;
-        box-shadow: 0 0 0 2px rgba(vars.$utilsPrimary, 0.1);
-        background: rgba(vars.$utilsPrimary, 0.02);
+        border-color: vars.$courrierPrimary;
+        box-shadow: 0 0 0 2px rgba(vars.$courrierPrimary, 0.1);
+        background: rgba(vars.$courrierPrimary, 0.02);
       }
 
       .cardHeader {
@@ -991,7 +991,7 @@
           min-width: 0;
 
           .fileIcon {
-            color: vars.$utilsPrimary;
+            color: vars.$courrierPrimary;
             font-size: 1.2em;
             flex-shrink: 0;
           }
@@ -1121,11 +1121,11 @@
           font-size: 1.1em;
 
           &.download {
-            background: rgba(vars.$utilsPrimary, 0.1);
-            color: vars.$utilsPrimary;
+            background: rgba(vars.$courrierPrimary, 0.1);
+            color: vars.$courrierPrimary;
 
             &:hover:not(.disabled) {
-              background: vars.$utilsPrimary;
+              background: vars.$courrierPrimary;
               color: white;
               transform: translateY(-2px);
             }
@@ -1143,11 +1143,11 @@
           }
 
           &.email {
-            background: rgba(vars.$utilsSecondary, 0.1);
-            color: vars.$utilsSecondary;
+            background: rgba(vars.$courrierSecondary, 0.1);
+            color: vars.$courrierSecondary;
 
             &:hover:not(.disabled) {
-              background: vars.$utilsSecondary;
+              background: vars.$courrierSecondary;
               color: white;
               transform: translateY(-2px);
             }
@@ -1218,7 +1218,7 @@
         border-radius: 20px !important;
         font-size: 0.8em !important;
         white-space: nowrap !important;
-        @include mixins.actionButton(vars.$utilsPrimary, vars.$utilsSecondary);
+        @include mixins.actionButton(vars.$courrierPrimary, vars.$courrierSecondary);
         
         &:disabled {
           background: vars.$borderColor;
@@ -1269,7 +1269,7 @@
   right: 1.5em;
   width: 2.8em;
   height: 2.8em;
-  background: vars.$utilsPrimary;
+  background: vars.$courrierPrimary;
   color: white;
   border: none;
   border-radius: 50%;
@@ -1279,13 +1279,13 @@
   font-size: 1.2em;
   cursor: pointer;
   transition: all vars.$transitionMedium;
-  box-shadow: 0 3px 10px rgba(vars.$utilsPrimary, 0.3);
+  box-shadow: 0 3px 10px rgba(vars.$courrierPrimary, 0.3);
   z-index: 1001;
   
   &:hover {
-    background: vars.$utilsDark;
+    background: vars.$courrierDark;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(vars.$utilsPrimary, 0.4);
+    box-shadow: 0 5px 15px rgba(vars.$courrierPrimary, 0.4);
   }
   
   &:active {

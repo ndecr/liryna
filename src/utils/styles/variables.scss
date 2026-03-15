@@ -14,19 +14,19 @@ $greyBackground: #f8f9fa;
 $whiteBackground: #ffffff;
 $borderColor: rgba(0, 0, 0, 0.1);
 
-$webdevPrimary: #ff6b47;
-$webdevSecondary: #ff8a65;
-$webdevDark: #e55a3c;
+$budgetPrimary: #ff6b47;
+$budgetSecondary: #ff8a65;
+$budgetDark: #e55a3c;
 
-$webdevGradient: linear-gradient(135deg, $webdevPrimary 0%, $webdevSecondary 100%);
-$webdevGradientReverse: linear-gradient(135deg, $webdevSecondary 0%, $webdevPrimary 100%);
+$budgetGradient: linear-gradient(135deg, $budgetPrimary 0%, $budgetSecondary 100%);
+$budgetGradientReverse: linear-gradient(135deg, $budgetSecondary 0%, $budgetPrimary 100%);
 
-$utilsPrimary: #26d0ce;
-$utilsSecondary: #4dd0e1;
-$utilsDark: #1ba69b;
+$courrierPrimary: #26d0ce;
+$courrierSecondary: #4dd0e1;
+$courrierDark: #1ba69b;
 
-$utilsGradient: linear-gradient(135deg, $utilsPrimary 0%, $utilsSecondary 100%);
-$utilsGradientReverse: linear-gradient(135deg, $utilsSecondary 0%, $utilsPrimary 100%);
+$courrierGradient: linear-gradient(135deg, $courrierPrimary 0%, $courrierSecondary 100%);
+$courrierGradientReverse: linear-gradient(135deg, $courrierSecondary 0%, $courrierPrimary 100%);
 
 $navTextColor: $fontColorPrimary;
 $navTextColorActive: $whiteBackground;

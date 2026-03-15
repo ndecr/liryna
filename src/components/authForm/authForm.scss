@@ -24,7 +24,7 @@
       width: 15%;
       height: 2px;
       border-radius: 8px;
-      background: linear-gradient(135deg, vars.$utilsPrimary, vars.$utilsSecondary);
+      background: linear-gradient(135deg, vars.$courrierPrimary, vars.$courrierSecondary);
     }
   }
 
@@ -65,12 +65,12 @@
         transition: vars.$transitionMedium;
 
         &:hover {
-          color: vars.$utilsPrimary;
+          color: vars.$courrierPrimary;
           transform: scale(1.1);
         }
 
         &:focus {
-          outline: 2px solid vars.$utilsPrimary;
+          outline: 2px solid vars.$courrierPrimary;
           outline-offset: 2px;
           border-radius: 4px;
         }
