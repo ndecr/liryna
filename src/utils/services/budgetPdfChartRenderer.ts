@@ -46,7 +46,9 @@ const waitForRender = (): Promise<void> =>
   new Promise((resolve) => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        setTimeout(resolve, 1000);
+        requestAnimationFrame(() => {
+          setTimeout(resolve, 500);
+        });
       });
     });
   });
@@ -84,7 +86,7 @@ export const renderBudgetChartsToImages = async (
   container.style.top = "0";
   container.style.width = "600px";
   container.style.background = "#ffffff";
-  container.style.zIndex = "-1";
+  container.style.zIndex = "9999";
   document.body.appendChild(container);
 
   const roots: ReturnType<typeof createRoot>[] = [];
@@ -136,6 +138,7 @@ export const renderBudgetChartsToImages = async (
             dataKey: "value",
             label: pieLabel,
             labelLine: false,
+            isAnimationActive: false,
           },
           chargesData.map((_, index) =>
             createElement(Cell, {
@@ -165,6 +168,7 @@ export const renderBudgetChartsToImages = async (
             dataKey: "value",
             label: pieLabel,
             labelLine: false,
+            isAnimationActive: false,
           },
           revenusData.map((_, index) =>
             createElement(Cell, {
@@ -203,6 +207,7 @@ export const renderBudgetChartsToImages = async (
           name: "Montant",
           fill: "#ff6b47",
           radius: [4, 4, 0, 0],
+          isAnimationActive: false,
         }),
       );
       roots.push(renderChartToContainer(container, barChart));
