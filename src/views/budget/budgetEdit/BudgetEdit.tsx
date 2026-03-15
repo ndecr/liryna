@@ -47,6 +47,11 @@ const personnesOptions: SelectOption[] = Array.from({ length: 20 }, (_, i) => ({
   label: String(i + 1),
 }));
 
+const enfantsOptions: SelectOption[] = Array.from({ length: 21 }, (_, i) => ({
+  value: i,
+  label: String(i),
+}));
+
 const budgetSelectStyles: StylesConfig<SelectOption, false> = {
   control: (provided, state) => ({
     ...provided,
@@ -127,6 +132,7 @@ function BudgetEdit(): ReactElement {
   } = useContext(BudgetContext);
 
   const [nombrePersonnes, setNombrePersonnes] = useState<number>(1);
+  const [nombreEnfants, setNombreEnfants] = useState<number>(0);
   const [notes, setNotes] = useState<string>("");
   const [entries, setEntries] = useState<EntryRow[]>([]);
   const [debts, setDebts] = useState<DebtRow[]>([]);
@@ -156,6 +162,7 @@ function BudgetEdit(): ReactElement {
     if (currentBudget) {
       setEditMode(true);
       setNombrePersonnes(currentBudget.nombrePersonnes);
+      setNombreEnfants(currentBudget.nombreEnfants ?? 0);
       setNotes(currentBudget.notes || "");
       setEntries(
         currentBudget.entries.map((e) => ({
@@ -257,6 +264,7 @@ function BudgetEdit(): ReactElement {
     try {
       const formData = {
         nombrePersonnes,
+        nombreEnfants,
         notes,
         entries: entries.map((e, i) => ({
           section: e.section,
@@ -379,6 +387,19 @@ function BudgetEdit(): ReactElement {
                   value={personnesOptions.find((o) => o.value === nombrePersonnes)}
                   onChange={(opt) => opt && setNombrePersonnes(opt.value)}
                   options={personnesOptions}
+                  styles={budgetSelectStyles}
+                  isSearchable={false}
+                  className="react-select-container"
+                  classNamePrefix="react-select"
+                />
+              </div>
+              <div className="paramField">
+                <label htmlFor="budgetEnfants">Enfants à charge</label>
+                <Select<SelectOption>
+                  inputId="budgetEnfants"
+                  value={enfantsOptions.find((o) => o.value === nombreEnfants)}
+                  onChange={(opt) => opt && setNombreEnfants(opt.value)}
+                  options={enfantsOptions}
                   styles={budgetSelectStyles}
                   isSearchable={false}
                   className="react-select-container"

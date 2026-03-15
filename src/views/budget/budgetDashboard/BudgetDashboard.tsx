@@ -5,6 +5,7 @@ import "./budgetDashboard.scss";
 import { ReactElement, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoCreate } from "react-icons/io5";
+import { MdArrowBack } from "react-icons/md";
 import {
   PieChart,
   Pie,
@@ -23,6 +24,7 @@ import { PieLabelRenderProps } from "recharts";
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
 import Header from "../../../components/header/Header.tsx";
 import SubNav from "../../../components/subNav/SubNav.tsx";
+import Button from "../../../components/button/Button.tsx";
 
 // context
 import { BudgetContext } from "../../../context/budget/BudgetContext.tsx";
@@ -113,6 +115,14 @@ function BudgetDashboard(): ReactElement {
       <main id="budgetDashboard">
         <div className="dashboardContainer">
           <section className="dashboardHeader" data-aos="fade-down">
+            <Button
+              style="back"
+              onClick={() => navigate("/budget")}
+              type="button"
+            >
+              <MdArrowBack />
+              <span>Retour</span>
+            </Button>
             <h1 className="dashboardTitle">Tableau de bord</h1>
             <button
               type="button"

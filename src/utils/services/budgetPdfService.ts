@@ -88,32 +88,6 @@ const drawCard = (
   doc.text(value, x + width / 2, y + 20, { align: "center" });
 };
 
-const getRecommandationColor = (level: string): RGB => {
-  switch (level) {
-    case "success":
-      return COLORS.green;
-    case "warning":
-      return COLORS.orange;
-    case "danger":
-      return COLORS.red;
-    default:
-      return COLORS.textSecondary;
-  }
-};
-
-const getRecommandationBgColor = (level: string): RGB => {
-  switch (level) {
-    case "success":
-      return [232, 245, 233] as const;
-    case "warning":
-      return [255, 243, 224] as const;
-    case "danger":
-      return [255, 235, 238] as const;
-    default:
-      return COLORS.cardBg;
-  }
-};
-
 export const generateBudgetPdf = async (dashboard: IBudgetDashboard): Promise<void> => {
   // Render charts first
   const chartImages = await renderBudgetChartsToImages(dashboard);
@@ -139,8 +113,15 @@ export const generateBudgetPdf = async (dashboard: IBudgetDashboard): Promise<vo
   doc.text(`Export du ${formatDate()}`, MARGIN, y);
   y += 4;
 
-  // Nombre de personnes
-  doc.text(`Foyer : ${dashboard.budget.nombrePersonnes} personne${dashboard.budget.nombrePersonnes > 1 ? "s" : ""}`, MARGIN, y);
+  // Foyer
+  const enfantsStr = dashboard.budget.nombreEnfants > 0
+    ? ` + ${dashboard.budget.nombreEnfants} enfant${dashboard.budget.nombreEnfants > 1 ? "s" : ""} à charge`
+    : "";
+  doc.text(
+    `Foyer : ${dashboard.budget.nombrePersonnes} personne${dashboard.budget.nombrePersonnes > 1 ? "s" : ""}${enfantsStr}`,
+    MARGIN,
+    y
+  );
   y += 12;
 
   // ---- Summary Cards ----
@@ -204,29 +185,6 @@ export const generateBudgetPdf = async (dashboard: IBudgetDashboard): Promise<vo
   drawCard(doc, MARGIN + indicWidth + 3, y, indicWidth, indicHeight, "Ratio charges/revenus", `${dashboard.indicateurs.ratioChargesRevenus}%`, ratioColor);
 
   y += indicHeight + 10;
-
-  // ---- Recommandation ----
-  if (dashboard.recommandation) {
-    const recColor = getRecommandationColor(dashboard.recommandation.level);
-    const recBg = getRecommandationBgColor(dashboard.recommandation.level);
-
-    doc.setFillColor(recBg[0], recBg[1], recBg[2]);
-    doc.roundedRect(MARGIN, y, CONTENT_WIDTH, 18, 3, 3, "F");
-
-    // Left accent
-    doc.setFillColor(recColor[0], recColor[1], recColor[2]);
-    doc.rect(MARGIN, y, 3, 18, "F");
-
-    setColor(doc, recColor);
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "normal");
-
-    // Split long text
-    const lines = doc.splitTextToSize(dashboard.recommandation.message, CONTENT_WIDTH - 15);
-    doc.text(lines, MARGIN + 8, y + 8);
-
-    y += 26;
-  }
 
   // ---- Detail charges fixes ----
   const categories = Object.entries(dashboard.details.chargesFixesParCategorie);

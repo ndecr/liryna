@@ -16,8 +16,9 @@
   }
 
   .dashboardHeader {
-    @include mixins.flexContainer(column, 1em);
+    @include mixins.flexContainer(row, 1em);
     align-items: center;
+    justify-content: space-between;
 
     .dashboardTitle {
       font-size: 1.75em;
