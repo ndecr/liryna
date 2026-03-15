@@ -1,22 +1,8 @@
-import { createElement } from "react";
-import { createRoot } from "react-dom/client";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  type PieLabelRenderProps,
-} from "recharts";
-import html2canvas from "html2canvas";
 import { IBudgetDashboard } from "../types/budget.types.ts";
 
 const PIE_COLORS = ["#ff6b47", "#ff9800", "#e65100", "#c62828"];
 const REVENUS_COLORS = ["#2e7d32", "#4caf50", "#66bb6a", "#81c784"];
+const BAR_COLOR = "#ff6b47";
 
 interface ChartEntry {
   name: string;
@@ -34,213 +20,199 @@ export interface BudgetChartImages {
   barChart: string | null;
 }
 
-/**
- * Label typé correctement pour Recharts (name & percent sont optionnels)
- */
-const pieLabel = ({ name, percent }: PieLabelRenderProps): string => {
-  if (!name || percent === undefined) return "";
-  return `${name} ${(percent * 100).toFixed(0)}%`;
+const createCanvas = (width: number, height: number): HTMLCanvasElement => {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  return canvas;
 };
 
-const waitForRender = (): Promise<void> =>
-  new Promise((resolve) => {
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setTimeout(resolve, 500);
-        });
-      });
-    });
+const drawDonutChart = (
+  canvas: HTMLCanvasElement,
+  data: ChartEntry[],
+  colors: string[],
+): void => {
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  const { width, height } = canvas;
+
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, width, height);
+
+  const total = data.reduce((sum, d) => sum + d.value, 0);
+  if (total === 0) return;
+
+  const cx = width / 2;
+  const cy = height * 0.47;
+  const outerRadius = Math.min(cx, cy) * 0.62;
+  const innerRadius = outerRadius * 0.5;
+
+  // Slices
+  let startAngle = -Math.PI / 2;
+  data.forEach((entry, i) => {
+    const sliceAngle = (entry.value / total) * 2 * Math.PI;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, outerRadius, startAngle, startAngle + sliceAngle);
+    ctx.closePath();
+    ctx.fillStyle = colors[i % colors.length];
+    ctx.fill();
+    startAngle += sliceAngle;
   });
 
-const captureElement = async (element: HTMLElement): Promise<string> => {
-  const canvas = await html2canvas(element, {
-    backgroundColor: "#ffffff",
-    scale: 2,
-    logging: false,
+  // Donut hole
+  ctx.beginPath();
+  ctx.arc(cx, cy, innerRadius, 0, 2 * Math.PI);
+  ctx.fillStyle = "#ffffff";
+  ctx.fill();
+
+  // Labels
+  const fontSize = Math.round(height * 0.042);
+  ctx.font = `bold ${fontSize}px sans-serif`;
+  startAngle = -Math.PI / 2;
+
+  data.forEach((entry, i) => {
+    const sliceAngle = (entry.value / total) * 2 * Math.PI;
+    const midAngle = startAngle + sliceAngle / 2;
+    const labelRadius = outerRadius * 1.28;
+    const lx = cx + Math.cos(midAngle) * labelRadius;
+    const ly = cy + Math.sin(midAngle) * labelRadius;
+    const percent = ((entry.value / total) * 100).toFixed(0);
+
+    ctx.fillStyle = colors[i % colors.length];
+    ctx.textAlign = lx >= cx ? "left" : "right";
+    ctx.textBaseline = "middle";
+    ctx.fillText(`${entry.name} ${percent}%`, lx, ly);
+
+    startAngle += sliceAngle;
   });
-  return canvas.toDataURL("image/png");
 };
 
-const renderChartToContainer = (
-  container: HTMLElement,
-  chartElement: React.ReactElement,
-): ReturnType<typeof createRoot> => {
-  const wrapper = document.createElement("div");
-  wrapper.style.width = "500px";
-  wrapper.style.padding = "10px";
-  wrapper.style.background = "#ffffff";
-  container.appendChild(wrapper);
+const drawBarChart = (
+  canvas: HTMLCanvasElement,
+  data: BarEntry[],
+): void => {
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
 
-  const root = createRoot(wrapper);
-  root.render(chartElement);
-  return root;
+  const { width, height } = canvas;
+  const pad = { top: 30, right: 30, bottom: 80, left: 80 };
+
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, width, height);
+
+  if (data.length === 0) return;
+
+  const chartW = width - pad.left - pad.right;
+  const chartH = height - pad.top - pad.bottom;
+  const maxVal = Math.max(...data.map((d) => d.montant), 1);
+  const slotW = chartW / data.length;
+  const barW = Math.min(slotW * 0.6, 60);
+  const fontSize = Math.round(height * 0.038);
+
+  // Grid lines + Y axis labels
+  ctx.strokeStyle = "#e5e7eb";
+  ctx.lineWidth = 1;
+  ctx.font = `${fontSize}px sans-serif`;
+  ctx.fillStyle = "#6b7280";
+  ctx.textAlign = "right";
+  ctx.textBaseline = "middle";
+
+  for (let i = 0; i <= 4; i++) {
+    const val = (maxVal * i) / 4;
+    const y = pad.top + chartH - (val / maxVal) * chartH;
+
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y);
+    ctx.lineTo(pad.left + chartW, y);
+    ctx.stroke();
+
+    ctx.fillStyle = "#6b7280";
+    ctx.fillText(`${Math.round(val)}€`, pad.left - 6, y);
+  }
+
+  // Bars + X labels
+  data.forEach((entry, i) => {
+    const barH = Math.max((entry.montant / maxVal) * chartH, 1);
+    const x = pad.left + i * slotW + (slotW - barW) / 2;
+    const y = pad.top + chartH - barH;
+
+    // Bar with rounded top corners
+    const r = 3;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + barW - r, y);
+    ctx.quadraticCurveTo(x + barW, y, x + barW, y + r);
+    ctx.lineTo(x + barW, y + barH);
+    ctx.lineTo(x, y + barH);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+    ctx.fillStyle = BAR_COLOR;
+    ctx.fill();
+
+    // X label rotated
+    ctx.save();
+    ctx.fillStyle = "#374151";
+    ctx.font = `${fontSize}px sans-serif`;
+    ctx.textAlign = "right";
+    ctx.textBaseline = "middle";
+    ctx.translate(x + barW / 2, pad.top + chartH + 12);
+    ctx.rotate(-Math.PI / 5);
+    ctx.fillText(entry.name, 0, 0);
+    ctx.restore();
+  });
 };
 
 export const renderBudgetChartsToImages = async (
   dashboard: IBudgetDashboard,
 ): Promise<BudgetChartImages> => {
-  const container = document.createElement("div");
-  container.style.position = "fixed";
-  container.style.left = "-9999px";
-  container.style.top = "0";
-  container.style.width = "600px";
-  container.style.background = "#ffffff";
-  container.style.zIndex = "9999";
-  document.body.appendChild(container);
-
-  const roots: ReturnType<typeof createRoot>[] = [];
   const result: BudgetChartImages = {
     chargesChart: null,
     revenusChart: null,
     barChart: null,
   };
 
-  try {
-    // --- DATA PREP ---
-    const chargesData: ChartEntry[] = [
-      { name: "Charges fixes", value: dashboard.totaux.chargesFixes },
-      { name: "Charges variables", value: dashboard.totaux.chargesVariables },
-      { name: "Dettes", value: dashboard.totaux.totalMensualitesDettes },
-    ].filter((d) => d.value > 0);
+  // --- DATA ---
+  const chargesData: ChartEntry[] = [
+    { name: "Charges fixes", value: dashboard.totaux.chargesFixes },
+    { name: "Charges variables", value: dashboard.totaux.chargesVariables },
+    { name: "Dettes", value: dashboard.totaux.totalMensualitesDettes },
+  ].filter((d) => d.value > 0);
 
-    const revenusSource =
-      dashboard.budget.nombrePersonnes >= 2 &&
-      dashboard.details.revenusParEntree &&
-      Object.keys(dashboard.details.revenusParEntree).length > 1
-        ? dashboard.details.revenusParEntree
-        : dashboard.details.revenusParCategorie;
+  const revenusSource =
+    dashboard.budget.nombrePersonnes >= 2 &&
+    dashboard.details.revenusParEntree &&
+    Object.keys(dashboard.details.revenusParEntree).length > 1
+      ? dashboard.details.revenusParEntree
+      : dashboard.details.revenusParCategorie;
 
-    const revenusData: ChartEntry[] = Object.entries(revenusSource)
-      .map(([name, value]) => ({ name, value }))
-      .filter((d) => d.value > 0);
+  const revenusData: ChartEntry[] = Object.entries(revenusSource)
+    .map(([name, value]) => ({ name, value }))
+    .filter((d) => d.value > 0);
 
-    const barData: BarEntry[] = Object.entries(
-      dashboard.details.chargesFixesParCategorie,
-    ).map(([name, value]) => ({
-      name,
-      montant: value,
-    }));
+  const barData: BarEntry[] = Object.entries(
+    dashboard.details.chargesFixesParCategorie,
+  ).map(([name, value]) => ({ name, montant: value }));
 
-    // --- CHARGES PIE ---
-    if (chargesData.length > 0) {
-      const chargesPie = createElement(
-        PieChart,
-        { width: 480, height: 300 },
-        createElement(
-          Pie,
-          {
-            data: chargesData,
-            cx: 240,
-            cy: 140,
-            outerRadius: 100,
-            innerRadius: 50,
-            dataKey: "value",
-            label: pieLabel,
-            labelLine: false,
-            isAnimationActive: false,
-          },
-          chargesData.map((_, index) =>
-            createElement(Cell, {
-              key: `charges-cell-${index}`,
-              fill: PIE_COLORS[index % PIE_COLORS.length],
-            }),
-          ),
-        ),
-        createElement(Tooltip),
-      );
-      roots.push(renderChartToContainer(container, chargesPie));
-    }
+  // --- DRAW ---
+  if (chargesData.length > 0) {
+    const canvas = createCanvas(960, 560);
+    drawDonutChart(canvas, chargesData, PIE_COLORS);
+    result.chargesChart = canvas.toDataURL("image/png");
+  }
 
-    // --- REVENUS PIE ---
-    if (revenusData.length > 0) {
-      const revenusPie = createElement(
-        PieChart,
-        { width: 480, height: 300 },
-        createElement(
-          Pie,
-          {
-            data: revenusData,
-            cx: 240,
-            cy: 140,
-            outerRadius: 100,
-            innerRadius: 50,
-            dataKey: "value",
-            label: pieLabel,
-            labelLine: false,
-            isAnimationActive: false,
-          },
-          revenusData.map((_, index) =>
-            createElement(Cell, {
-              key: `revenus-cell-${index}`,
-              fill: REVENUS_COLORS[index % REVENUS_COLORS.length],
-            }),
-          ),
-        ),
-        createElement(Tooltip),
-      );
-      roots.push(renderChartToContainer(container, revenusPie));
-    }
+  if (revenusData.length > 0) {
+    const canvas = createCanvas(960, 560);
+    drawDonutChart(canvas, revenusData, REVENUS_COLORS);
+    result.revenusChart = canvas.toDataURL("image/png");
+  }
 
-    // --- BAR CHART ---
-    if (barData.length > 0) {
-      const barChart = createElement(
-        BarChart,
-        {
-          width: 500,
-          height: 300,
-          data: barData,
-          margin: { top: 10, right: 30, left: 20, bottom: 40 },
-        },
-        createElement(XAxis, {
-          dataKey: "name",
-          tick: { fontSize: 11 },
-          angle: -20,
-          textAnchor: "end",
-          height: 60,
-        }),
-        createElement(YAxis, { tick: { fontSize: 11 } }),
-        createElement(Tooltip),
-        createElement(Legend),
-        createElement(Bar, {
-          dataKey: "montant",
-          name: "Montant",
-          fill: "#ff6b47",
-          radius: [4, 4, 0, 0],
-          isAnimationActive: false,
-        }),
-      );
-      roots.push(renderChartToContainer(container, barChart));
-    }
-
-    // --- RENDER WAIT ---
-    await waitForRender();
-
-    // --- CAPTURE ---
-    const chartElements = container.children;
-    let idx = 0;
-
-    if (chargesData.length > 0 && chartElements[idx]) {
-      result.chargesChart = await captureElement(
-        chartElements[idx] as HTMLElement,
-      );
-      idx++;
-    }
-
-    if (revenusData.length > 0 && chartElements[idx]) {
-      result.revenusChart = await captureElement(
-        chartElements[idx] as HTMLElement,
-      );
-      idx++;
-    }
-
-    if (barData.length > 0 && chartElements[idx]) {
-      result.barChart = await captureElement(chartElements[idx] as HTMLElement);
-    }
-  } finally {
-    // --- CLEANUP ---
-    roots.forEach((root) => root.unmount());
-    document.body.removeChild(container);
+  if (barData.length > 0) {
+    const canvas = createCanvas(1000, 560);
+    drawBarChart(canvas, barData);
+    result.barChart = canvas.toDataURL("image/png");
   }
 
   return result;
