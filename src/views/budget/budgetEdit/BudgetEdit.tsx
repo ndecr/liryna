@@ -133,6 +133,7 @@ function BudgetEdit(): ReactElement {
 
   const [nombrePersonnes, setNombrePersonnes] = useState<number>(1);
   const [nombreEnfants, setNombreEnfants] = useState<number>(0);
+  const [decouvert, setDecouvert] = useState<number>(0);
   const [notes, setNotes] = useState<string>("");
   const [entries, setEntries] = useState<EntryRow[]>([]);
   const [debts, setDebts] = useState<DebtRow[]>([]);
@@ -163,6 +164,7 @@ function BudgetEdit(): ReactElement {
       setEditMode(true);
       setNombrePersonnes(currentBudget.nombrePersonnes);
       setNombreEnfants(currentBudget.nombreEnfants ?? 0);
+      setDecouvert(Number(currentBudget.decouvert) || 0);
       setNotes(currentBudget.notes || "");
       setEntries(
         currentBudget.entries.map((e) => ({
@@ -254,7 +256,7 @@ function BudgetEdit(): ReactElement {
   const totalChargesVariables = totalBySection("charges_variables");
   const totalDettes = debts.reduce((sum, d) => sum + Number(d.mensualite || 0), 0);
   const totalCharges = totalChargesFixes + totalChargesVariables + totalDettes;
-  const resteAVivre = totalRevenus - totalCharges;
+  const resteAVivre = totalRevenus - totalCharges - decouvert;
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -265,6 +267,7 @@ function BudgetEdit(): ReactElement {
       const formData = {
         nombrePersonnes,
         nombreEnfants,
+        decouvert,
         notes,
         entries: entries.map((e, i) => ({
           section: e.section,
@@ -407,6 +410,23 @@ function BudgetEdit(): ReactElement {
                 />
               </div>
             </div>
+            <div className="paramField">
+              <label htmlFor="budgetDecouvert">Decouvert mensuel (€)</label>
+              <input
+                id="budgetDecouvert"
+                type="number"
+                className="decouvertInput"
+                placeholder="0"
+                step="1"
+                min="0"
+                value={decouvert || ""}
+                onChange={(e) => setDecouvert(parseFloat(e.target.value) || 0)}
+              />
+              <p className="paramHint">
+                Montant prelevé chaque mois (ex: remboursement de decouvert bancaire).
+                Reduit le reste a vivre.
+              </p>
+            </div>
             <div className="paramField notes">
               <label htmlFor="budgetNotes">Notes</label>
               <textarea
@@ -532,6 +552,12 @@ function BudgetEdit(): ReactElement {
                 <span>Total charges</span>
                 <span className="negative">{formatCurrency(totalCharges)}</span>
               </div>
+              {decouvert > 0 && (
+                <div className="resumeRow">
+                  <span>Decouvert mensuel</span>
+                  <span className="negative">−{formatCurrency(decouvert)}</span>
+                </div>
+              )}
               <div className={`resumeRow total ${resteAVivre >= 0 ? "positive" : "negative"}`}>
                 <span>Reste a vivre</span>
                 <span>{formatCurrency(resteAVivre)}</span>

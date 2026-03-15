@@ -33,6 +33,7 @@ export const budgetModel = (budget: IBudget): IBudget => {
     userId: budget.userId,
     nombrePersonnes: budget.nombrePersonnes,
     nombreEnfants: budget.nombreEnfants ?? 0,
+    decouvert: Number(budget.decouvert) || 0,
     notes: budget.notes,
     entries: budget.entries ? budget.entries.map(budgetEntryModel) : [],
     debts: budget.debts ? budget.debts.map(budgetDebtModel) : [],
