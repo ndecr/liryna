@@ -148,13 +148,17 @@
     }
   }
 
-  .paramField {
-    .paramHint {
+  .decouvertBlock {
+    border-left-color: vars.$webdevPrimary;
+    border-left-style: dashed;
+
+    .decouvertLabel {
       & {
-        font-size: 0.8em;
+        display: flex;
+        align-items: center;
+        font-size: 0.95em;
         color: vars.$fontColorSecondary;
         font-style: italic;
-        margin: 0;
       }
     }
   }
