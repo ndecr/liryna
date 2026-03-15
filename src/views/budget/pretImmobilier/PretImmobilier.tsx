@@ -130,6 +130,7 @@ function PretImmobilier(): ReactElement {
   // ── Save
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [saveMsg, setSaveMsg] = useState<string>("");
+  const [geoError, setGeoError] = useState<string>("");
 
   // ── Résultats calculés
   const [results, setResults] = useState<ISimulationResults | null>(null);
@@ -294,40 +295,59 @@ function PretImmobilier(): ReactElement {
     if (!selectedCity?.centre) return;
     setIsLoadingCommunes(true);
     setCommuneResults([]);
+    setGeoError("");
 
     const [lon, lat] = selectedCity.centre.coordinates;
 
     try {
       const communes = await getCommunesInRadiusService(lat, lon, searchRadius);
-      const withPrices = await Promise.all(
-        communes.slice(0, 30).map(async c => {
-          const prices = await getDvfPricesService(c.code);
-          const surface = prices.avgPricePerM2 && results
-            ? Math.round(results.propertyBudget / prices.avgPricePerM2)
-            : null;
-          const minSurface = Math.max(
-            30,
-            (dashboard?.budget.nombrePersonnes || 1) * MIN_SURFACE_PER_PERSON +
-            (dashboard?.budget.nombreEnfants || 0) * MIN_SURFACE_PER_CHILD
-          );
-          const idx = prices.avgPricePerM2 && results
-            ? Math.min(100, Math.round((results.propertyBudget / (prices.avgPricePerM2 * minSurface)) * 100))
-            : 0;
-          return {
-            name: c.nom,
-            insee: c.code,
-            population: c.population || 0,
-            distanceKm: c.distanceKm || 0,
-            avgPricePerM2: prices.avgPricePerM2,
-            transactionCount: prices.transactionCount,
-            surfaceAchetable: surface,
-            propertyBudgetLocal: results?.propertyBudget ?? null,
-            probabilityIndex: idx,
-            probabilityLevel: probabilityLevel(idx),
-          } as ICommuneResult;
-        })
+
+      if (communes.length === 0) {
+        setGeoError("Aucune commune trouvée dans ce rayon.");
+        return;
+      }
+
+      const minSurface = Math.max(
+        30,
+        (dashboard?.budget.nombrePersonnes || 1) * MIN_SURFACE_PER_PERSON +
+        (dashboard?.budget.nombreEnfants || 0) * MIN_SURFACE_PER_CHILD
       );
+
+      const settledPrices = await Promise.allSettled(
+        communes.slice(0, 30).map(c => getDvfPricesService(c.code))
+      );
+
+      const withPrices: ICommuneResult[] = communes.slice(0, 30).map((c, i) => {
+        const priceResult = settledPrices[i];
+        const prices = priceResult.status === "fulfilled"
+          ? priceResult.value
+          : { avgPricePerM2: null, transactionCount: 0 };
+
+        const surface = prices.avgPricePerM2 && results
+          ? Math.round(results.propertyBudget / prices.avgPricePerM2)
+          : null;
+        const idx = prices.avgPricePerM2 && results
+          ? Math.min(100, Math.round((results.propertyBudget / (prices.avgPricePerM2 * minSurface)) * 100))
+          : 0;
+
+        return {
+          name: c.nom,
+          insee: c.code,
+          population: c.population || 0,
+          distanceKm: c.distanceKm || 0,
+          avgPricePerM2: prices.avgPricePerM2,
+          transactionCount: prices.transactionCount,
+          surfaceAchetable: surface,
+          propertyBudgetLocal: results?.propertyBudget ?? null,
+          probabilityIndex: idx,
+          probabilityLevel: probabilityLevel(idx),
+        };
+      });
+
       setCommuneResults(withPrices.sort((a, b) => b.probabilityIndex - a.probabilityIndex));
+    } catch (error) {
+      console.error("Erreur analyse communes:", error);
+      setGeoError("Erreur lors de la récupération des communes. Veuillez réessayer.");
     } finally {
       setIsLoadingCommunes(false);
     }
@@ -787,6 +807,10 @@ function PretImmobilier(): ReactElement {
             </div>
 
             {/* Résultats communes */}
+            {geoError && (
+              <p className="geoErrorText">{geoError}</p>
+            )}
+
             {isLoadingCommunes && (
               <p className="loadingText">
                 Récupération des données DVF et des communes...
