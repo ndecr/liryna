@@ -48,6 +48,7 @@ export interface ISimulationResults {
   totalCreditCost: number;
   totalInterests: number;
   // Viabilité
+  currentDebtRatio: number;
   resteAVivreAfter: number;
   debtRatioAfter: number;
   // Communes

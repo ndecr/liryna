@@ -32,6 +32,7 @@ import ConvertisseurImageWithAuth from "./views/courriers/convertisseurImage/Con
 import BudgetWithAuth from "./views/budget/Budget.tsx";
 import BudgetDashboardWithAuth from "./views/budget/budgetDashboard/BudgetDashboard.tsx";
 import BudgetEditWithAuth from "./views/budget/budgetEdit/BudgetEdit.tsx";
+import PretImmobilierWithAuth from "./views/budget/pretImmobilier/PretImmobilier.tsx";
 
 // Component to manage body classes based on current route
 function BodyClassManager(): ReactElement | null {
@@ -93,6 +94,7 @@ function App(): ReactElement {
         <Route path={"budget"} element={<BudgetWithAuth />}></Route>
         <Route path={"budget/dashboard"} element={<BudgetDashboardWithAuth />}></Route>
         <Route path={"budget/edit"} element={<BudgetEditWithAuth />}></Route>
+        <Route path={"budget/pret-immobilier"} element={<PretImmobilierWithAuth />}></Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       

@@ -2,8 +2,18 @@
 @use "../../../utils/styles/mixins" as mixins;
 
 #pretImmobilier {
+  @include mixins.mainView;
+
   & {
-    width: 100%;
+    padding: 1.25em 1em;
+  }
+
+  @media (min-width: vars.$tabletWidth) {
+    padding: 2em 1.5em;
+  }
+
+  @media (min-width: vars.$desktopWidth) {
+    padding: 2em;
   }
 
   // ── En-tête ───────────────────────────────────────────────────────────────
@@ -20,10 +30,12 @@
       justify-content: space-between;
     }
 
-    .pretHeaderLeft {
+    .pretHeaderCenter {
       & {
         @include mixins.flexContainer(row, 0.75em);
         align-items: center;
+        flex: 1;
+        justify-content: center;
       }
 
       .pretIcon {
@@ -100,6 +112,12 @@
     }
   }
 
+  .pretContainer {
+    @include mixins.centeredContainer(90em);
+    @include mixins.flexContainer(column, 1.5em);
+    width: 100%;
+  }
+
   // ── Grille principale ─────────────────────────────────────────────────────
 
   .pretGrid {
@@ -159,38 +177,6 @@
         font-weight: 700;
         color: vars.$fontColorPrimary;
         margin: 0;
-      }
-    }
-  }
-
-  // ── Scénarios ─────────────────────────────────────────────────────────────
-
-  .scenariosRow {
-    & {
-      @include mixins.flexContainer(row, 0.5em);
-      flex-wrap: wrap;
-    }
-
-    .scenarioBtn {
-      @include mixins.resetButton;
-
-      & {
-        padding: 0.4em 0.8em;
-        border-radius: 20px;
-        border: 1.5px solid vars.$webdevPrimary;
-        color: vars.$webdevPrimary;
-        font-size: 0.82em;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all vars.$transitionFast;
-        white-space: nowrap;
-      }
-
-      &.active,
-      &:hover {
-        background: vars.$webdevGradient;
-        color: white;
-        border-color: transparent;
       }
     }
   }
@@ -357,6 +343,20 @@
         }
       }
     }
+
+    .propertyLegend {
+      & {
+        font-size: 0.8em;
+        color: vars.$fontColorSecondary;
+        line-height: 1.5;
+        padding: 0.6em 0.85em;
+        background: rgba(0, 0, 0, 0.03);
+        border-radius: 6px;
+        border-left: 3px solid vars.$webdevPrimary;
+        margin: 0;
+        font-style: italic;
+      }
+    }
   }
 
   .sliderRow {
@@ -504,6 +504,75 @@
             font-size: 0.75em;
             color: #c62828;
             font-weight: 600;
+          }
+        }
+      }
+    }
+
+    .loanBreakdown {
+      & {
+        @include mixins.flexContainer(column, 0.6em);
+        padding: 1em 1.25em;
+        background: rgba(255, 107, 71, 0.04);
+        border: 1px solid rgba(255, 107, 71, 0.15);
+        border-radius: 8px;
+      }
+
+      .loanBreakdownTitle {
+        & {
+          @include mixins.flexContainer(row, 0.4em);
+          align-items: center;
+          font-size: 0.82em;
+          font-weight: 700;
+          color: vars.$webdevPrimary;
+          margin: 0;
+        }
+      }
+
+      .loanBreakdownSteps {
+        & {
+          @include mixins.flexContainer(column, 0.3em);
+        }
+
+        .loanStep {
+          & {
+            @include mixins.flexContainer(row, 0.5em);
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 0.8em;
+            padding: 0.2em 0;
+          }
+
+          .loanStepLabel {
+            color: vars.$fontColorSecondary;
+            flex: 1;
+          }
+
+          .loanStepValue {
+            font-weight: 600;
+            color: vars.$fontColorPrimary;
+            white-space: nowrap;
+          }
+
+          &.operator {
+            border-top: 1px dashed rgba(0, 0, 0, 0.08);
+            padding-top: 0.3em;
+          }
+
+          &.result {
+            border-top: 1px solid rgba(0, 0, 0, 0.12);
+            padding-top: 0.4em;
+            font-weight: 700;
+
+            .loanStepLabel {
+              color: vars.$fontColorPrimary;
+              font-weight: 700;
+            }
+
+            .loanStepValue {
+              color: vars.$webdevPrimary;
+              font-size: 1.05em;
+            }
           }
         }
       }
@@ -782,11 +851,10 @@
         .communePrice {
           & {
             @include mixins.flexContainer(column, 0.1em);
+            font-size: 0.88em;
+            color: vars.$fontColorPrimary;
+            font-weight: 600;
           }
-
-          font-size: 0.88em;
-          color: vars.$fontColorPrimary;
-          font-weight: 600;
 
           .txCount {
             font-size: 0.75em;
