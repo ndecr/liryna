@@ -1,8 +1,8 @@
-@use "../../../../utils/styles/variables" as vars;
-@use "../../../../utils/styles/mixins" as mixins;
+@use "../../utils/styles/variables" as vars;
+@use "../../utils/styles/mixins" as mixins;
 
-#slapSongModal,
-.slapSongModalBackdrop {
+#songModal,
+.songModalBackdrop {
   & {
     position: fixed;
     inset: 0;
@@ -13,7 +13,7 @@
     align-items: flex-end;
     justify-content: center;
     padding: 0;
-    animation: slapBackdropIn vars.$transitionFast;
+    animation: songBackdropIn vars.$transitionFast;
   }
 
   @media (min-width: vars.$tabletWidth) {
@@ -21,13 +21,13 @@
     padding: 2em;
   }
 
-  @keyframes slapBackdropIn {
+  @keyframes songBackdropIn {
     from { opacity: 0; }
     to   { opacity: 1; }
   }
 }
 
-.slapSongModalContainer {
+.songModalContainer {
   @include mixins.flexContainer(column, 0);
 
   & {
@@ -37,28 +37,28 @@
     width: 100%;
     max-width: 36em;
     overflow: hidden;
-    animation: slapSlideUp 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+    animation: songSlideUp 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
     border-top: 4px solid var(--level-color);
   }
 
   @media (min-width: vars.$tabletWidth) {
     border-radius: 16px;
     border-top: 4px solid var(--level-color);
-    animation: slapPopIn 0.2s cubic-bezier(0.34, 1.2, 0.64, 1);
+    animation: songPopIn 0.2s cubic-bezier(0.34, 1.2, 0.64, 1);
   }
 
-  @keyframes slapSlideUp {
+  @keyframes songSlideUp {
     from { transform: translateY(100%); opacity: 0; }
     to   { transform: translateY(0);    opacity: 1; }
   }
 
-  @keyframes slapPopIn {
+  @keyframes songPopIn {
     from { transform: scale(0.94); opacity: 0; }
     to   { transform: scale(1);    opacity: 1; }
   }
 }
 
-.slapSongModalHeader {
+.songModalHeader {
   @include mixins.flexContainer(row, 0.75em);
 
   & {
@@ -68,7 +68,7 @@
     border-bottom: 1px solid vars.$borderColor;
   }
 
-  .slapSongModalHeaderLeft {
+  .songModalHeaderLeft {
     @include mixins.flexContainer(row, 0.75em);
 
     & {
@@ -77,7 +77,7 @@
     }
   }
 
-  .slapSongModalHeaderIcon {
+  .songModalHeaderIcon {
     & {
       font-size: 1.5em;
       color: var(--level-color);
@@ -85,7 +85,7 @@
     }
   }
 
-  .slapSongModalArtist {
+  .songModalArtist {
     & {
       font-size: 0.75em;
       color: vars.$fontColorSecondary;
@@ -93,7 +93,7 @@
     }
   }
 
-  .slapSongModalTitle {
+  .songModalTitle {
     & {
       font-size: 1.1em;
       font-weight: 800;
@@ -103,7 +103,7 @@
     }
   }
 
-  .slapSongModalHeaderActions {
+  .songModalHeaderActions {
     @include mixins.flexContainer(row, 0.5em);
 
     & {
@@ -112,7 +112,7 @@
     }
   }
 
-  .slapSongModalEditBtn {
+  .songModalEditBtn {
     @include mixins.resetButton;
 
     & {
@@ -140,7 +140,7 @@
     }
   }
 
-  .slapSongModalClose {
+  .songModalClose {
     @include mixins.resetButton;
 
     & {
@@ -164,21 +164,21 @@
   }
 }
 
-.slapSongModalBody {
+.songModalBody {
   @include mixins.flexContainer(column, 1em);
 
   & {
     padding: 1.25em;
   }
 
-  .slapSongModalBadges {
+  .songModalBadges {
     @include mixins.flexContainer(row, 0.5em);
 
     & {
       flex-wrap: wrap;
     }
 
-    .slapBadgeLevel {
+    .badgeLevel {
       & {
         font-size: 0.69em;
         padding: 4px 10px;
@@ -191,8 +191,8 @@
       }
     }
 
-    .slapBadgeTuning,
-    .slapBadgeBpm {
+    .badgeTuning,
+    .badgeBpm {
       & {
         font-size: 0.69em;
         padding: 4px 10px;
@@ -205,10 +205,10 @@
     }
   }
 
-  .slapSongModalSkill {
+  .songModalSkill {
     @include mixins.flexContainer(column, 0.25em);
 
-    .slapSkillLabel {
+    .skillLabel {
       & {
         font-size: 0.69em;
         color: vars.$fontColorSecondary;
@@ -219,7 +219,7 @@
       }
     }
 
-    .slapSkillValue {
+    .skillValue {
       & {
         font-size: 0.875em;
         color: vars.$fontColorPrimary;
@@ -228,7 +228,7 @@
     }
   }
 
-  .slapSongModalTip {
+  .songModalTip {
     @include mixins.flexContainer(row, 0.75em);
 
     & {
@@ -238,7 +238,7 @@
       border-left: 3px solid var(--level-color);
     }
 
-    .slapTipIcon {
+    .tipIcon {
       & {
         font-size: 1em;
         flex-shrink: 0;
@@ -256,7 +256,7 @@
     }
   }
 
-  .slapSongModalEditLinks {
+  .songModalEditLinks {
     @include mixins.flexContainer(column, 0.75em);
 
     & {
@@ -338,7 +338,7 @@
   }
 }
 
-.slapSongModalFooter {
+.songModalFooter {
   @include mixins.flexContainer(column, 0.75em);
 
   & {
@@ -352,7 +352,7 @@
     gap: 0.75em;
   }
 
-  .slapSongModalDoneBtn {
+  .songModalDoneBtn {
     @include mixins.resetButton;
 
     & {
@@ -381,7 +381,7 @@
     }
   }
 
-  .slapSongModalYoutubeBtn {
+  .songModalYoutubeBtn {
     @include mixins.resetButton;
     @include mixins.flexContainer(row, 0.5em);
 
@@ -408,7 +408,7 @@
     }
   }
 
-  .slapSongModalTablatureBtn {
+  .songModalTablatureBtn {
     @include mixins.resetButton;
     @include mixins.flexContainer(row, 0.5em);
 

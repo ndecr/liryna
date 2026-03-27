@@ -1,37 +1,34 @@
 // styles
-import "./slapSongModal.scss";
+import "./songModal.scss";
 
 // hooks | libraries
-import { ReactElement, useEffect, useState, useContext } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { MdClose, MdOpenInNew, MdEdit, MdCheck } from "react-icons/md";
 import { FaGuitar, FaYoutube } from "react-icons/fa";
 
-// context
-import { SlapGuitareContext } from "../../../../context/slapGuitare/SlapGuitareContext.tsx";
-
 // types
-import { IProgrammeSong, IProgrammeLevel } from "../../../../utils/types/musique.types.ts";
+import { IProgrammeSong, IProgrammeLevel } from "../../utils/types/musique.types.ts";
 
 // services
-import { showSuccess, showError } from "../../../../utils/services/alertService.ts";
+import { showSuccess, showError } from "../../utils/services/alertService.ts";
 
-interface ISlapSongModalProps {
+interface ISongModalProps {
   song: IProgrammeSong | null;
   level: IProgrammeLevel | null;
   isDone: boolean;
   onClose: () => void;
   onToggleDone: () => Promise<void>;
+  onUpdateSongLinks: (songId: number, payload: { tablatureUrl?: string; youtubeUrl?: string }) => Promise<void>;
 }
 
-export default function SlapSongModal({
+export default function SongModal({
   song,
   level,
   isDone,
   onClose,
   onToggleDone,
-}: ISlapSongModalProps): ReactElement | null {
-  const { updateSongLinks } = useContext(SlapGuitareContext);
-
+  onUpdateSongLinks,
+}: ISongModalProps): ReactElement | null {
   const [editMode, setEditMode] = useState(false);
   const [tablatureInput, setTablatureInput] = useState("");
   const [youtubeInput, setYoutubeInput] = useState("");
@@ -84,7 +81,7 @@ export default function SlapSongModal({
   const handleSaveLinks = async () => {
     setIsSaving(true);
     try {
-      await updateSongLinks(song.id, {
+      await onUpdateSongLinks(song.id, {
         tablatureUrl: tablatureInput,
         youtubeUrl: youtubeInput,
       });
@@ -99,8 +96,8 @@ export default function SlapSongModal({
 
   return (
     <div
-      id="slapSongModal"
-      className="slapSongModalBackdrop"
+      id="songModal"
+      className="songModalBackdrop"
       onClick={handleBackdropClick}
       tabIndex={-1}
       role="dialog"
@@ -108,21 +105,21 @@ export default function SlapSongModal({
       aria-label={`Détails : ${song.title} - ${song.artist}`}
     >
       <div
-        className="slapSongModalContainer"
+        className="songModalContainer"
         style={{ "--level-color": level.color } as React.CSSProperties}
       >
-        <div className="slapSongModalHeader">
-          <div className="slapSongModalHeaderLeft">
-            <FaGuitar className="slapSongModalHeaderIcon" aria-hidden />
+        <div className="songModalHeader">
+          <div className="songModalHeaderLeft">
+            <FaGuitar className="songModalHeaderIcon" aria-hidden />
             <div>
-              <p className="slapSongModalArtist">{song.artist}</p>
-              <h2 className="slapSongModalTitle">{song.title}</h2>
+              <p className="songModalArtist">{song.artist}</p>
+              <h2 className="songModalTitle">{song.title}</h2>
             </div>
           </div>
-          <div className="slapSongModalHeaderActions">
+          <div className="songModalHeaderActions">
             <button
               type="button"
-              className={`slapSongModalEditBtn ${editMode ? "active" : ""}`}
+              className={`songModalEditBtn ${editMode ? "active" : ""}`}
               onClick={() => setEditMode((v) => !v)}
               aria-label="Modifier les liens"
               title="Modifier les liens"
@@ -131,7 +128,7 @@ export default function SlapSongModal({
             </button>
             <button
               type="button"
-              className="slapSongModalClose"
+              className="songModalClose"
               onClick={onClose}
               aria-label="Fermer"
             >
@@ -140,34 +137,34 @@ export default function SlapSongModal({
           </div>
         </div>
 
-        <div className="slapSongModalBody">
-          <div className="slapSongModalBadges">
-            <span className="slapBadgeLevel">{level.title}</span>
-            <span className="slapBadgeTuning">{song.tuning}</span>
-            <span className="slapBadgeBpm">{song.bpm} BPM</span>
+        <div className="songModalBody">
+          <div className="songModalBadges">
+            <span className="badgeLevel">{level.title}</span>
+            <span className="badgeTuning">{song.tuning}</span>
+            <span className="badgeBpm">{song.bpm} BPM</span>
           </div>
 
-          <div className="slapSongModalSkill">
-            <span className="slapSkillLabel">Compétence ciblée</span>
-            <span className="slapSkillValue">{song.skill}</span>
+          <div className="songModalSkill">
+            <span className="skillLabel">Compétence ciblée</span>
+            <span className="skillValue">{song.skill}</span>
           </div>
 
-          <div className="slapSongModalTip">
-            <span className="slapTipIcon" aria-hidden>💡</span>
+          <div className="songModalTip">
+            <span className="tipIcon" aria-hidden>💡</span>
             <p>{song.tip}</p>
           </div>
 
           {editMode && (
-            <div className="slapSongModalEditLinks">
+            <div className="songModalEditLinks">
               <p className="editLinksTitle">
                 Corriger un lien mort — la modification s&apos;applique pour tous les utilisateurs.
               </p>
               <div className="editLinkField">
-                <label htmlFor="slapTablatureInput" className="editLinkLabel">
+                <label htmlFor="songTablatureInput" className="editLinkLabel">
                   🎸 Tablature URL
                 </label>
                 <input
-                  id="slapTablatureInput"
+                  id="songTablatureInput"
                   type="url"
                   className="editLinkInput"
                   value={tablatureInput}
@@ -176,11 +173,11 @@ export default function SlapSongModal({
                 />
               </div>
               <div className="editLinkField">
-                <label htmlFor="slapYoutubeInput" className="editLinkLabel">
+                <label htmlFor="songYoutubeInput" className="editLinkLabel">
                   ▶ YouTube URL
                 </label>
                 <input
-                  id="slapYoutubeInput"
+                  id="songYoutubeInput"
                   type="url"
                   className="editLinkInput"
                   value={youtubeInput}
@@ -202,10 +199,10 @@ export default function SlapSongModal({
         </div>
 
         {!editMode && (
-          <div className="slapSongModalFooter">
+          <div className="songModalFooter">
             <button
               type="button"
-              className={`slapSongModalDoneBtn ${isDone ? "done" : ""}`}
+              className={`songModalDoneBtn ${isDone ? "done" : ""}`}
               onClick={handleToggle}
             >
               {isDone ? "✓ Terminé" : "Marquer comme terminé"}
@@ -214,7 +211,7 @@ export default function SlapSongModal({
             {song.youtubeUrl && (
               <button
                 type="button"
-                className="slapSongModalYoutubeBtn"
+                className="songModalYoutubeBtn"
                 onClick={handleOpenYoutube}
               >
                 <FaYoutube aria-hidden />
@@ -226,7 +223,7 @@ export default function SlapSongModal({
             {song.tablatureUrl && (
               <button
                 type="button"
-                className="slapSongModalTablatureBtn"
+                className="songModalTablatureBtn"
                 onClick={handleOpenTablature}
               >
                 <span>Tablature</span>
