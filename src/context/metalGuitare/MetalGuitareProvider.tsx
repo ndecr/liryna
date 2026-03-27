@@ -81,7 +81,7 @@ export const MetalGuitareProvider = ({
   );
 
   const updateSongLinks = useCallback(
-    async (songId: number, payload: { songsterrUrl?: string; youtubeUrl?: string }): Promise<void> => {
+    async (songId: number, payload: { tablatureUrl?: string; youtubeUrl?: string }): Promise<void> => {
       const updatedSong = await updateSongLinksService(songId, payload);
       setLevels((prev) =>
         prev.map((level) => ({

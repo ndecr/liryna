@@ -107,7 +107,7 @@ function RhythmGuitarProgression(): ReactElement {
             <p className="rhythmLabel">Progression Rythmique</p>
             <h1 className="rhythmTitle">Des accords ouverts au fingerpicking</h1>
             <p className="rhythmSubtitle">
-              25 morceaux dans l&apos;ordre · Coche au fur et à mesure · Songsterr pour les tabs
+              25 morceaux dans l&apos;ordre · Coche au fur et à mesure · Tablature pour apprendre
             </p>
           </header>
 
@@ -278,12 +278,12 @@ function RhythmGuitarProgression(): ReactElement {
                                   <p className="songTip">💡 {song.tip}</p>
                                   <div className="songLinks">
                                     <a
-                                      href={song.songsterrUrl}
+                                      href={song.tablatureUrl}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="songsterrLink"
+                                      className="tablatureLink"
                                     >
-                                      🎸 Songsterr
+                                      🎸 Tablature
                                     </a>
                                     {song.youtubeUrl && (
                                       <a

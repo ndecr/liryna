@@ -529,7 +529,7 @@
         }
       }
 
-      .songsterrLink,
+      .tablatureLink,
       .youtubeLink {
         & {
           display: inline-flex;
@@ -545,7 +545,7 @@
         }
       }
 
-      .songsterrLink {
+      .tablatureLink {
         & {
           color: vars.$musiquePrimary;
           background: rgba(124, 58, 237, 0.06);

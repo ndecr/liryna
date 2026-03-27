@@ -33,13 +33,13 @@ export default function SongModal({
   const { updateSongLinks } = useContext(MetalGuitareContext);
 
   const [editMode, setEditMode] = useState(false);
-  const [songsterrInput, setSongsterrInput] = useState("");
+  const [tablatureInput, setTablatureInput] = useState("");
   const [youtubeInput, setYoutubeInput] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (song) {
-      setSongsterrInput(song.songsterrUrl ?? "");
+      setTablatureInput(song.tablatureUrl ?? "");
       setYoutubeInput(song.youtubeUrl ?? "");
       setEditMode(false);
     }
@@ -62,8 +62,8 @@ export default function SongModal({
     if (e.target === e.currentTarget) onClose();
   };
 
-  const handleOpenSongsterr = () => {
-    window.open(song.songsterrUrl, "_blank", "noopener,noreferrer");
+  const handleOpenTablature = () => {
+    window.open(song.tablatureUrl, "_blank", "noopener,noreferrer");
   };
 
   const handleOpenYoutube = () => {
@@ -85,7 +85,7 @@ export default function SongModal({
     setIsSaving(true);
     try {
       await updateSongLinks(song.id, {
-        songsterrUrl: songsterrInput,
+        tablatureUrl: tablatureInput,
         youtubeUrl: youtubeInput,
       });
       await showSuccess("Liens mis à jour pour tous les utilisateurs.", "Merci !");
@@ -163,16 +163,16 @@ export default function SongModal({
                 Corriger un lien mort — la modification s&apos;applique pour tous les utilisateurs.
               </p>
               <div className="editLinkField">
-                <label htmlFor="songsterrInput" className="editLinkLabel">
-                  🎸 Songsterr URL
+                <label htmlFor="tablatureInput" className="editLinkLabel">
+                  🎸 Tablature URL
                 </label>
                 <input
-                  id="songsterrInput"
+                  id="tablatureInput"
                   type="url"
                   className="editLinkInput"
-                  value={songsterrInput}
-                  onChange={(e) => setSongsterrInput(e.target.value)}
-                  placeholder="https://www.songsterr.com/..."
+                  value={tablatureInput}
+                  onChange={(e) => setTablatureInput(e.target.value)}
+                  placeholder="https://www.songsterr.com/ ou Ultimate Guitar..."
                 />
               </div>
               <div className="editLinkField">
@@ -225,10 +225,10 @@ export default function SongModal({
 
             <button
               type="button"
-              className="songModalSongsterrBtn"
-              onClick={handleOpenSongsterr}
+              className="songModalTablatureBtn"
+              onClick={handleOpenTablature}
             >
-              <span>Songsterr</span>
+              <span>Tablature</span>
               <MdOpenInNew aria-hidden />
             </button>
           </div>

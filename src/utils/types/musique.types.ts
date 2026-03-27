@@ -7,7 +7,7 @@ export interface IProgrammeSong {
   skill: string;
   tip: string;
   bpm: number;
-  songsterrUrl: string;
+  tablatureUrl: string;
   youtubeUrl: string;
   sortOrder: number;
 }

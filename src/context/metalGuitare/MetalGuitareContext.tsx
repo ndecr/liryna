@@ -6,7 +6,7 @@ import {
 } from "../../utils/types/musique.types.ts";
 
 interface IUpdateSongLinksPayload {
-  songsterrUrl?: string;
+  tablatureUrl?: string;
   youtubeUrl?: string;
 }
 

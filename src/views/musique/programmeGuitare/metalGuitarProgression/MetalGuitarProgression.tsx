@@ -107,7 +107,7 @@ function MetalGuitarProgression(): ReactElement {
             <p className="metalLabel">Progression Metal</p>
             <h1 className="metalTitle">Du power chord au tremolo pick</h1>
             <p className="metalSubtitle">
-              25 morceaux dans l&apos;ordre · Coche au fur et à mesure · Songsterr pour les tabs
+              25 morceaux dans l&apos;ordre · Coche au fur et à mesure · Tablature pour apprendre
             </p>
           </header>
 
@@ -278,12 +278,12 @@ function MetalGuitarProgression(): ReactElement {
                                   <p className="songTip">💡 {song.tip}</p>
                                   <div className="songLinks">
                                     <a
-                                      href={song.songsterrUrl}
+                                      href={song.tablatureUrl}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="songsterrLink"
+                                      className="tablatureLink"
                                     >
-                                      🎸 Songsterr
+                                      🎸 Tablature
                                     </a>
                                     {song.youtubeUrl && (
                                       <a
@@ -310,7 +310,7 @@ function MetalGuitarProgression(): ReactElement {
           </div>
 
           <div className="metalMethode">
-            <strong>Méthode :</strong> Ralentis chaque morceau à 60% sur Songsterr ou YouTube
+            <strong>Méthode :</strong> Ralentis chaque morceau à 60% sur Tablature ou YouTube
             (vitesse 0.5x/0.75x). Apprends riff par riff, pas le morceau entier d&apos;un coup.
             Monte la vitesse par paliers de 5% seulement quand c&apos;est propre.
           </div>
