@@ -73,11 +73,9 @@ function RhythmGuitarProgression(): ReactElement {
 
   const handleCheckSong = async (
     e: React.MouseEvent<HTMLButtonElement>,
-    songId: number,
-    isDone: boolean
+    songId: number
   ) => {
     e.stopPropagation();
-    if (isDone) return;
     await toggleSong(songId);
   };
 
@@ -196,8 +194,8 @@ function RhythmGuitarProgression(): ReactElement {
                                 <button
                                   type="button"
                                   className="songCheckbox"
-                                  onClick={(e) => handleCheckSong(e, song.id, isDone)}
-                                  aria-label={`Marquer "${song.title}" comme terminé`}
+                                  onClick={(e) => handleCheckSong(e, song.id)}
+                                  aria-label={`Marquer "${song.title}" comme ${isDone ? "non terminé" : "terminé"}`}
                                 >
                                   {isDone ? "✓" : ""}
                                 </button>

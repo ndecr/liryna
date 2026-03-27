@@ -69,8 +69,13 @@ export const MetalGuitareProvider = ({
     async (songId: number): Promise<void> => {
       const key = songId.toString();
       const current = progression?.completedSongs ?? {};
-      const updated: CompletedSongs = { ...current, [key]: !current[key] };
-      await updateProgression(updated);
+      const optimistic: CompletedSongs = { ...current, [key]: !current[key] };
+      setProgression((prev) => prev ? { ...prev, completedSongs: optimistic } : prev);
+      try {
+        await updateProgression(optimistic);
+      } catch {
+        setProgression((prev) => prev ? { ...prev, completedSongs: current } : prev);
+      }
     },
     [progression, updateProgression]
   );
