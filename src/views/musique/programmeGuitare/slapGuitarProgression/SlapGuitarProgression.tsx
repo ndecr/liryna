@@ -75,9 +75,11 @@ function SlapGuitarProgression(): ReactElement {
 
   const handleCheckSong = async (
     e: React.MouseEvent<HTMLButtonElement>,
-    songId: number
+    songId: number,
+    isDone: boolean
   ) => {
     e.stopPropagation();
+    if (isDone) return;
     await toggleSong(songId);
   };
 
@@ -220,8 +222,8 @@ function SlapGuitarProgression(): ReactElement {
                                 <button
                                   type="button"
                                   className="songCheckbox"
-                                  onClick={(e) => handleCheckSong(e, song.id)}
-                                  aria-label={`Marquer "${song.title}" comme ${isDone ? "non terminé" : "terminé"}`}
+                                  onClick={(e) => handleCheckSong(e, song.id, isDone)}
+                                  aria-label={`Marquer "${song.title}" comme terminé`}
                                 >
                                   {isDone ? "✓" : ""}
                                 </button>
