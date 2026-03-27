@@ -1,14 +1,14 @@
 @use "../../../../utils/styles/mixins" as mixins;
 @use "../../../../utils/styles/variables" as vars;
 
-#metalGuitarProgression {
+#slapGuitarProgression {
   @include mixins.mainView;
 
   & {
     @include mixins.responsivePadding(1em, 1.5em, 2em);
   }
 
-  .metalContainer {
+  .slapContainer {
     @include mixins.centeredContainer;
     @include mixins.flexContainer(column, 2em);
 
@@ -22,12 +22,12 @@
   }
 
   // ── En-tête de page ────────────────────────────────────────────────────────
-  .metalHeader {
+  .slapHeader {
     & {
       text-align: center;
     }
 
-    .metalLabel {
+    .slapLabel {
       & {
         font-size: 0.75em;
         letter-spacing: 4px;
@@ -38,7 +38,7 @@
       }
     }
 
-    .metalTitle {
+    .slapTitle {
       & {
         font-size: 2em;
         font-weight: 900;
@@ -55,12 +55,108 @@
       }
     }
 
-    .metalSubtitle {
+    .slapSubtitle {
       & {
         color: vars.$fontColorSecondary;
         font-size: 0.9em;
         margin: 0;
         line-height: 1.6;
+      }
+    }
+  }
+
+  // ── Encart astuces débutant ────────────────────────────────────────────────
+  .slapTipsEncart {
+    @include mixins.card(14px, light);
+
+    & {
+      overflow: hidden;
+      border-left: 4px solid vars.$musiquePrimary;
+    }
+
+    .slapTipsHeader {
+      @include mixins.flexContainer(row, 0.75em);
+      @include mixins.resetButton;
+
+      & {
+        width: 100%;
+        padding: 1em 1.25em;
+        align-items: center;
+        text-align: left;
+        transition: background vars.$transitionFast;
+        cursor: pointer;
+      }
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.02);
+      }
+    }
+
+    .slapTipsIcon {
+      & {
+        font-size: 1.1em;
+        flex-shrink: 0;
+      }
+    }
+
+    .slapTipsTitle {
+      & {
+        flex: 1;
+        font-size: 0.875em;
+        font-weight: 700;
+        color: vars.$musiquePrimary;
+      }
+    }
+
+    .slapTipsChevron {
+      & {
+        font-size: 0.875em;
+        color: vars.$fontColorSecondary;
+        transition: transform vars.$transitionFast;
+        flex-shrink: 0;
+      }
+    }
+
+    &.open .slapTipsChevron {
+      transform: rotate(180deg);
+    }
+
+    .slapTipsList {
+      @include mixins.flexContainer(column, 0);
+
+      & {
+        border-top: 1px solid vars.$borderColor;
+      }
+
+      .slapTipItem {
+        @include mixins.flexContainer(row, 0.875em);
+
+        & {
+          align-items: flex-start;
+          padding: 0.875em 1.25em;
+          border-bottom: 1px solid vars.$borderColor;
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .slapTipItemIcon {
+          & {
+            font-size: 1em;
+            flex-shrink: 0;
+            margin-top: 0.1em;
+          }
+        }
+
+        .slapTipItemText {
+          & {
+            font-size: 0.825em;
+            line-height: 1.65;
+            color: vars.$fontColorSecondary;
+            margin: 0;
+          }
+        }
       }
     }
   }
@@ -99,15 +195,16 @@
       & {
         font-size: 1.25em;
         font-weight: 800;
-        color: vars.$fontColorPrimary;
+        color: vars.$musiquePrimary;
       }
     }
 
     .progressTrack {
       & {
         height: 8px;
-        background: rgba(0, 0, 0, 0.08);
         border-radius: 4px;
+        background: vars.$greyBackground;
+        border: 1px solid vars.$borderColor;
         overflow: hidden;
       }
     }
@@ -117,8 +214,7 @@
         height: 100%;
         background: vars.$musiqueGradient;
         border-radius: 4px;
-        transition: width vars.$transitionMedium;
-        min-width: 0;
+        transition: width 0.5s ease;
       }
     }
   }
@@ -141,7 +237,6 @@
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     }
 
-    // ── En-tête du niveau ────────────────────────────────────────────────────
     .levelCardHeader {
       @include mixins.flexContainer(row, 0.875em);
       @include mixins.resetButton;
@@ -216,12 +311,10 @@
       }
     }
 
-    // Rotation chevron quand le niveau est ouvert
     &.open .levelChevron {
       transform: rotate(180deg);
     }
 
-    // ── Liste des morceaux ───────────────────────────────────────────────────
     .levelSongs {
       @include mixins.flexContainer(column, 0);
 
@@ -456,148 +549,133 @@
         color: vars.$fontColorSecondary;
         transition: transform vars.$transitionFast;
         flex-shrink: 0;
-        opacity: 0.5;
       }
     }
 
-    // Rotation flèche expand quand le morceau est ouvert
     &.expanded .songExpandArrow {
       transform: rotate(90deg);
     }
 
-    // ── Détails dépliés du morceau ────────────────────────────────────────────
     .songDetails {
-      @include mixins.flexContainer(column, 0.875em);
+      @include mixins.flexContainer(column, 0.75em);
 
       & {
-        padding: 0.875em 1.25em 1.25em 4.625em;
+        padding: 0.875em 1.25em 1.25em;
         background: vars.$greyBackground;
         border-top: 1px solid vars.$borderColor;
       }
+    }
 
-      .songTags {
-        @include mixins.flexContainer(row, 0.5em);
+    .songTags {
+      @include mixins.flexContainer(row, 0.5em);
 
-        & {
-          flex-wrap: wrap;
-        }
+      & {
+        flex-wrap: wrap;
+      }
+    }
+
+    .tagSkill {
+      & {
+        font-size: 0.72em;
+        padding: 3px 8px;
+        border-radius: 6px;
+        background: color-mix(in srgb, var(--level-color) 10%, transparent);
+        color: var(--level-color);
+        font-weight: 600;
+        border: 1px solid color-mix(in srgb, var(--level-color) 25%, transparent);
+      }
+    }
+
+    .tagBpm {
+      & {
+        font-size: 0.72em;
+        padding: 3px 8px;
+        border-radius: 6px;
+        background: vars.$greyBackground;
+        color: vars.$fontColorSecondary;
+        font-weight: 600;
+        border: 1px solid vars.$borderColor;
+      }
+    }
+
+    .songTip {
+      & {
+        font-size: 0.825em;
+        line-height: 1.65;
+        color: vars.$fontColorSecondary;
+        margin: 0;
+      }
+    }
+
+    .songLinks {
+      @include mixins.flexContainer(row, 0.5em);
+
+      & {
+        flex-wrap: wrap;
+      }
+    }
+
+    .songsterrLink,
+    .youtubeLink {
+      & {
+        font-size: 0.75em;
+        font-weight: 700;
+        padding: 0.4em 0.875em;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all vars.$transitionFast;
       }
 
-      .tagSkill {
-        & {
-          font-size: 0.72em;
-          padding: 3px 10px;
-          border-radius: 20px;
-          background: color-mix(in srgb, var(--level-color) 12%, transparent);
-          color: var(--level-color);
-          font-weight: 600;
-          border: 1px solid color-mix(in srgb, var(--level-color) 30%, transparent);
-        }
+      &:hover {
+        transform: translateY(-1px);
+      }
+    }
+
+    .songsterrLink {
+      & {
+        background: color-mix(in srgb, var(--level-color) 10%, transparent);
+        color: var(--level-color);
+        border: 1px solid color-mix(in srgb, var(--level-color) 25%, transparent);
       }
 
-      .tagBpm {
-        & {
-          font-size: 0.72em;
-          padding: 3px 10px;
-          border-radius: 20px;
-          background: white;
-          color: vars.$fontColorSecondary;
-          font-weight: 600;
-          border: 1px solid vars.$borderColor;
-        }
+      &:hover {
+        background: color-mix(in srgb, var(--level-color) 20%, transparent);
+      }
+    }
+
+    .youtubeLink {
+      & {
+        background: rgba(220, 38, 38, 0.08);
+        color: #dc2626;
+        border: 1px solid rgba(220, 38, 38, 0.25);
       }
 
-      .songTip {
-        & {
-          font-size: 0.825em;
-          line-height: 1.6;
-          color: vars.$fontColorSecondary;
-          margin: 0;
-          padding: 0.75em 1em;
-          background: white;
-          border-radius: 8px;
-          border-left: 3px solid var(--level-color);
-        }
-      }
-
-      .songLinks {
-        @include mixins.flexContainer(row, 0.5em);
-
-        & {
-          flex-wrap: wrap;
-        }
-      }
-
-      .songsterrLink,
-      .youtubeLink {
-        & {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.375em;
-          font-size: 0.8em;
-          font-weight: 700;
-          text-decoration: none;
-          padding: 7px 14px;
-          border-radius: 8px;
-          transition: all vars.$transitionFast;
-          align-self: flex-start;
-        }
-      }
-
-      .songsterrLink {
-        & {
-          color: vars.$musiquePrimary;
-          background: rgba(124, 58, 237, 0.06);
-          border: 1px solid rgba(124, 58, 237, 0.2);
-        }
-
-        &:hover {
-          background: rgba(124, 58, 237, 0.12);
-          border-color: vars.$musiquePrimary;
-          transform: translateY(-1px);
-        }
-      }
-
-      .youtubeLink {
-        & {
-          color: #dc2626;
-          background: rgba(220, 38, 38, 0.06);
-          border: 1px solid rgba(220, 38, 38, 0.2);
-        }
-
-        &:hover {
-          background: rgba(220, 38, 38, 0.12);
-          border-color: #dc2626;
-          transform: translateY(-1px);
-        }
+      &:hover {
+        background: rgba(220, 38, 38, 0.15);
       }
     }
   }
 
-  // ── État chargement ─────────────────────────────────────────────────────────
-  .metalLoading {
+  // ── Note de bas de page ────────────────────────────────────────────────────
+  .slapMethode {
+    & {
+      font-size: 0.825em;
+      line-height: 1.65;
+      color: vars.$fontColorSecondary;
+      background: vars.$greyBackground;
+      border: 1px solid vars.$borderColor;
+      border-radius: 10px;
+      padding: 1em 1.25em;
+      border-left: 3px solid vars.$musiquePrimary;
+    }
+  }
+
+  .slapLoading {
     & {
       text-align: center;
-      padding: 2em;
       color: vars.$fontColorSecondary;
+      padding: 3em 0;
       font-size: 0.9em;
-    }
-  }
-
-  // ── Conseil méthode ───────────────────────────────────────────────────────
-  .metalMethode {
-    @include mixins.card(12px, light);
-
-    & {
-      padding: 1.25em 1.5em;
-      border-left: 4px solid vars.$musiquePrimary;
-      font-size: 0.85em;
-      color: vars.$fontColorSecondary;
-      line-height: 1.7;
-    }
-
-    strong {
-      color: vars.$fontColorPrimary;
     }
   }
 }

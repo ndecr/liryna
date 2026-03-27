@@ -1,5 +1,5 @@
 // styles
-import "./metalGuitarProgression.scss";
+import "./slapGuitarProgression.scss";
 
 // hooks | libraries
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
@@ -9,35 +9,37 @@ import { FaGuitar } from "react-icons/fa";
 import { IoChevronDown, IoChevronForward } from "react-icons/io5";
 
 // context
-import { MetalGuitareContext } from "../../../../context/metalGuitare/MetalGuitareContext.tsx";
+import { SlapGuitareContext } from "../../../../context/slapGuitare/SlapGuitareContext.tsx";
 
 // types
 import { IProgrammeLevel, IProgrammeSong } from "../../../../utils/types/musique.types.ts";
 
 // constants
 import { STRING_COLORS, findTuningByName } from "../../../../utils/constants/guitarTunings.ts";
+import { SLAP_TIPS } from "../../../../utils/constants/slapTips.ts";
 
 // components
 import WithAuth from "../../../../utils/middleware/WithAuth.tsx";
 import Header from "../../../../components/header/Header.tsx";
 import SubNav from "../../../../components/subNav/SubNav.tsx";
 import Button from "../../../../components/button/Button.tsx";
-import SongModal from "./SongModal.tsx";
+import SlapSongModal from "./SlapSongModal.tsx";
 
 interface IModalSong {
   song: IProgrammeSong;
   level: IProgrammeLevel;
 }
 
-function MetalGuitarProgression(): ReactElement {
+function SlapGuitarProgression(): ReactElement {
   const navigate = useNavigate();
   const { levels, progression, isLoading, getLevels, getProgression, toggleSong } =
-    useContext(MetalGuitareContext);
+    useContext(SlapGuitareContext);
 
   const [expandedLevel, setExpandedLevel] = useState<number | null>(null);
   const [expandedSong, setExpandedSong] = useState<number | null>(null);
   const [modalSong, setModalSong] = useState<IModalSong | null>(null);
   const [tuningPopupSong, setTuningPopupSong] = useState<number | null>(null);
+  const [tipsOpen, setTipsOpen] = useState(true);
   const initializedRef = useRef(false);
 
   useEffect(() => {
@@ -96,20 +98,44 @@ function MetalGuitarProgression(): ReactElement {
     <>
       <Header />
       <SubNav />
-      <main id="metalGuitarProgression">
-        <div className="metalContainer">
+      <main id="slapGuitarProgression">
+        <div className="slapContainer">
           <Button style="musiqueBack" onClick={() => navigate("/musique/programme-guitare")}>
             <MdArrowBack />
             <span>Retour</span>
           </Button>
 
-          <header className="metalHeader">
-            <p className="metalLabel">Progression Metal</p>
-            <h1 className="metalTitle">Du power chord au tremolo pick</h1>
-            <p className="metalSubtitle">
-              25 morceaux dans l&apos;ordre · Coche au fur et à mesure · Songsterr pour les tabs
+          <header className="slapHeader">
+            <p className="slapLabel">Progression Slap</p>
+            <h1 className="slapTitle">Maîtrise du slap à la guitare</h1>
+            <p className="slapSubtitle">
+              25 exercices et morceaux · Électrique & acoustique · Du geste de base à la maîtrise
             </p>
           </header>
+
+          <div className={`slapTipsEncart ${tipsOpen ? "open" : ""}`}>
+            <button
+              type="button"
+              className="slapTipsHeader"
+              onClick={() => setTipsOpen((v) => !v)}
+              aria-expanded={tipsOpen}
+            >
+              <span className="slapTipsIcon">💡</span>
+              <span className="slapTipsTitle">Avant de commencer — 5 astuces essentielles</span>
+              <IoChevronDown className="slapTipsChevron" aria-hidden />
+            </button>
+
+            {tipsOpen && (
+              <div className="slapTipsList">
+                {SLAP_TIPS.map((tip) => (
+                  <div key={tip.id} className="slapTipItem">
+                    <span className="slapTipItemIcon">{tip.icon}</span>
+                    <p className="slapTipItemText">{tip.tip}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           <div
             className="globalProgress"
@@ -135,7 +161,7 @@ function MetalGuitarProgression(): ReactElement {
 
           <div className="levels">
             {isLoading && levels.length === 0 ? (
-              <div className="metalLoading">Chargement…</div>
+              <div className="slapLoading">Chargement…</div>
             ) : (
               levels.map((level, levelIdx) => {
                 const { done, total } = getLevelProgress(level);
@@ -244,10 +270,10 @@ function MetalGuitarProgression(): ReactElement {
                                       {result.capo ? ` · Capo ${result.capo}` : ""}
                                     </span>
                                     <div className="tuningPopupStrings">
-                                      {result.tuning.strings.map((note, idx) => {
-                                        const stringNum = 6 - idx;
+                                      {result.tuning.strings.map((note, i) => {
+                                        const stringNum = 6 - i;
                                         return (
-                                          <div key={idx} className="tuningPopupString">
+                                          <div key={i} className="tuningPopupString">
                                             <span className="tuningPopupStringNum" style={{ color: STRING_COLORS[stringNum] }}>
                                               {stringNum}
                                             </span>
@@ -277,14 +303,16 @@ function MetalGuitarProgression(): ReactElement {
                                   </div>
                                   <p className="songTip">💡 {song.tip}</p>
                                   <div className="songLinks">
-                                    <a
-                                      href={song.songsterrUrl}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="songsterrLink"
-                                    >
-                                      🎸 Songsterr
-                                    </a>
+                                    {song.songsterrUrl && (
+                                      <a
+                                        href={song.songsterrUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="songsterrLink"
+                                      >
+                                        🎸 Songsterr
+                                      </a>
+                                    )}
                                     {song.youtubeUrl && (
                                       <a
                                         href={song.youtubeUrl}
@@ -309,15 +337,15 @@ function MetalGuitarProgression(): ReactElement {
             )}
           </div>
 
-          <div className="metalMethode">
-            <strong>Méthode :</strong> Ralentis chaque morceau à 60% sur Songsterr ou YouTube
-            (vitesse 0.5x/0.75x). Apprends riff par riff, pas le morceau entier d&apos;un coup.
-            Monte la vitesse par paliers de 5% seulement quand c&apos;est propre.
+          <div className="slapMethode">
+            <strong>Méthode :</strong> Commence chaque exercice à 50–60% du BPM cible. Maîtrise
+            le geste avant la vitesse — un slap propre à 60 BPM vaut mieux qu'un slap approximatif
+            à 120 BPM. Monte de 5 BPM par séance uniquement quand chaque note sonne clairement.
           </div>
         </div>
       </main>
 
-      <SongModal
+      <SlapSongModal
         song={modalSong?.song ?? null}
         level={modalSong?.level ?? null}
         isDone={modalSong ? !!completedSongs[modalSong.song.id.toString()] : false}
@@ -328,5 +356,5 @@ function MetalGuitarProgression(): ReactElement {
   );
 }
 
-const MetalGuitarProgressionWithAuth = WithAuth(MetalGuitarProgression);
-export default MetalGuitarProgressionWithAuth;
+const SlapGuitarProgressionWithAuth = WithAuth(SlapGuitarProgression);
+export default SlapGuitarProgressionWithAuth;

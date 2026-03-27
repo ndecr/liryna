@@ -21,26 +21,6 @@
     }
   }
 
-  // ── Bouton retour ──────────────────────────────────────────────────────────
-  .backButton {
-    @include mixins.flexContainer(row, 0.4em);
-    @include mixins.resetButton;
-
-    & {
-      align-items: center;
-      color: vars.$musiquePrimary;
-      font-size: 0.95em;
-      font-weight: 600;
-      transition: all vars.$transitionFast;
-      align-self: flex-start;
-    }
-
-    &:hover {
-      opacity: 0.75;
-      transform: translateX(-0.2em);
-    }
-  }
-
   // ── En-tête ────────────────────────────────────────────────────────────────
   .accordagesHeader {
     & {

@@ -1,14 +1,14 @@
 @use "../../../../utils/styles/mixins" as mixins;
 @use "../../../../utils/styles/variables" as vars;
 
-#metalGuitarProgression {
+#rhythmGuitarProgression {
   @include mixins.mainView;
 
   & {
     @include mixins.responsivePadding(1em, 1.5em, 2em);
   }
 
-  .metalContainer {
+  .rhythmContainer {
     @include mixins.centeredContainer;
     @include mixins.flexContainer(column, 2em);
 
@@ -22,12 +22,12 @@
   }
 
   // ── En-tête de page ────────────────────────────────────────────────────────
-  .metalHeader {
+  .rhythmHeader {
     & {
       text-align: center;
     }
 
-    .metalLabel {
+    .rhythmLabel {
       & {
         font-size: 0.75em;
         letter-spacing: 4px;
@@ -38,7 +38,7 @@
       }
     }
 
-    .metalTitle {
+    .rhythmTitle {
       & {
         font-size: 2em;
         font-weight: 900;
@@ -55,7 +55,7 @@
       }
     }
 
-    .metalSubtitle {
+    .rhythmSubtitle {
       & {
         color: vars.$fontColorSecondary;
         font-size: 0.9em;
@@ -575,7 +575,7 @@
   }
 
   // ── État chargement ─────────────────────────────────────────────────────────
-  .metalLoading {
+  .rhythmLoading {
     & {
       text-align: center;
       padding: 2em;
@@ -585,7 +585,7 @@
   }
 
   // ── Conseil méthode ───────────────────────────────────────────────────────
-  .metalMethode {
+  .rhythmMethode {
     @include mixins.card(12px, light);
 
     & {

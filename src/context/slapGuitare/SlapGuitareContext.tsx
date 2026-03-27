@@ -5,12 +5,7 @@ import {
   CompletedSongs,
 } from "../../utils/types/musique.types.ts";
 
-interface IUpdateSongLinksPayload {
-  songsterrUrl?: string;
-  youtubeUrl?: string;
-}
-
-interface IMetalGuitareContext {
+interface ISlapGuitareContext {
   levels: IProgrammeLevel[];
   progression: IProgrammeProgression | null;
   isLoading: boolean;
@@ -18,11 +13,10 @@ interface IMetalGuitareContext {
   getProgression: () => Promise<void>;
   toggleSong: (songId: number) => Promise<void>;
   updateProgression: (completedSongs: CompletedSongs) => Promise<void>;
-  updateSongLinks: (songId: number, payload: IUpdateSongLinksPayload) => Promise<void>;
 }
 
-export const MetalGuitareContext: Context<IMetalGuitareContext> =
-  createContext<IMetalGuitareContext>({
+export const SlapGuitareContext: Context<ISlapGuitareContext> =
+  createContext<ISlapGuitareContext>({
     levels: [],
     progression: null,
     isLoading: false,
@@ -30,5 +24,4 @@ export const MetalGuitareContext: Context<IMetalGuitareContext> =
     getProgression: async (): Promise<void> => {},
     toggleSong: async (): Promise<void> => {},
     updateProgression: async (): Promise<void> => {},
-    updateSongLinks: async (): Promise<void> => {},
   });

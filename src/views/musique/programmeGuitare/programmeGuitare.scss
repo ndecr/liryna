@@ -94,72 +94,68 @@
     @include mixins.flexContainer(column, 1em);
 
     & {
-      max-width: 40em;
-      margin: 0 auto;
       width: 100%;
     }
 
     @media (min-width: vars.$tabletWidth) {
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 1.5em;
+      gap: 1.25em;
     }
 
     .programmeCard {
-      @include mixins.card(12px, light);
-      @include mixins.flexContainer(row, 1em);
+      @include mixins.card(14px, light);
+      @include mixins.flexContainer(row, 1.5em);
 
       & {
         align-items: center;
-        padding: 1.5em;
+        padding: 1.75em 2em;
         cursor: pointer;
         border: none;
         text-align: left;
         transition: all vars.$transitionMedium;
-        flex: 1;
-        min-width: 0;
+        width: 100%;
+        border-left: 4px solid vars.$musiquePrimary;
       }
 
       @media (min-width: vars.$tabletWidth) {
-        padding: 2em;
+        padding: 2em 2.5em;
       }
 
       &:hover {
         transform: translateY(-0.125em);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-      }
-
-      &.primary {
-        background: vars.$musiqueGradient;
-        color: white;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        border-left-color: vars.$musiquePrimary;
       }
 
       .programmeCardIcon {
         & {
-          font-size: 2em;
+          font-size: 2.5em;
           flex-shrink: 0;
           color: vars.$musiquePrimary;
-        }
-
-        .primary & {
-          color: white;
+          opacity: 0.7;
         }
       }
 
       .programmeCardContent {
-        @include mixins.flexContainer(column, 0.25em);
+        @include mixins.flexContainer(column, 0.4em);
+
+        & {
+          flex: 1;
+          min-width: 0;
+        }
 
         .programmeCardLabel {
           & {
-            font-size: 1.05em;
-            font-weight: 700;
+            font-size: 1.1em;
+            font-weight: 800;
+            color: vars.$fontColorPrimary;
           }
         }
 
         .programmeCardDescription {
           & {
-            font-size: 0.85em;
-            opacity: 0.8;
+            font-size: 0.875em;
+            color: vars.$fontColorSecondary;
+            line-height: 1.4;
           }
         }
       }

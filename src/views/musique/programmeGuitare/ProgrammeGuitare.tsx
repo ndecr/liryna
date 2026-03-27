@@ -5,30 +5,48 @@ import "./programmeGuitare.scss";
 import { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
 import { GiGuitar } from "react-icons/gi";
-import { MdOutlineArrowBack } from "react-icons/md";
+import { MdArrowBack } from "react-icons/md";
 import { FaGuitar } from "react-icons/fa";
 
 // components
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
 import Header from "../../../components/header/Header.tsx";
 import SubNav from "../../../components/subNav/SubNav.tsx";
+import Button from "../../../components/button/Button.tsx";
 
 function ProgrammeGuitare(): ReactElement {
   const navigate = useNavigate();
 
   const programmes = [
     {
+      id: "rhythm-progression",
+      label: "Progression Rythmique",
+      description: "25 morceaux des accords ouverts au fingerpicking",
+      icon: <FaGuitar />,
+    },
+    {
       id: "metal-progression",
-      label: "Metal Guitar Progression",
+      label: "Progression Metal",
       description: "25 morceaux du power chord au tremolo pick",
       icon: <FaGuitar />,
-      primary: true,
+    },
+    {
+      id: "slap-progression",
+      label: "Progression Slap",
+      description: "25 exercices et morceaux pour maîtriser le slap",
+      icon: <FaGuitar />,
     },
   ];
 
   const handleProgrammeClick = (programmeId: string) => {
     if (programmeId === "metal-progression") {
       navigate("/musique/programme-guitare/metal-progression");
+    }
+    if (programmeId === "rhythm-progression") {
+      navigate("/musique/programme-guitare/rhythm-progression");
+    }
+    if (programmeId === "slap-progression") {
+      navigate("/musique/programme-guitare/slap-progression");
     }
   };
 
@@ -38,14 +56,10 @@ function ProgrammeGuitare(): ReactElement {
       <SubNav />
       <main id="programmeGuitare" className="programmeGuitareMain">
         <div className="programmeGuitareContainer">
-          <button
-            type="button"
-            className="backButton"
-            onClick={() => navigate("/musique")}
-          >
-            <MdOutlineArrowBack />
+          <Button style="musiqueBack" onClick={() => navigate("/musique")}>
+            <MdArrowBack />
             <span>Retour</span>
-          </button>
+          </Button>
 
           <section className="programmeGuitareHeader" data-aos="fade-down">
             <div className="programmeGuitareIcon">
@@ -62,7 +76,7 @@ function ProgrammeGuitare(): ReactElement {
               <button
                 key={programme.id}
                 type="button"
-                className={`programmeCard ${programme.primary ? "primary" : ""}`}
+                className="programmeCard"
                 onClick={() => handleProgrammeClick(programme.id)}
               >
                 <span className="programmeCardIcon">{programme.icon}</span>
