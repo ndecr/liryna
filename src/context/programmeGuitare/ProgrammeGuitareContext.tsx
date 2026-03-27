@@ -5,7 +5,12 @@ import {
   CompletedSongs,
 } from "../../utils/types/musique.types.ts";
 
-interface IRhythmGuitareContext {
+export interface IUpdateSongLinksPayload {
+  tablatureUrl?: string;
+  youtubeUrl?: string;
+}
+
+export interface IProgrammeGuitareContext {
   levels: IProgrammeLevel[];
   progression: IProgrammeProgression | null;
   isLoading: boolean;
@@ -13,11 +18,11 @@ interface IRhythmGuitareContext {
   getProgression: () => Promise<void>;
   toggleSong: (songId: number) => Promise<void>;
   updateProgression: (completedSongs: CompletedSongs) => Promise<void>;
-  updateSongLinks: (songId: number, payload: { tablatureUrl?: string; youtubeUrl?: string }) => Promise<void>;
+  updateSongLinks: (songId: number, payload: IUpdateSongLinksPayload) => Promise<void>;
 }
 
-export const RhythmGuitareContext: Context<IRhythmGuitareContext> =
-  createContext<IRhythmGuitareContext>({
+export const ProgrammeGuitareContext: Context<IProgrammeGuitareContext> =
+  createContext<IProgrammeGuitareContext>({
     levels: [],
     progression: null,
     isLoading: false,

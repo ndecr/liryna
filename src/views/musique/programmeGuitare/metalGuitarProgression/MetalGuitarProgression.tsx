@@ -9,7 +9,7 @@ import { FaGuitar } from "react-icons/fa";
 import { IoChevronDown, IoChevronForward } from "react-icons/io5";
 
 // context
-import { MetalGuitareContext } from "../../../../context/metalGuitare/MetalGuitareContext.tsx";
+import { ProgrammeGuitareContext } from "../../../../context/programmeGuitare/ProgrammeGuitareContext.tsx";
 
 // types
 import { IProgrammeLevel, IProgrammeSong } from "../../../../utils/types/musique.types.ts";
@@ -22,7 +22,7 @@ import WithAuth from "../../../../utils/middleware/WithAuth.tsx";
 import Header from "../../../../components/header/Header.tsx";
 import SubNav from "../../../../components/subNav/SubNav.tsx";
 import Button from "../../../../components/button/Button.tsx";
-import SongModal from "./SongModal.tsx";
+import SongModal from "../../../../components/songModal/SongModal.tsx";
 
 interface IModalSong {
   song: IProgrammeSong;
@@ -31,8 +31,8 @@ interface IModalSong {
 
 function MetalGuitarProgression(): ReactElement {
   const navigate = useNavigate();
-  const { levels, progression, isLoading, getLevels, getProgression, toggleSong } =
-    useContext(MetalGuitareContext);
+  const { levels, progression, isLoading, getLevels, getProgression, toggleSong, updateSongLinks } =
+    useContext(ProgrammeGuitareContext);
 
   const [expandedLevel, setExpandedLevel] = useState<number | null>(null);
   const [expandedSong, setExpandedSong] = useState<number | null>(null);
@@ -323,6 +323,7 @@ function MetalGuitarProgression(): ReactElement {
         isDone={modalSong ? !!completedSongs[modalSong.song.id.toString()] : false}
         onClose={() => setModalSong(null)}
         onToggleDone={handleModalToggleDone}
+        onUpdateSongLinks={updateSongLinks}
       />
     </>
   );

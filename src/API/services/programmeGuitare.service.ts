@@ -9,7 +9,7 @@ import {
 import {
   programmeModuleModel,
   programmeProgressionModel,
-} from "../models/metalGuitare.model.ts";
+} from "../models/programmeGuitare.model.ts";
 
 interface IApiResponse<T = unknown> {
   success: boolean;

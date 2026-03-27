@@ -9,7 +9,7 @@ import { FaGuitar } from "react-icons/fa";
 import { IoChevronDown, IoChevronForward } from "react-icons/io5";
 
 // context
-import { SlapGuitareContext } from "../../../../context/slapGuitare/SlapGuitareContext.tsx";
+import { ProgrammeGuitareContext } from "../../../../context/programmeGuitare/ProgrammeGuitareContext.tsx";
 
 // types
 import { IProgrammeLevel, IProgrammeSong } from "../../../../utils/types/musique.types.ts";
@@ -23,7 +23,7 @@ import WithAuth from "../../../../utils/middleware/WithAuth.tsx";
 import Header from "../../../../components/header/Header.tsx";
 import SubNav from "../../../../components/subNav/SubNav.tsx";
 import Button from "../../../../components/button/Button.tsx";
-import SlapSongModal from "./SlapSongModal.tsx";
+import SongModal from "../../../../components/songModal/SongModal.tsx";
 
 interface IModalSong {
   song: IProgrammeSong;
@@ -32,8 +32,8 @@ interface IModalSong {
 
 function SlapGuitarProgression(): ReactElement {
   const navigate = useNavigate();
-  const { levels, progression, isLoading, getLevels, getProgression, toggleSong } =
-    useContext(SlapGuitareContext);
+  const { levels, progression, isLoading, getLevels, getProgression, toggleSong, updateSongLinks } =
+    useContext(ProgrammeGuitareContext);
 
   const [expandedLevel, setExpandedLevel] = useState<number | null>(null);
   const [expandedSong, setExpandedSong] = useState<number | null>(null);
@@ -339,18 +339,19 @@ function SlapGuitarProgression(): ReactElement {
 
           <div className="slapMethode">
             <strong>Méthode :</strong> Commence chaque exercice à 50–60% du BPM cible. Maîtrise
-            le geste avant la vitesse — un slap propre à 60 BPM vaut mieux qu'un slap approximatif
+            le geste avant la vitesse — un slap propre à 60 BPM vaut mieux qu&apos;un slap approximatif
             à 120 BPM. Monte de 5 BPM par séance uniquement quand chaque note sonne clairement.
           </div>
         </div>
       </main>
 
-      <SlapSongModal
+      <SongModal
         song={modalSong?.song ?? null}
         level={modalSong?.level ?? null}
         isDone={modalSong ? !!completedSongs[modalSong.song.id.toString()] : false}
         onClose={() => setModalSong(null)}
         onToggleDone={handleModalToggleDone}
+        onUpdateSongLinks={updateSongLinks}
       />
     </>
   );
