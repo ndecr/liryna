@@ -2,9 +2,12 @@
 import "./slapSongModal.scss";
 
 // hooks | libraries
-import { ReactElement, useEffect } from "react";
-import { MdClose, MdOpenInNew } from "react-icons/md";
+import { ReactElement, useEffect, useState, useContext } from "react";
+import { MdClose, MdOpenInNew, MdEdit, MdCheck } from "react-icons/md";
 import { FaGuitar, FaYoutube } from "react-icons/fa";
+
+// context
+import { SlapGuitareContext } from "../../../../context/slapGuitare/SlapGuitareContext.tsx";
 
 // types
 import { IProgrammeSong, IProgrammeLevel } from "../../../../utils/types/musique.types.ts";
@@ -27,19 +30,37 @@ export default function SlapSongModal({
   onClose,
   onToggleDone,
 }: ISlapSongModalProps): ReactElement | null {
+  const { updateSongLinks } = useContext(SlapGuitareContext);
+
+  const [editMode, setEditMode] = useState(false);
+  const [tablatureInput, setTablatureInput] = useState("");
+  const [youtubeInput, setYoutubeInput] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (song) {
+      setTablatureInput(song.tablatureUrl ?? "");
+      setYoutubeInput(song.youtubeUrl ?? "");
+      setEditMode(false);
+    }
+  }, [song]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (editMode) setEditMode(false);
+        else onClose();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose, editMode]);
+
   if (!song || !level) return null;
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) onClose();
   };
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [onClose]);
 
   const handleOpenTablature = () => {
     window.open(song.tablatureUrl, "_blank", "noopener,noreferrer");
@@ -57,6 +78,22 @@ export default function SlapSongModal({
       }
     } catch {
       await showError("Erreur lors de la sauvegarde de la progression.");
+    }
+  };
+
+  const handleSaveLinks = async () => {
+    setIsSaving(true);
+    try {
+      await updateSongLinks(song.id, {
+        tablatureUrl: tablatureInput,
+        youtubeUrl: youtubeInput,
+      });
+      await showSuccess("Liens mis à jour pour tous les utilisateurs.", "Merci !");
+      setEditMode(false);
+    } catch {
+      await showError("Erreur lors de la mise à jour des liens.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -82,14 +119,25 @@ export default function SlapSongModal({
               <h2 className="slapSongModalTitle">{song.title}</h2>
             </div>
           </div>
-          <button
-            type="button"
-            className="slapSongModalClose"
-            onClick={onClose}
-            aria-label="Fermer"
-          >
-            <MdClose />
-          </button>
+          <div className="slapSongModalHeaderActions">
+            <button
+              type="button"
+              className={`slapSongModalEditBtn ${editMode ? "active" : ""}`}
+              onClick={() => setEditMode((v) => !v)}
+              aria-label="Modifier les liens"
+              title="Modifier les liens"
+            >
+              <MdEdit />
+            </button>
+            <button
+              type="button"
+              className="slapSongModalClose"
+              onClick={onClose}
+              aria-label="Fermer"
+            >
+              <MdClose />
+            </button>
+          </div>
         </div>
 
         <div className="slapSongModalBody">
@@ -108,40 +156,85 @@ export default function SlapSongModal({
             <span className="slapTipIcon" aria-hidden>💡</span>
             <p>{song.tip}</p>
           </div>
+
+          {editMode && (
+            <div className="slapSongModalEditLinks">
+              <p className="editLinksTitle">
+                Corriger un lien mort — la modification s&apos;applique pour tous les utilisateurs.
+              </p>
+              <div className="editLinkField">
+                <label htmlFor="slapTablatureInput" className="editLinkLabel">
+                  🎸 Tablature URL
+                </label>
+                <input
+                  id="slapTablatureInput"
+                  type="url"
+                  className="editLinkInput"
+                  value={tablatureInput}
+                  onChange={(e) => setTablatureInput(e.target.value)}
+                  placeholder="https://www.songsterr.com/ ou Ultimate Guitar..."
+                />
+              </div>
+              <div className="editLinkField">
+                <label htmlFor="slapYoutubeInput" className="editLinkLabel">
+                  ▶ YouTube URL
+                </label>
+                <input
+                  id="slapYoutubeInput"
+                  type="url"
+                  className="editLinkInput"
+                  value={youtubeInput}
+                  onChange={(e) => setYoutubeInput(e.target.value)}
+                  placeholder="https://www.youtube.com/watch?v=..."
+                />
+              </div>
+              <button
+                type="button"
+                className="editLinksSaveBtn"
+                onClick={handleSaveLinks}
+                disabled={isSaving}
+              >
+                <MdCheck />
+                <span>{isSaving ? "Sauvegarde..." : "Sauvegarder les liens"}</span>
+              </button>
+            </div>
+          )}
         </div>
 
-        <div className="slapSongModalFooter">
-          <button
-            type="button"
-            className={`slapSongModalDoneBtn ${isDone ? "done" : ""}`}
-            onClick={handleToggle}
-          >
-            {isDone ? "✓ Terminé" : "Marquer comme terminé"}
-          </button>
-
-          {song.youtubeUrl && (
+        {!editMode && (
+          <div className="slapSongModalFooter">
             <button
               type="button"
-              className="slapSongModalYoutubeBtn"
-              onClick={handleOpenYoutube}
+              className={`slapSongModalDoneBtn ${isDone ? "done" : ""}`}
+              onClick={handleToggle}
             >
-              <FaYoutube aria-hidden />
-              <span>YouTube</span>
-              <MdOpenInNew aria-hidden />
+              {isDone ? "✓ Terminé" : "Marquer comme terminé"}
             </button>
-          )}
 
-          {song.tablatureUrl && (
-            <button
-              type="button"
-              className="slapSongModalTablatureBtn"
-              onClick={handleOpenTablature}
-            >
-              <span>Tablature</span>
-              <MdOpenInNew aria-hidden />
-            </button>
-          )}
-        </div>
+            {song.youtubeUrl && (
+              <button
+                type="button"
+                className="slapSongModalYoutubeBtn"
+                onClick={handleOpenYoutube}
+              >
+                <FaYoutube aria-hidden />
+                <span>YouTube</span>
+                <MdOpenInNew aria-hidden />
+              </button>
+            )}
+
+            {song.tablatureUrl && (
+              <button
+                type="button"
+                className="slapSongModalTablatureBtn"
+                onClick={handleOpenTablature}
+              >
+                <span>Tablature</span>
+                <MdOpenInNew aria-hidden />
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

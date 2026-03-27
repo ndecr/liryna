@@ -2,9 +2,12 @@
 import "./rhythmSongModal.scss";
 
 // hooks | libraries
-import { ReactElement, useEffect } from "react";
-import { MdClose, MdOpenInNew } from "react-icons/md";
+import { ReactElement, useEffect, useState, useContext } from "react";
+import { MdClose, MdOpenInNew, MdEdit, MdCheck } from "react-icons/md";
 import { FaGuitar, FaYoutube } from "react-icons/fa";
+
+// context
+import { RhythmGuitareContext } from "../../../../context/rhythmGuitare/RhythmGuitareContext.tsx";
 
 // types
 import { IProgrammeSong, IProgrammeLevel } from "../../../../utils/types/musique.types.ts";
@@ -27,19 +30,37 @@ export default function RhythmSongModal({
   onClose,
   onToggleDone,
 }: IRhythmSongModalProps): ReactElement | null {
+  const { updateSongLinks } = useContext(RhythmGuitareContext);
+
+  const [editMode, setEditMode] = useState(false);
+  const [tablatureInput, setTablatureInput] = useState("");
+  const [youtubeInput, setYoutubeInput] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (song) {
+      setTablatureInput(song.tablatureUrl ?? "");
+      setYoutubeInput(song.youtubeUrl ?? "");
+      setEditMode(false);
+    }
+  }, [song]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (editMode) setEditMode(false);
+        else onClose();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose, editMode]);
+
   if (!song || !level) return null;
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) onClose();
   };
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [onClose]);
 
   const handleOpenTablature = () => {
     window.open(song.tablatureUrl, "_blank", "noopener,noreferrer");
@@ -57,6 +78,22 @@ export default function RhythmSongModal({
       }
     } catch {
       await showError("Erreur lors de la sauvegarde de la progression.");
+    }
+  };
+
+  const handleSaveLinks = async () => {
+    setIsSaving(true);
+    try {
+      await updateSongLinks(song.id, {
+        tablatureUrl: tablatureInput,
+        youtubeUrl: youtubeInput,
+      });
+      await showSuccess("Liens mis à jour pour tous les utilisateurs.", "Merci !");
+      setEditMode(false);
+    } catch {
+      await showError("Erreur lors de la mise à jour des liens.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -82,14 +119,25 @@ export default function RhythmSongModal({
               <h2 className="rhythmSongModalTitle">{song.title}</h2>
             </div>
           </div>
-          <button
-            type="button"
-            className="rhythmSongModalClose"
-            onClick={onClose}
-            aria-label="Fermer"
-          >
-            <MdClose />
-          </button>
+          <div className="rhythmSongModalHeaderActions">
+            <button
+              type="button"
+              className={`rhythmSongModalEditBtn ${editMode ? "active" : ""}`}
+              onClick={() => setEditMode((v) => !v)}
+              aria-label="Modifier les liens"
+              title="Modifier les liens"
+            >
+              <MdEdit />
+            </button>
+            <button
+              type="button"
+              className="rhythmSongModalClose"
+              onClick={onClose}
+              aria-label="Fermer"
+            >
+              <MdClose />
+            </button>
+          </div>
         </div>
 
         <div className="rhythmSongModalBody">
@@ -108,38 +156,83 @@ export default function RhythmSongModal({
             <span className="rhythmTipIcon" aria-hidden>💡</span>
             <p>{song.tip}</p>
           </div>
+
+          {editMode && (
+            <div className="rhythmSongModalEditLinks">
+              <p className="editLinksTitle">
+                Corriger un lien mort — la modification s&apos;applique pour tous les utilisateurs.
+              </p>
+              <div className="editLinkField">
+                <label htmlFor="rhythmTablatureInput" className="editLinkLabel">
+                  🎸 Tablature URL
+                </label>
+                <input
+                  id="rhythmTablatureInput"
+                  type="url"
+                  className="editLinkInput"
+                  value={tablatureInput}
+                  onChange={(e) => setTablatureInput(e.target.value)}
+                  placeholder="https://www.songsterr.com/ ou Ultimate Guitar..."
+                />
+              </div>
+              <div className="editLinkField">
+                <label htmlFor="rhythmYoutubeInput" className="editLinkLabel">
+                  ▶ YouTube URL
+                </label>
+                <input
+                  id="rhythmYoutubeInput"
+                  type="url"
+                  className="editLinkInput"
+                  value={youtubeInput}
+                  onChange={(e) => setYoutubeInput(e.target.value)}
+                  placeholder="https://www.youtube.com/watch?v=..."
+                />
+              </div>
+              <button
+                type="button"
+                className="editLinksSaveBtn"
+                onClick={handleSaveLinks}
+                disabled={isSaving}
+              >
+                <MdCheck />
+                <span>{isSaving ? "Sauvegarde..." : "Sauvegarder les liens"}</span>
+              </button>
+            </div>
+          )}
         </div>
 
-        <div className="rhythmSongModalFooter">
-          <button
-            type="button"
-            className={`rhythmSongModalDoneBtn ${isDone ? "done" : ""}`}
-            onClick={handleToggle}
-          >
-            {isDone ? "✓ Terminé" : "Marquer comme terminé"}
-          </button>
-
-          {song.youtubeUrl && (
+        {!editMode && (
+          <div className="rhythmSongModalFooter">
             <button
               type="button"
-              className="rhythmSongModalYoutubeBtn"
-              onClick={handleOpenYoutube}
+              className={`rhythmSongModalDoneBtn ${isDone ? "done" : ""}`}
+              onClick={handleToggle}
             >
-              <FaYoutube aria-hidden />
-              <span>YouTube</span>
+              {isDone ? "✓ Terminé" : "Marquer comme terminé"}
+            </button>
+
+            {song.youtubeUrl && (
+              <button
+                type="button"
+                className="rhythmSongModalYoutubeBtn"
+                onClick={handleOpenYoutube}
+              >
+                <FaYoutube aria-hidden />
+                <span>YouTube</span>
+                <MdOpenInNew aria-hidden />
+              </button>
+            )}
+
+            <button
+              type="button"
+              className="rhythmSongModalTablatureBtn"
+              onClick={handleOpenTablature}
+            >
+              <span>Tablature</span>
               <MdOpenInNew aria-hidden />
             </button>
-          )}
-
-          <button
-            type="button"
-            className="rhythmSongModalTablatureBtn"
-            onClick={handleOpenTablature}
-          >
-            <span>Tablature</span>
-            <MdOpenInNew aria-hidden />
-          </button>
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

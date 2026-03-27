@@ -103,6 +103,43 @@
     }
   }
 
+  .slapSongModalHeaderActions {
+    @include mixins.flexContainer(row, 0.5em);
+
+    & {
+      align-items: center;
+      flex-shrink: 0;
+    }
+  }
+
+  .slapSongModalEditBtn {
+    @include mixins.resetButton;
+
+    & {
+      width: 2em;
+      height: 2em;
+      border-radius: 50%;
+      background: vars.$greyBackground;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1em;
+      color: vars.$fontColorSecondary;
+      flex-shrink: 0;
+      transition: all vars.$transitionFast;
+    }
+
+    &:hover {
+      background: color-mix(in srgb, var(--level-color) 15%, transparent);
+      color: var(--level-color);
+    }
+
+    &.active {
+      background: color-mix(in srgb, var(--level-color) 15%, transparent);
+      color: var(--level-color);
+    }
+  }
+
   .slapSongModalClose {
     @include mixins.resetButton;
 
@@ -215,6 +252,87 @@
         line-height: 1.65;
         color: vars.$fontColorSecondary;
         margin: 0;
+      }
+    }
+  }
+
+  .slapSongModalEditLinks {
+    @include mixins.flexContainer(column, 0.75em);
+
+    & {
+      background: rgba(0, 0, 0, 0.03);
+      border: 1px solid vars.$borderColor;
+      border-radius: 10px;
+      padding: 1em;
+      border-left: 3px solid var(--level-color);
+    }
+
+    .editLinksTitle {
+      & {
+        font-size: 0.75em;
+        color: vars.$fontColorSecondary;
+        margin: 0;
+        line-height: 1.5;
+      }
+    }
+
+    .editLinkField {
+      @include mixins.flexContainer(column, 0.3em);
+    }
+
+    .editLinkLabel {
+      & {
+        font-size: 0.72em;
+        font-weight: 700;
+        color: vars.$fontColorSecondary;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+
+    .editLinkInput {
+      & {
+        width: 100%;
+        padding: 0.5em 0.75em;
+        border: 1px solid vars.$borderColor;
+        border-radius: 8px;
+        font-size: 0.8em;
+        color: vars.$fontColorPrimary;
+        background: white;
+        transition: border-color vars.$transitionFast;
+        box-sizing: border-box;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: var(--level-color);
+      }
+    }
+
+    .editLinksSaveBtn {
+      @include mixins.resetButton;
+      @include mixins.flexContainer(row, 0.4em);
+
+      & {
+        align-items: center;
+        justify-content: center;
+        padding: 0.6em 1em;
+        border-radius: 8px;
+        font-size: 0.8em;
+        font-weight: 700;
+        background: var(--level-color);
+        color: white;
+        transition: all vars.$transitionFast;
+        align-self: flex-end;
+      }
+
+      &:hover:not(:disabled) {
+        opacity: 0.85;
+        transform: translateY(-1px);
+      }
+
+      &:disabled {
+        opacity: 0.5;
       }
     }
   }

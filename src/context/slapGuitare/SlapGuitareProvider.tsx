@@ -9,6 +9,7 @@ import {
   getModuleSongsService,
   getProgressionService,
   updateProgressionService,
+  updateSongLinksService,
 } from "../../API/services/metalGuitare.service.ts";
 
 const MODULE_SLUG = "slap-guitar-progression";
@@ -79,6 +80,21 @@ export const SlapGuitareProvider = ({
     [progression, updateProgression]
   );
 
+  const updateSongLinks = useCallback(
+    async (songId: number, payload: { tablatureUrl?: string; youtubeUrl?: string }): Promise<void> => {
+      const updatedSong = await updateSongLinksService(songId, payload);
+      setLevels((prev) =>
+        prev.map((level) => ({
+          ...level,
+          songs: level.songs.map((s) =>
+            s.id === songId ? { ...s, ...updatedSong } : s
+          ),
+        }))
+      );
+    },
+    []
+  );
+
   const contextValue = useMemo(
     () => ({
       levels,
@@ -88,8 +104,9 @@ export const SlapGuitareProvider = ({
       getProgression,
       updateProgression,
       toggleSong,
+      updateSongLinks,
     }),
-    [levels, progression, isLoading, getLevels, getProgression, updateProgression, toggleSong]
+    [levels, progression, isLoading, getLevels, getProgression, updateProgression, toggleSong, updateSongLinks]
   );
 
   return (
