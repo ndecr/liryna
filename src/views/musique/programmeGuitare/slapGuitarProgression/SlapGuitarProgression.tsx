@@ -10,6 +10,7 @@ import { IoChevronDown, IoChevronForward } from "react-icons/io5";
 
 // context
 import { ProgrammeGuitareContext } from "../../../../context/programmeGuitare/ProgrammeGuitareContext.tsx";
+import { ProgrammeGuitareProvider } from "../../../../context/programmeGuitare/ProgrammeGuitareProvider.tsx";
 
 // types
 import { IProgrammeLevel, IProgrammeSong } from "../../../../utils/types/musique.types.ts";
@@ -24,6 +25,7 @@ import Header from "../../../../components/header/Header.tsx";
 import SubNav from "../../../../components/subNav/SubNav.tsx";
 import Button from "../../../../components/button/Button.tsx";
 import SongModal from "../../../../components/songModal/SongModal.tsx";
+import Loader from "../../../../components/loader/Loader.tsx";
 
 interface IModalSong {
   song: IProgrammeSong;
@@ -161,7 +163,7 @@ function SlapGuitarProgression(): ReactElement {
 
           <div className="levels">
             {isLoading && levels.length === 0 ? (
-              <div className="slapLoading">Chargement…</div>
+              <Loader size="medium" />
             ) : (
               levels.map((level, levelIdx) => {
                 const { done, total } = getLevelProgress(level);
@@ -357,5 +359,13 @@ function SlapGuitarProgression(): ReactElement {
   );
 }
 
-const SlapGuitarProgressionWithAuth = WithAuth(SlapGuitarProgression);
+function SlapGuitarProgressionWithProvider(): ReactElement {
+  return (
+    <ProgrammeGuitareProvider moduleSlug="slap-guitar-progression">
+      <SlapGuitarProgression />
+    </ProgrammeGuitareProvider>
+  );
+}
+
+const SlapGuitarProgressionWithAuth = WithAuth(SlapGuitarProgressionWithProvider);
 export default SlapGuitarProgressionWithAuth;
