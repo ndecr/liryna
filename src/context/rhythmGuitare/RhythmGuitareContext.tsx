@@ -13,6 +13,7 @@ interface IRhythmGuitareContext {
   getProgression: () => Promise<void>;
   toggleSong: (songId: number) => Promise<void>;
   updateProgression: (completedSongs: CompletedSongs) => Promise<void>;
+  updateSongLinks: (songId: number, payload: { tablatureUrl?: string; youtubeUrl?: string }) => Promise<void>;
 }
 
 export const RhythmGuitareContext: Context<IRhythmGuitareContext> =
@@ -24,4 +25,5 @@ export const RhythmGuitareContext: Context<IRhythmGuitareContext> =
     getProgression: async (): Promise<void> => {},
     toggleSong: async (): Promise<void> => {},
     updateProgression: async (): Promise<void> => {},
+    updateSongLinks: async (): Promise<void> => {},
   });
