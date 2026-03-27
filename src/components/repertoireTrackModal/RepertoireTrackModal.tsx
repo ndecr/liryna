@@ -6,7 +6,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { MdClose, MdCheck } from "react-icons/md";
 
 // types
-import { IRepertoireTrack, IRepertoireTrackFormData, IRepertoireTrackType } from "../../utils/types/musique.types.ts";
+import { IRepertoireTrack, IRepertoireTrackFormData } from "../../utils/types/musique.types.ts";
 
 const GENRES_SUGGESTIONS = [
   "Blues", "Classical", "Country", "Electro", "Flamenco", "Folk",
