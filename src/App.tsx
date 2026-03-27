@@ -33,6 +33,10 @@ import BudgetWithAuth from "./views/budget/Budget.tsx";
 import BudgetDashboardWithAuth from "./views/budget/budgetDashboard/BudgetDashboard.tsx";
 import BudgetEditWithAuth from "./views/budget/budgetEdit/BudgetEdit.tsx";
 import PretImmobilierWithAuth from "./views/budget/pretImmobilier/PretImmobilier.tsx";
+import MusiqueWithAuth from "./views/musique/Musique.tsx";
+import ProgrammeGuitareWithAuth from "./views/musique/programmeGuitare/ProgrammeGuitare.tsx";
+import MetalGuitarProgressionWithAuth from "./views/musique/programmeGuitare/metalGuitarProgression/MetalGuitarProgression.tsx";
+import AccordagesGuitareWithAuth from "./views/musique/accordagesGuitare/AccordagesGuitare.tsx";
 
 // Component to manage body classes based on current route
 function BodyClassManager(): ReactElement | null {
@@ -40,13 +44,15 @@ function BodyClassManager(): ReactElement | null {
 
   useEffect(() => {
     // Remove all existing nav-related classes
-    document.body.classList.remove('has-subnav', 'section-webdev', 'section-utils', 'section-home');
+    document.body.classList.remove('has-subnav', 'section-webdev', 'section-utils', 'section-home', 'section-musique');
 
     // Determine current section and add appropriate classes
     if (location.pathname === '/' || location.pathname === '/home') {
       document.body.classList.add('section-home');
     } else if (location.pathname.includes('/web_dev') || location.pathname.startsWith('/budget')) {
       document.body.classList.add('section-webdev');
+    } else if (location.pathname.startsWith('/musique')) {
+      document.body.classList.add('section-musique');
     } else if (location.pathname.includes('/utils')) {
       document.body.classList.add('section-utils');
       
@@ -95,6 +101,10 @@ function App(): ReactElement {
         <Route path={"budget/dashboard"} element={<BudgetDashboardWithAuth />}></Route>
         <Route path={"budget/edit"} element={<BudgetEditWithAuth />}></Route>
         <Route path={"budget/pret-immobilier"} element={<PretImmobilierWithAuth />}></Route>
+        <Route path={"musique"} element={<MusiqueWithAuth />}></Route>
+        <Route path={"musique/programme-guitare"} element={<ProgrammeGuitareWithAuth />}></Route>
+        <Route path={"musique/programme-guitare/metal-progression"} element={<MetalGuitarProgressionWithAuth />}></Route>
+        <Route path={"musique/accordages-guitare"} element={<AccordagesGuitareWithAuth />}></Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       

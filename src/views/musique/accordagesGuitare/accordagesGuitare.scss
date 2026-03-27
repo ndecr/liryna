@@ -1,0 +1,326 @@
+@use "../../../utils/styles/mixins" as mixins;
+@use "../../../utils/styles/variables" as vars;
+
+#accordagesGuitare {
+  @include mixins.mainView;
+
+  & {
+    @include mixins.responsivePadding(1em, 1.5em, 2em);
+  }
+
+  .accordagesContainer {
+    @include mixins.centeredContainer;
+    @include mixins.flexContainer(column, 2em);
+
+    & {
+      flex: 1;
+    }
+
+    @media (min-width: vars.$tabletWidth) {
+      gap: 2.5em;
+    }
+  }
+
+  // ── Bouton retour ──────────────────────────────────────────────────────────
+  .backButton {
+    @include mixins.flexContainer(row, 0.4em);
+    @include mixins.resetButton;
+
+    & {
+      align-items: center;
+      color: vars.$musiquePrimary;
+      font-size: 0.95em;
+      font-weight: 600;
+      transition: all vars.$transitionFast;
+      align-self: flex-start;
+    }
+
+    &:hover {
+      opacity: 0.75;
+      transform: translateX(-0.2em);
+    }
+  }
+
+  // ── En-tête ────────────────────────────────────────────────────────────────
+  .accordagesHeader {
+    & {
+      text-align: center;
+    }
+
+    .accordagesIcon {
+      & {
+        font-size: 2.5em;
+        background: vars.$musiqueGradient;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+        margin-bottom: 0.25em;
+      }
+    }
+
+    .accordagesTitle {
+      & {
+        font-size: 2em;
+        font-weight: 900;
+        background: vars.$musiqueGradient;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin: 0 0 0.25em;
+        line-height: 1.2;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        font-size: 2.3em;
+      }
+    }
+
+    .accordagesSubtitle {
+      & {
+        color: vars.$fontColorSecondary;
+        font-size: 0.9em;
+        margin: 0;
+        line-height: 1.6;
+      }
+    }
+  }
+
+  // ── Légende des cordes ─────────────────────────────────────────────────────
+  .stringsLegend {
+    @include mixins.flexContainer(row, 0.75em);
+    @include mixins.card(10px, light);
+
+    & {
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 0.875em 1.25em;
+    }
+
+    .legendItem {
+      @include mixins.flexContainer(row, 0.375em);
+
+      & {
+        align-items: center;
+      }
+    }
+
+    .legendDot {
+      & {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+    }
+
+    .legendLabel {
+      & {
+        font-size: 0.75em;
+        font-weight: 600;
+        color: vars.$fontColorSecondary;
+      }
+    }
+  }
+
+  // ── Liste des catégories ───────────────────────────────────────────────────
+  .categoriesList {
+    @include mixins.flexContainer(column, 0.75em);
+  }
+
+  .categoryCard {
+    @include mixins.card(12px, light);
+
+    & {
+      overflow: hidden;
+      border-left: 4px solid vars.$musiquePrimary;
+      transition: box-shadow vars.$transitionFast;
+    }
+
+    &:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .categoryHeader {
+      @include mixins.flexContainer(row, 0.75em);
+      @include mixins.resetButton;
+
+      & {
+        width: 100%;
+        padding: 1em 1.25em;
+        align-items: center;
+        text-align: left;
+        transition: background vars.$transitionFast;
+      }
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.02);
+      }
+    }
+
+    .categoryTitle {
+      & {
+        flex: 1;
+        font-size: 0.85em;
+        font-weight: 800;
+        color: vars.$musiquePrimary;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+      }
+    }
+
+    .categoryCount {
+      & {
+        font-size: 0.75em;
+        font-weight: 700;
+        color: vars.$fontColorSecondary;
+        background: vars.$greyBackground;
+        border: 1px solid vars.$borderColor;
+        border-radius: 20px;
+        padding: 2px 8px;
+        flex-shrink: 0;
+      }
+    }
+
+    .categoryChevron {
+      & {
+        font-size: 0.875em;
+        color: vars.$fontColorSecondary;
+        transition: transform vars.$transitionFast;
+        flex-shrink: 0;
+      }
+    }
+
+    &.open .categoryChevron {
+      transform: rotate(180deg);
+    }
+
+    // ── Liste des accordages ─────────────────────────────────────────────────
+    .tuningsList {
+      @include mixins.flexContainer(column, 0);
+
+      & {
+        border-top: 1px solid vars.$borderColor;
+      }
+    }
+  }
+
+  // ── Accordage individuel ───────────────────────────────────────────────────
+  .tuningItem {
+    & {
+      border-bottom: 1px solid vars.$borderColor;
+      transition: background vars.$transitionFast;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    .tuningRow {
+      @include mixins.flexContainer(row, 0.75em);
+      @include mixins.resetButton;
+
+      & {
+        width: 100%;
+        padding: 0.875em 1.25em;
+        align-items: center;
+        text-align: left;
+        cursor: pointer;
+      }
+    }
+
+    .tuningName {
+      & {
+        font-size: 0.875em;
+        font-weight: 700;
+        color: vars.$fontColorPrimary;
+        flex-shrink: 0;
+        min-width: 10em;
+      }
+    }
+
+    .tuningPreview {
+      & {
+        flex: 1;
+        font-size: 0.75em;
+        color: vars.$fontColorSecondary;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .tuningChevron {
+      & {
+        font-size: 0.75em;
+        color: vars.$fontColorSecondary;
+        transition: transform vars.$transitionFast;
+        flex-shrink: 0;
+        opacity: 0.5;
+      }
+    }
+
+    &.expanded .tuningChevron {
+      transform: rotate(180deg);
+    }
+
+    // ── Détail de l'accordage ────────────────────────────────────────────────
+    .tuningDetails {
+      & {
+        padding: 0.75em 1.25em 1.25em;
+        background: vars.$greyBackground;
+        border-top: 1px solid vars.$borderColor;
+      }
+    }
+
+    .tuningStrings {
+      @include mixins.flexContainer(row, 0.5em);
+
+      & {
+        flex-wrap: wrap;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        flex-wrap: nowrap;
+        gap: 0.75em;
+      }
+    }
+
+    .stringItem {
+      @include mixins.flexContainer(column, 0.25em);
+
+      & {
+        align-items: center;
+        min-width: 3em;
+        flex: 1;
+      }
+    }
+
+    .stringNumber {
+      & {
+        font-size: 0.65em;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        opacity: 0.7;
+      }
+    }
+
+    .stringNote {
+      & {
+        font-size: 1em;
+        font-weight: 800;
+        padding: 0.4em 0.6em;
+        border-radius: 8px;
+        border: 1.5px solid;
+        min-width: 2.25em;
+        text-align: center;
+        line-height: 1;
+      }
+    }
+  }
+}

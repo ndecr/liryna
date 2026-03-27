@@ -4,6 +4,7 @@ import "./home.scss";
 // assets
 import mailBackground from "../../assets/background/mailSectionBckground.webp";
 import budgetBackground from "../../assets/background/comptaBackground.webp";
+import musicBackground from "../../assets/background/musicSectionBackground.webp";
 
 // hooks | library
 import { ReactElement } from "react";
@@ -35,6 +36,14 @@ function Home(): ReactElement {
                 <img src={budgetBackground} alt={"Gestion du budget"} />
               </figure>
               <h2>Gestion du budget</h2>
+            </Link>
+          </section>
+          <section className={"musiqueSection"}>
+            <Link to={"/musique"}>
+              <figure>
+                <img src={musicBackground} alt={"Musique"} />
+              </figure>
+              <h2>Musique</h2>
             </Link>
           </section>
         </div>

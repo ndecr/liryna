@@ -4,14 +4,14 @@ import "./subNav.scss";
 // hooks | libraries
 import { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
-import { IoHome, IoMail, IoWallet } from "react-icons/io5";
+import { IoHome, IoMail, IoWallet, IoMusicalNotes } from "react-icons/io5";
 
 interface ISection {
   id: string;
   name: string;
   path: string;
   icon: ReactElement;
-  theme: "utils" | "webdev";
+  theme: "utils" | "webdev" | "musique";
 }
 
 export default function SubNav(): ReactElement | null {
@@ -38,6 +38,13 @@ export default function SubNav(): ReactElement | null {
       path: "/budget",
       icon: <IoWallet />,
       theme: "webdev",
+    },
+    {
+      id: "4",
+      name: "Musique",
+      path: "/musique",
+      icon: <IoMusicalNotes />,
+      theme: "musique",
     },
   ];
 
