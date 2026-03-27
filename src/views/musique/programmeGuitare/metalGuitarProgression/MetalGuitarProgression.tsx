@@ -48,11 +48,15 @@ function MetalGuitarProgression(): ReactElement {
   }, [getLevels, getProgression]);
 
   useEffect(() => {
-    if (!initializedRef.current && levels.length > 0) {
+    if (!initializedRef.current && levels.length > 0 && progression !== null) {
       initializedRef.current = true;
-      setExpandedLevel(levels[0].id);
+      const completed = progression.completedSongs;
+      const firstIncomplete = levels.find((level) =>
+        level.songs.some((s) => !completed[s.id.toString()])
+      );
+      setExpandedLevel(firstIncomplete?.id ?? null);
     }
-  }, [levels]);
+  }, [levels, progression]);
 
   const completedSongs = progression?.completedSongs ?? {};
 

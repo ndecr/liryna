@@ -41,7 +41,7 @@ function SlapGuitarProgression(): ReactElement {
   const [expandedSong, setExpandedSong] = useState<number | null>(null);
   const [modalSong, setModalSong] = useState<IModalSong | null>(null);
   const [tuningPopupSong, setTuningPopupSong] = useState<number | null>(null);
-  const [tipsOpen, setTipsOpen] = useState(true);
+  const [tipsOpen, setTipsOpen] = useState(false);
   const initializedRef = useRef(false);
 
   useEffect(() => {
@@ -50,11 +50,15 @@ function SlapGuitarProgression(): ReactElement {
   }, [getLevels, getProgression]);
 
   useEffect(() => {
-    if (!initializedRef.current && levels.length > 0) {
+    if (!initializedRef.current && levels.length > 0 && progression !== null) {
       initializedRef.current = true;
-      setExpandedLevel(levels[0].id);
+      const completed = progression.completedSongs;
+      const firstIncomplete = levels.find((level) =>
+        level.songs.some((s) => !completed[s.id.toString()])
+      );
+      setExpandedLevel(firstIncomplete?.id ?? null);
     }
-  }, [levels]);
+  }, [levels, progression]);
 
   const completedSongs = progression?.completedSongs ?? {};
 
