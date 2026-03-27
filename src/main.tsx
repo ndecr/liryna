@@ -6,9 +6,6 @@ import { UserProvider } from "./context/user/UserProvider.tsx";
 import { CourrierProvider } from "./context/courrier/CourrierProvider.tsx";
 import { BudgetProvider } from "./context/budget/BudgetProvider.tsx";
 import { PretImmobilierProvider } from "./context/pretImmobilier/PretImmobilierProvider.tsx";
-import { MetalGuitareProvider } from "./context/metalGuitare/MetalGuitareProvider.tsx";
-import { RhythmGuitareProvider } from "./context/rhythmGuitare/RhythmGuitareProvider.tsx";
-import { SlapGuitareProvider } from "./context/slapGuitare/SlapGuitareProvider.tsx";
 import LoaderProvider from "./context/loader/LoaderProvider.tsx";
 import { AlertProvider } from "./context/alert/AlertProvider.tsx";
 
@@ -37,17 +34,11 @@ createRoot(document.getElementById("root")!).render(
     <CourrierProvider>
       <BudgetProvider>
         <PretImmobilierProvider>
-          <MetalGuitareProvider>
-            <RhythmGuitareProvider>
-              <SlapGuitareProvider>
-              <LoaderProvider>
-                <AlertProvider>
-                  <App />
-                </AlertProvider>
-              </LoaderProvider>
-              </SlapGuitareProvider>
-            </RhythmGuitareProvider>
-          </MetalGuitareProvider>
+          <LoaderProvider>
+            <AlertProvider>
+              <App />
+            </AlertProvider>
+          </LoaderProvider>
         </PretImmobilierProvider>
       </BudgetProvider>
     </CourrierProvider>

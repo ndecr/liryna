@@ -10,6 +10,7 @@ import { IoChevronDown, IoChevronForward } from "react-icons/io5";
 
 // context
 import { ProgrammeGuitareContext } from "../../../../context/programmeGuitare/ProgrammeGuitareContext.tsx";
+import { ProgrammeGuitareProvider } from "../../../../context/programmeGuitare/ProgrammeGuitareProvider.tsx";
 
 // types
 import { IProgrammeLevel, IProgrammeSong } from "../../../../utils/types/musique.types.ts";
@@ -23,6 +24,7 @@ import Header from "../../../../components/header/Header.tsx";
 import SubNav from "../../../../components/subNav/SubNav.tsx";
 import Button from "../../../../components/button/Button.tsx";
 import SongModal from "../../../../components/songModal/SongModal.tsx";
+import Loader from "../../../../components/loader/Loader.tsx";
 
 interface IModalSong {
   song: IProgrammeSong;
@@ -135,7 +137,7 @@ function RhythmGuitarProgression(): ReactElement {
 
           <div className="levels">
             {isLoading && levels.length === 0 ? (
-              <div className="rhythmLoading">Chargement…</div>
+              <Loader size="medium" />
             ) : (
               levels.map((level, levelIdx) => {
                 const { done, total } = getLevelProgress(level);
@@ -331,5 +333,13 @@ function RhythmGuitarProgression(): ReactElement {
   );
 }
 
-const RhythmGuitarProgressionWithAuth = WithAuth(RhythmGuitarProgression);
+function RhythmGuitarProgressionWithProvider(): ReactElement {
+  return (
+    <ProgrammeGuitareProvider moduleSlug="rhythm-guitar-progression">
+      <RhythmGuitarProgression />
+    </ProgrammeGuitareProvider>
+  );
+}
+
+const RhythmGuitarProgressionWithAuth = WithAuth(RhythmGuitarProgressionWithProvider);
 export default RhythmGuitarProgressionWithAuth;
