@@ -277,14 +277,16 @@ function RhythmGuitarProgression(): ReactElement {
                                   </div>
                                   <p className="songTip">💡 {song.tip}</p>
                                   <div className="songLinks">
-                                    <a
-                                      href={song.tablatureUrl}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="tablatureLink"
-                                    >
-                                      🎸 Tablature
-                                    </a>
+                                    {song.tablatureUrl && (
+                                      <a
+                                        href={song.tablatureUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="tablatureLink"
+                                      >
+                                        🎸 Tablature
+                                      </a>
+                                    )}
                                     {song.youtubeUrl && (
                                       <a
                                         href={song.youtubeUrl}
