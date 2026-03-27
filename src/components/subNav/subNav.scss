@@ -81,6 +81,14 @@
         background: vars.$budgetGradientReverse;
       }
     }
+
+    &.musique {
+      background: vars.$musiqueGradient;
+
+      &::before {
+        background: vars.$musiqueGradientReverse;
+      }
+    }
   }
   
   .subNavIcon {

@@ -1,0 +1,168 @@
+@use "../../../utils/styles/mixins" as mixins;
+@use "../../../utils/styles/variables" as vars;
+
+#programmeGuitare {
+  @include mixins.mainView;
+
+  & {
+    @include mixins.responsivePadding(1em, 1.5em, 2em);
+  }
+
+  .programmeGuitareContainer {
+    @include mixins.centeredContainer;
+    @include mixins.flexContainer(column, 2em);
+
+    & {
+      flex: 1;
+    }
+
+    @media (min-width: vars.$tabletWidth) {
+      gap: 2.5em;
+    }
+  }
+
+  .backButton {
+    @include mixins.flexContainer(row, 0.4em);
+    @include mixins.resetButton;
+
+    & {
+      align-items: center;
+      color: vars.$musiquePrimary;
+      font-size: 0.95em;
+      font-weight: 600;
+      transition: all vars.$transitionFast;
+      align-self: flex-start;
+    }
+
+    &:hover {
+      opacity: 0.75;
+      transform: translateX(-0.2em);
+    }
+  }
+
+  .programmeGuitareHeader {
+    & {
+      text-align: center;
+      color: vars.$fontColorPrimary;
+    }
+
+    .programmeGuitareIcon {
+      & {
+        font-size: 3em;
+        background: vars.$musiqueGradient;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+        margin-bottom: 0.25em;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        font-size: 3.5em;
+      }
+    }
+
+    .programmeGuitareTitle {
+      & {
+        font-size: 2em;
+        font-weight: 700;
+        background: vars.$musiqueGradient;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        font-size: 2.3em;
+      }
+    }
+
+    .programmeGuitareSubtitle {
+      & {
+        font-size: 1em;
+        opacity: 0.9;
+        margin: 0.5em 0 0;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        font-size: 1.1em;
+      }
+    }
+  }
+
+  .programmesGrid {
+    @include mixins.flexContainer(column, 1em);
+
+    & {
+      max-width: 40em;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    @media (min-width: vars.$tabletWidth) {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 1.5em;
+    }
+
+    .programmeCard {
+      @include mixins.card(12px, light);
+      @include mixins.flexContainer(row, 1em);
+
+      & {
+        align-items: center;
+        padding: 1.5em;
+        cursor: pointer;
+        border: none;
+        text-align: left;
+        transition: all vars.$transitionMedium;
+        flex: 1;
+        min-width: 0;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        padding: 2em;
+      }
+
+      &:hover {
+        transform: translateY(-0.125em);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      &.primary {
+        background: vars.$musiqueGradient;
+        color: white;
+      }
+
+      .programmeCardIcon {
+        & {
+          font-size: 2em;
+          flex-shrink: 0;
+          color: vars.$musiquePrimary;
+        }
+
+        .primary & {
+          color: white;
+        }
+      }
+
+      .programmeCardContent {
+        @include mixins.flexContainer(column, 0.25em);
+
+        .programmeCardLabel {
+          & {
+            font-size: 1.05em;
+            font-weight: 700;
+          }
+        }
+
+        .programmeCardDescription {
+          & {
+            font-size: 0.85em;
+            opacity: 0.8;
+          }
+        }
+      }
+    }
+  }
+}

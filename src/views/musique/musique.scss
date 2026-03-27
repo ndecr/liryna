@@ -1,0 +1,163 @@
+@use "../../utils/styles/mixins" as mixins;
+@use "../../utils/styles/variables" as vars;
+
+#musique {
+  @include mixins.mainView;
+
+  & {
+    @include mixins.responsivePadding(1em, 1.5em, 2em);
+  }
+
+  .musiqueContainer {
+    @include mixins.centeredContainer;
+    @include mixins.flexContainer(column, 2em);
+
+    & {
+      flex: 1;
+    }
+
+    @media (min-width: vars.$tabletWidth) {
+      gap: 2.5em;
+    }
+
+    @media (min-width: vars.$desktopWidth) {
+      gap: 3em;
+    }
+  }
+
+  .musiqueHeader {
+    & {
+      text-align: center;
+      color: vars.$fontColorPrimary;
+    }
+
+    .musiqueIcon {
+      & {
+        font-size: 3em;
+        background: vars.$musiqueGradient;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+        margin-bottom: 0.25em;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        font-size: 3.5em;
+      }
+    }
+
+    .musiqueTitle {
+      & {
+        font-size: 2em;
+        font-weight: 700;
+        background: vars.$musiqueGradient;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        font-size: 2.3em;
+      }
+
+      @media (min-width: vars.$desktopWidth) {
+        font-size: 2.5em;
+      }
+    }
+
+    .musiqueSubtitle {
+      & {
+        font-size: 1em;
+        opacity: 0.9;
+        margin: 0.5em 0 0;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        font-size: 1.1em;
+      }
+    }
+  }
+
+  .musiqueActions {
+    .actionsGrid {
+      @include mixins.flexContainer(column, 1em);
+
+      & {
+        max-width: 40em;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 1.5em;
+      }
+
+      .actionBtn {
+        @include mixins.card(10px, light);
+
+        & {
+          @include mixins.flexContainer(column, 0.75em);
+          align-items: center;
+          padding: 1.5em 1em;
+          cursor: pointer;
+          flex: 1;
+          min-width: 0;
+          border: none;
+          transition: all vars.$transitionMedium;
+        }
+
+        @media (min-width: vars.$tabletWidth) {
+          border-radius: 12px;
+          padding: 2em 1.5em;
+          gap: 1em;
+        }
+
+        &:hover:not(:disabled) {
+          transform: translateY(-0.125em);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        &.primary {
+          background: vars.$musiqueGradient;
+          color: white;
+        }
+
+        &:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+          transform: none;
+        }
+
+        .actionIcon {
+          & {
+            font-size: 1.75em;
+            color: vars.$musiquePrimary;
+          }
+
+          .primary & {
+            color: white;
+          }
+
+          @media (min-width: vars.$tabletWidth) {
+            font-size: 2em;
+          }
+        }
+
+        .actionText {
+          & {
+            font-size: 1em;
+            font-weight: 600;
+            text-align: center;
+          }
+
+          @media (min-width: vars.$tabletWidth) {
+            font-size: 1.1em;
+          }
+        }
+      }
+    }
+  }
+}
