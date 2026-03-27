@@ -6,6 +6,7 @@ import { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoMusicalNotes } from "react-icons/io5";
 import { GiGuitar, GiMusicalNotes } from "react-icons/gi";
+import { MdLibraryMusic } from "react-icons/md";
 
 // components
 import WithAuth from "../../utils/middleware/WithAuth.tsx";
@@ -20,22 +21,27 @@ function Musique(): ReactElement {
       id: "programme-guitare",
       label: "Programme Guitare",
       icon: <GiGuitar />,
+      route: "/musique/programme-guitare",
+      primary: true,
+    },
+    {
+      id: "mon-repertoire",
+      label: "Mon Répertoire",
+      icon: <MdLibraryMusic />,
+      route: "/musique/repertoire",
       primary: true,
     },
     {
       id: "accordages-guitare",
       label: "Liste d'accordage guitare",
       icon: <GiMusicalNotes />,
+      route: "/musique/accordages-guitare",
       primary: false,
     },
   ];
 
-  const handleActionClick = (actionId: string) => {
-    if (actionId === "programme-guitare") {
-      navigate("/musique/programme-guitare");
-    } else if (actionId === "accordages-guitare") {
-      navigate("/musique/accordages-guitare");
-    }
+  const handleActionClick = (route: string) => {
+    navigate(route);
   };
 
   return (
@@ -59,7 +65,7 @@ function Musique(): ReactElement {
                   key={action.id}
                   type="button"
                   className={`actionBtn ${action.primary ? "primary" : ""}`}
-                  onClick={() => handleActionClick(action.id)}
+                  onClick={() => handleActionClick(action.route)}
                 >
                   <span className="actionIcon">{action.icon}</span>
                   <span className="actionText">{action.label}</span>

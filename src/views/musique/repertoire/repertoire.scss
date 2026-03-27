@@ -1,0 +1,172 @@
+@use "../../../utils/styles/mixins" as mixins;
+@use "../../../utils/styles/variables" as vars;
+
+#repertoire {
+  @include mixins.mainView;
+
+  & {
+    @include mixins.responsivePadding(1em, 1.5em, 2em);
+  }
+
+  .repertoireContainer {
+    @include mixins.centeredContainer;
+    @include mixins.flexContainer(column, 2em);
+
+    & {
+      flex: 1;
+    }
+
+    @media (min-width: vars.$tabletWidth) {
+      gap: 2.5em;
+    }
+  }
+
+  .repertoireHeader {
+    & {
+      text-align: center;
+    }
+
+    .repertoireLabel {
+      & {
+        font-size: 0.8em;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        background: vars.$musiqueGradient;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin: 0 0 0.5em;
+      }
+    }
+
+    .repertoireTitle {
+      & {
+        font-size: 1.75em;
+        font-weight: 800;
+        color: vars.$fontColorPrimary;
+        margin: 0 0 0.4em;
+        line-height: 1.2;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        font-size: 2em;
+      }
+    }
+
+    .repertoireSubtitle {
+      & {
+        font-size: 0.9em;
+        color: vars.$fontColorSecondary;
+        margin: 0;
+      }
+    }
+  }
+
+  .repertoireToolbar {
+    @include mixins.flexContainer(row, 0.75em);
+
+    & {
+      align-items: center;
+      flex-wrap: wrap;
+    }
+  }
+
+  .repertoireFilters {
+    @include mixins.flexContainer(row, 0.4em);
+
+    & {
+      flex: 1;
+      flex-wrap: wrap;
+    }
+  }
+
+  .filterBtn {
+    @include mixins.resetButton;
+
+    & {
+      font-size: 0.8em;
+      font-weight: 600;
+      padding: 0.4em 0.9em;
+      border-radius: 20px;
+      border: 1px solid vars.$borderColor;
+      color: vars.$fontColorSecondary;
+      background: white;
+      transition: all vars.$transitionFast;
+      white-space: nowrap;
+    }
+
+    &:hover {
+      border-color: vars.$musiquePrimary;
+      color: vars.$musiquePrimary;
+    }
+
+    &.active {
+      background: vars.$musiqueGradient;
+      color: white;
+      border-color: transparent;
+    }
+  }
+
+  .repertoireAddBtn {
+    @include mixins.resetButton;
+    @include mixins.flexContainer(row, 0.4em);
+
+    & {
+      align-items: center;
+      padding: 0.5em 1em;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: 700;
+      background: vars.$musiqueGradient;
+      color: white;
+      flex-shrink: 0;
+      transition: all vars.$transitionFast;
+    }
+
+    &:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+  }
+
+  .repertoireSections {
+    @include mixins.flexContainer(column, 1em);
+  }
+
+  .repertoireEmpty {
+    @include mixins.flexContainer(column, 0.75em);
+
+    & {
+      align-items: center;
+      padding: 3em 1em;
+      text-align: center;
+      color: vars.$fontColorSecondary;
+    }
+
+    .emptyIcon {
+      & {
+        font-size: 2.5em;
+        opacity: 0.4;
+      }
+    }
+
+    .emptyTitle {
+      & {
+        font-size: 1em;
+        font-weight: 700;
+        color: vars.$fontColorPrimary;
+        margin: 0;
+      }
+    }
+
+    .emptyText {
+      & {
+        font-size: 0.875em;
+        margin: 0;
+        max-width: 28em;
+        line-height: 1.6;
+      }
+    }
+  }
+}

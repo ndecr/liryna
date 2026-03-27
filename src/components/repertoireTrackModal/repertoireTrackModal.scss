@@ -1,0 +1,214 @@
+@use "../../utils/styles/variables" as vars;
+@use "../../utils/styles/mixins" as mixins;
+
+#repertoireTrackModal,
+.repertoireTrackModalBackdrop {
+  & {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0;
+    animation: repertoireBackdropIn vars.$transitionFast;
+  }
+
+  @media (min-width: vars.$tabletWidth) {
+    align-items: center;
+    padding: 2em;
+  }
+
+  @keyframes repertoireBackdropIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+}
+
+.repertoireTrackModalContainer {
+  @include mixins.flexContainer(column, 0);
+
+  & {
+    background: white;
+    border-radius: 16px 16px 0 0;
+    box-shadow: vars.$shadowHeavy;
+    width: 100%;
+    max-width: 32em;
+    overflow: hidden;
+    animation: repertoireSlideUp 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+    border-top: 4px solid vars.$musiquePrimary;
+    max-height: 90dvh;
+    overflow-y: auto;
+  }
+
+  @media (min-width: vars.$tabletWidth) {
+    border-radius: 16px;
+    animation: repertoirePopIn 0.2s cubic-bezier(0.34, 1.2, 0.64, 1);
+    max-height: 85dvh;
+  }
+
+  @keyframes repertoireSlideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  @keyframes repertoirePopIn {
+    from { transform: scale(0.94); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+  }
+}
+
+.repertoireTrackModalHeader {
+  @include mixins.flexContainer(row, 0.75em);
+
+  & {
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25em 1.25em 1em;
+    border-bottom: 1px solid vars.$borderColor;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+  }
+
+  .repertoireModalTitle {
+    & {
+      font-size: 1em;
+      font-weight: 800;
+      color: vars.$fontColorPrimary;
+      margin: 0;
+    }
+  }
+
+  .repertoireModalClose {
+    @include mixins.resetButton;
+
+    & {
+      width: 2em;
+      height: 2em;
+      border-radius: 50%;
+      background: vars.$greyBackground;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1em;
+      color: vars.$fontColorSecondary;
+      flex-shrink: 0;
+      transition: all vars.$transitionFast;
+    }
+
+    &:hover {
+      background: vars.$errorColor;
+      color: white;
+    }
+  }
+}
+
+.repertoireTrackModalForm {
+  @include mixins.flexContainer(column, 1em);
+
+  & {
+    padding: 1.25em;
+  }
+
+  .formField {
+    @include mixins.flexContainer(column, 0.35em);
+  }
+
+  .formLabel {
+    & {
+      font-size: 0.72em;
+      font-weight: 700;
+      color: vars.$fontColorSecondary;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .required {
+      color: vars.$errorColor;
+      margin-left: 2px;
+    }
+  }
+
+  .formInput,
+  .formSelect {
+    & {
+      width: 100%;
+      padding: 0.6em 0.75em;
+      border: 1px solid vars.$borderColor;
+      border-radius: 8px;
+      font-size: 0.875em;
+      color: vars.$fontColorPrimary;
+      background: white;
+      transition: border-color vars.$transitionFast;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: vars.$musiquePrimary;
+    }
+
+    &.error {
+      border-color: vars.$errorColor;
+    }
+  }
+
+  .formSelect {
+    & {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23666' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75em center;
+      padding-right: 2.5em;
+    }
+  }
+
+  .formError {
+    & {
+      font-size: 0.72em;
+      color: vars.$errorColor;
+    }
+  }
+
+  .formRow {
+    @include mixins.flexContainer(row, 0.75em);
+
+    .formField {
+      flex: 1;
+    }
+  }
+
+  .formSubmitBtn {
+    @include mixins.resetButton;
+    @include mixins.flexContainer(row, 0.4em);
+
+    & {
+      align-items: center;
+      justify-content: center;
+      padding: 0.75em 1.5em;
+      border-radius: 10px;
+      font-size: 0.875em;
+      font-weight: 700;
+      background: vars.$musiqueGradient;
+      color: white;
+      transition: all vars.$transitionFast;
+      align-self: stretch;
+    }
+
+    &:hover:not(:disabled) {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}

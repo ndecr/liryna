@@ -1,3 +1,30 @@
+// ─── Répertoire personnel ────────────────────────────────────────────────────
+
+export type IRepertoireTrackType = "rythmique" | "solo" | "partition_complete";
+
+export interface IRepertoireTrack {
+  id: number;
+  title: string;
+  artist: string;
+  genre: string;
+  type: IRepertoireTrackType;
+  tablatureUrl: string;
+  youtubeUrl: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface IRepertoireTrackFormData {
+  title: string;
+  artist: string;
+  genre: string;
+  type: IRepertoireTrackType;
+  tablatureUrl: string;
+  youtubeUrl: string;
+}
+
+// ─── Programme guitare ───────────────────────────────────────────────────────
+
 export interface IProgrammeSong {
   id: number;
   levelId: number;

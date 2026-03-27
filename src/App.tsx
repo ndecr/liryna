@@ -39,6 +39,7 @@ import MetalGuitarProgressionWithAuth from "./views/musique/programmeGuitare/met
 import RhythmGuitarProgressionWithAuth from "./views/musique/programmeGuitare/rhythmGuitarProgression/RhythmGuitarProgression.tsx";
 import SlapGuitarProgressionWithAuth from "./views/musique/programmeGuitare/slapGuitarProgression/SlapGuitarProgression.tsx";
 import AccordagesGuitareWithAuth from "./views/musique/accordagesGuitare/AccordagesGuitare.tsx";
+import RepertoireWithAuth from "./views/musique/repertoire/Repertoire.tsx";
 
 // Component to manage body classes based on current route
 function BodyClassManager(): ReactElement | null {
@@ -109,6 +110,7 @@ function App(): ReactElement {
         <Route path={"musique/programme-guitare/rhythm-progression"} element={<RhythmGuitarProgressionWithAuth />}></Route>
         <Route path={"musique/programme-guitare/slap-progression"} element={<SlapGuitarProgressionWithAuth />}></Route>
         <Route path={"musique/accordages-guitare"} element={<AccordagesGuitareWithAuth />}></Route>
+        <Route path={"musique/repertoire"} element={<RepertoireWithAuth />}></Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       
