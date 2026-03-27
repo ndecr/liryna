@@ -2,6 +2,7 @@ import { getRequest, patchRequest } from "../APICalls.ts";
 import { AxiosResponse } from "axios";
 import {
   IProgrammeModule,
+  IProgrammeSong,
   IProgrammeProgression,
   IProgrammeProgressionFormData,
 } from "../../utils/types/musique.types.ts";
@@ -73,6 +74,20 @@ export const getProgressionService = async (
     if (cached) return programmeProgressionModel(cached);
     return programmeProgressionModel({ completedSongs: {} });
   }
+};
+
+export const updateSongLinksService = async (
+  songId: number,
+  payload: { songsterrUrl?: string; youtubeUrl?: string }
+): Promise<IProgrammeSong> => {
+  const response: AxiosResponse<IApiResponse<IProgrammeSong>> = await patchRequest(
+    `/musique/songs/${songId}`,
+    payload
+  );
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+  throw new Error(response.data.message || "Erreur lors de la mise à jour du morceau");
 };
 
 export const updateProgressionService = async (

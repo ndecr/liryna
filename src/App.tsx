@@ -36,6 +36,8 @@ import PretImmobilierWithAuth from "./views/budget/pretImmobilier/PretImmobilier
 import MusiqueWithAuth from "./views/musique/Musique.tsx";
 import ProgrammeGuitareWithAuth from "./views/musique/programmeGuitare/ProgrammeGuitare.tsx";
 import MetalGuitarProgressionWithAuth from "./views/musique/programmeGuitare/metalGuitarProgression/MetalGuitarProgression.tsx";
+import RhythmGuitarProgressionWithAuth from "./views/musique/programmeGuitare/rhythmGuitarProgression/RhythmGuitarProgression.tsx";
+import SlapGuitarProgressionWithAuth from "./views/musique/programmeGuitare/slapGuitarProgression/SlapGuitarProgression.tsx";
 import AccordagesGuitareWithAuth from "./views/musique/accordagesGuitare/AccordagesGuitare.tsx";
 
 // Component to manage body classes based on current route
@@ -104,6 +106,8 @@ function App(): ReactElement {
         <Route path={"musique"} element={<MusiqueWithAuth />}></Route>
         <Route path={"musique/programme-guitare"} element={<ProgrammeGuitareWithAuth />}></Route>
         <Route path={"musique/programme-guitare/metal-progression"} element={<MetalGuitarProgressionWithAuth />}></Route>
+        <Route path={"musique/programme-guitare/rhythm-progression"} element={<RhythmGuitarProgressionWithAuth />}></Route>
+        <Route path={"musique/programme-guitare/slap-progression"} element={<SlapGuitarProgressionWithAuth />}></Route>
         <Route path={"musique/accordages-guitare"} element={<AccordagesGuitareWithAuth />}></Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

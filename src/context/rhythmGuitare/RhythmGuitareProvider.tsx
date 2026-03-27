@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, ReactElement } from "react";
-import { MetalGuitareContext } from "./MetalGuitareContext.tsx";
+import { RhythmGuitareContext } from "./RhythmGuitareContext.tsx";
 import {
   IProgrammeLevel,
   IProgrammeProgression,
@@ -9,12 +9,11 @@ import {
   getModuleSongsService,
   getProgressionService,
   updateProgressionService,
-  updateSongLinksService,
 } from "../../API/services/metalGuitare.service.ts";
 
-const MODULE_SLUG = "metal-guitar-progression";
+const MODULE_SLUG = "rhythm-guitar-progression";
 
-export const MetalGuitareProvider = ({
+export const RhythmGuitareProvider = ({
   children,
 }: {
   children: ReactElement;
@@ -29,7 +28,7 @@ export const MetalGuitareProvider = ({
       const module = await getModuleSongsService(MODULE_SLUG);
       setLevels(module.levels);
     } catch (error) {
-      console.error("Error while getting module songs:", error);
+      console.error("Error while getting rhythm module songs:", error);
       setLevels([]);
     } finally {
       setIsLoading(false);
@@ -42,7 +41,7 @@ export const MetalGuitareProvider = ({
       const data = await getProgressionService(MODULE_SLUG);
       setProgression(data);
     } catch (error) {
-      console.error("Error while getting progression:", error);
+      console.error("Error while getting rhythm progression:", error);
       setProgression({ completedSongs: {} });
     } finally {
       setIsLoading(false);
@@ -56,7 +55,7 @@ export const MetalGuitareProvider = ({
         const updated = await updateProgressionService(MODULE_SLUG, { completedSongs });
         setProgression(updated);
       } catch (error) {
-        console.error("Error while updating progression:", error);
+        console.error("Error while updating rhythm progression:", error);
         throw error;
       } finally {
         setIsLoading(false);
@@ -75,21 +74,6 @@ export const MetalGuitareProvider = ({
     [progression, updateProgression]
   );
 
-  const updateSongLinks = useCallback(
-    async (songId: number, payload: { songsterrUrl?: string; youtubeUrl?: string }): Promise<void> => {
-      const updatedSong = await updateSongLinksService(songId, payload);
-      setLevels((prev) =>
-        prev.map((level) => ({
-          ...level,
-          songs: level.songs.map((s) =>
-            s.id === songId ? { ...s, ...updatedSong } : s
-          ),
-        }))
-      );
-    },
-    []
-  );
-
   const contextValue = useMemo(
     () => ({
       levels,
@@ -99,14 +83,13 @@ export const MetalGuitareProvider = ({
       getProgression,
       updateProgression,
       toggleSong,
-      updateSongLinks,
     }),
-    [levels, progression, isLoading, getLevels, getProgression, updateProgression, toggleSong, updateSongLinks]
+    [levels, progression, isLoading, getLevels, getProgression, updateProgression, toggleSong]
   );
 
   return (
-    <MetalGuitareContext.Provider value={contextValue}>
+    <RhythmGuitareContext.Provider value={contextValue}>
       {children}
-    </MetalGuitareContext.Provider>
+    </RhythmGuitareContext.Provider>
   );
 };

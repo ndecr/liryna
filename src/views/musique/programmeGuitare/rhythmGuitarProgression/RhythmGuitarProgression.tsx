@@ -1,5 +1,5 @@
 // styles
-import "./metalGuitarProgression.scss";
+import "./rhythmGuitarProgression.scss";
 
 // hooks | libraries
 import { ReactElement, useContext, useEffect, useRef, useState } from "react";
@@ -9,7 +9,7 @@ import { FaGuitar } from "react-icons/fa";
 import { IoChevronDown, IoChevronForward } from "react-icons/io5";
 
 // context
-import { MetalGuitareContext } from "../../../../context/metalGuitare/MetalGuitareContext.tsx";
+import { RhythmGuitareContext } from "../../../../context/rhythmGuitare/RhythmGuitareContext.tsx";
 
 // types
 import { IProgrammeLevel, IProgrammeSong } from "../../../../utils/types/musique.types.ts";
@@ -22,17 +22,17 @@ import WithAuth from "../../../../utils/middleware/WithAuth.tsx";
 import Header from "../../../../components/header/Header.tsx";
 import SubNav from "../../../../components/subNav/SubNav.tsx";
 import Button from "../../../../components/button/Button.tsx";
-import SongModal from "./SongModal.tsx";
+import RhythmSongModal from "./RhythmSongModal.tsx";
 
 interface IModalSong {
   song: IProgrammeSong;
   level: IProgrammeLevel;
 }
 
-function MetalGuitarProgression(): ReactElement {
+function RhythmGuitarProgression(): ReactElement {
   const navigate = useNavigate();
   const { levels, progression, isLoading, getLevels, getProgression, toggleSong } =
-    useContext(MetalGuitareContext);
+    useContext(RhythmGuitareContext);
 
   const [expandedLevel, setExpandedLevel] = useState<number | null>(null);
   const [expandedSong, setExpandedSong] = useState<number | null>(null);
@@ -96,17 +96,17 @@ function MetalGuitarProgression(): ReactElement {
     <>
       <Header />
       <SubNav />
-      <main id="metalGuitarProgression">
-        <div className="metalContainer">
+      <main id="rhythmGuitarProgression">
+        <div className="rhythmContainer">
           <Button style="musiqueBack" onClick={() => navigate("/musique/programme-guitare")}>
             <MdArrowBack />
             <span>Retour</span>
           </Button>
 
-          <header className="metalHeader">
-            <p className="metalLabel">Progression Metal</p>
-            <h1 className="metalTitle">Du power chord au tremolo pick</h1>
-            <p className="metalSubtitle">
+          <header className="rhythmHeader">
+            <p className="rhythmLabel">Progression Rythmique</p>
+            <h1 className="rhythmTitle">Des accords ouverts au fingerpicking</h1>
+            <p className="rhythmSubtitle">
               25 morceaux dans l&apos;ordre · Coche au fur et à mesure · Songsterr pour les tabs
             </p>
           </header>
@@ -135,7 +135,7 @@ function MetalGuitarProgression(): ReactElement {
 
           <div className="levels">
             {isLoading && levels.length === 0 ? (
-              <div className="metalLoading">Chargement…</div>
+              <div className="rhythmLoading">Chargement…</div>
             ) : (
               levels.map((level, levelIdx) => {
                 const { done, total } = getLevelProgress(level);
@@ -309,15 +309,15 @@ function MetalGuitarProgression(): ReactElement {
             )}
           </div>
 
-          <div className="metalMethode">
-            <strong>Méthode :</strong> Ralentis chaque morceau à 60% sur Songsterr ou YouTube
-            (vitesse 0.5x/0.75x). Apprends riff par riff, pas le morceau entier d&apos;un coup.
-            Monte la vitesse par paliers de 5% seulement quand c&apos;est propre.
+          <div className="rhythmMethode">
+            <strong>Méthode :</strong> Commence chaque morceau à 60–70% du tempo avec un
+            métronome. Travaille les transitions difficiles isolément (30 secondes de changement
+            en boucle). Monte la vitesse uniquement quand chaque accord sonne propre et clair.
           </div>
         </div>
       </main>
 
-      <SongModal
+      <RhythmSongModal
         song={modalSong?.song ?? null}
         level={modalSong?.level ?? null}
         isDone={modalSong ? !!completedSongs[modalSong.song.id.toString()] : false}
@@ -328,5 +328,5 @@ function MetalGuitarProgression(): ReactElement {
   );
 }
 
-const MetalGuitarProgressionWithAuth = WithAuth(MetalGuitarProgression);
-export default MetalGuitarProgressionWithAuth;
+const RhythmGuitarProgressionWithAuth = WithAuth(RhythmGuitarProgression);
+export default RhythmGuitarProgressionWithAuth;

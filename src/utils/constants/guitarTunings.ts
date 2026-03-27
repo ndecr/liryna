@@ -20,6 +20,66 @@ export const STRING_COLORS: Record<number, string> = {
   1: "#a855f7", // violet
 };
 
+// Mapping pour le lookup depuis le nom brut de la DB (ex: "Drop D", "Standard", "Eb")
+const TUNING_ALIASES: Record<string, string> = {
+  "standard": "standard",
+  "eb": "eb",
+  "e♭": "eb",
+  "d standard": "d-standard",
+  "c# standard": "db-standard",
+  "db standard": "db-standard",
+  "c standard": "c-standard",
+  "b standard": "b-standard",
+  "drop d": "drop-d",
+  "drop c#": "drop-db",
+  "drop db": "drop-db",
+  "drop c": "drop-c",
+  "drop b": "drop-b",
+  "drop a": "drop-a",
+  "double drop d": "double-drop-d",
+  "open e": "open-e",
+  "open d": "open-d",
+  "open g": "open-g",
+  "open a": "open-a",
+  "open c": "open-c",
+  "open b": "open-b",
+  "dadgad": "dadgad",
+  "open dm": "open-dm",
+  "open g5": "open-g5",
+  "all fourths": "all-fourths",
+  "celtic": "celtic",
+  "lute": "lute",
+};
+
+// Retourne un IGuitarTuning à partir du champ tuning de la DB
+// Gère les capos ("Capo 2" → Standard), les variantes (Eb, Drop D…)
+export interface ITuningResult {
+  tuning: IGuitarTuning;
+  capo?: number;
+}
+
+export const findTuningByName = (raw: string): ITuningResult | null => {
+  const normalized = raw.trim().toLowerCase();
+
+  // Détection capo (ex: "Capo 2", "Capo 3")
+  const capoMatch = normalized.match(/capo\s*(\d+)/);
+  if (capoMatch) {
+    const standardTuning = GUITAR_TUNING_CATEGORIES
+      .flatMap((c) => c.tunings)
+      .find((t) => t.id === "standard") ?? null;
+    return standardTuning ? { tuning: standardTuning, capo: parseInt(capoMatch[1]) } : null;
+  }
+
+  // Lookup direct via alias
+  const id = TUNING_ALIASES[normalized];
+  if (id) {
+    const found = GUITAR_TUNING_CATEGORIES.flatMap((c) => c.tunings).find((t) => t.id === id);
+    return found ? { tuning: found } : null;
+  }
+
+  return null;
+};
+
 export const GUITAR_TUNING_CATEGORIES: IGuitarTuningCategory[] = [
   {
     id: "standard",

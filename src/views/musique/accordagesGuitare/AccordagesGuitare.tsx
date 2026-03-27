@@ -4,7 +4,7 @@ import "./accordagesGuitare.scss";
 // hooks | libraries
 import { ReactElement, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { MdOutlineArrowBack } from "react-icons/md";
+import { MdArrowBack } from "react-icons/md";
 import { IoChevronDown } from "react-icons/io5";
 import { GiGuitar } from "react-icons/gi";
 
@@ -19,6 +19,7 @@ import {
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
 import Header from "../../../components/header/Header.tsx";
 import SubNav from "../../../components/subNav/SubNav.tsx";
+import Button from "../../../components/button/Button.tsx";
 
 function AccordagesGuitare(): ReactElement {
   const navigate = useNavigate();
@@ -67,14 +68,10 @@ function AccordagesGuitare(): ReactElement {
       <SubNav />
       <main id="accordagesGuitare">
         <div className="accordagesContainer">
-          <button
-            type="button"
-            className="backButton"
-            onClick={() => navigate("/musique")}
-          >
-            <MdOutlineArrowBack />
+          <Button style="musiqueBack" onClick={() => navigate("/musique")}>
+            <MdArrowBack />
             <span>Retour</span>
-          </button>
+          </Button>
 
           <header className="accordagesHeader">
             <div className="accordagesIcon">
