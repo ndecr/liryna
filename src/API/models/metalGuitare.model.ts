@@ -15,7 +15,7 @@ export const programmeSongModel = (data: Partial<IProgrammeSong>): IProgrammeSon
   skill: data.skill ?? "",
   tip: data.tip ?? "",
   bpm: data.bpm ?? 0,
-  songsterrUrl: data.songsterrUrl ?? "",
+  tablatureUrl: data.tablatureUrl ?? "",
   youtubeUrl: data.youtubeUrl ?? "",
   sortOrder: data.sortOrder ?? 0,
 });

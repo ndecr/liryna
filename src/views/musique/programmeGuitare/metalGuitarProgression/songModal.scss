@@ -412,7 +412,7 @@
     }
   }
 
-  .songModalSongsterrBtn {
+  .songModalTablatureBtn {
     @include mixins.resetButton;
     @include mixins.flexContainer(row, 0.5em);
 

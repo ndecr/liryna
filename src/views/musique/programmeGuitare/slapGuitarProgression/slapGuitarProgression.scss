@@ -616,7 +616,7 @@
       }
     }
 
-    .songsterrLink,
+    .tablatureLink,
     .youtubeLink {
       & {
         font-size: 0.75em;
@@ -632,7 +632,7 @@
       }
     }
 
-    .songsterrLink {
+    .tablatureLink {
       & {
         background: color-mix(in srgb, var(--level-color) 10%, transparent);
         color: var(--level-color);

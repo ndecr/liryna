@@ -303,14 +303,14 @@ function SlapGuitarProgression(): ReactElement {
                                   </div>
                                   <p className="songTip">💡 {song.tip}</p>
                                   <div className="songLinks">
-                                    {song.songsterrUrl && (
+                                    {song.tablatureUrl && (
                                       <a
-                                        href={song.songsterrUrl}
+                                        href={song.tablatureUrl}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="songsterrLink"
+                                        className="tablatureLink"
                                       >
-                                        🎸 Songsterr
+                                        🎸 Tablature
                                       </a>
                                     )}
                                     {song.youtubeUrl && (

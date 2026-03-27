@@ -41,8 +41,8 @@ export default function RhythmSongModal({
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  const handleOpenSongsterr = () => {
-    window.open(song.songsterrUrl, "_blank", "noopener,noreferrer");
+  const handleOpenTablature = () => {
+    window.open(song.tablatureUrl, "_blank", "noopener,noreferrer");
   };
 
   const handleOpenYoutube = () => {
@@ -133,10 +133,10 @@ export default function RhythmSongModal({
 
           <button
             type="button"
-            className="rhythmSongModalSongsterrBtn"
-            onClick={handleOpenSongsterr}
+            className="rhythmSongModalTablatureBtn"
+            onClick={handleOpenTablature}
           >
-            <span>Songsterr</span>
+            <span>Tablature</span>
             <MdOpenInNew aria-hidden />
           </button>
         </div>

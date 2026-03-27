@@ -41,8 +41,8 @@ export default function SlapSongModal({
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  const handleOpenSongsterr = () => {
-    window.open(song.songsterrUrl, "_blank", "noopener,noreferrer");
+  const handleOpenTablature = () => {
+    window.open(song.tablatureUrl, "_blank", "noopener,noreferrer");
   };
 
   const handleOpenYoutube = () => {
@@ -131,13 +131,13 @@ export default function SlapSongModal({
             </button>
           )}
 
-          {song.songsterrUrl && (
+          {song.tablatureUrl && (
             <button
               type="button"
-              className="slapSongModalSongsterrBtn"
-              onClick={handleOpenSongsterr}
+              className="slapSongModalTablatureBtn"
+              onClick={handleOpenTablature}
             >
-              <span>Songsterr</span>
+              <span>Tablature</span>
               <MdOpenInNew aria-hidden />
             </button>
           )}

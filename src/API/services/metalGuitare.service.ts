@@ -78,7 +78,7 @@ export const getProgressionService = async (
 
 export const updateSongLinksService = async (
   songId: number,
-  payload: { songsterrUrl?: string; youtubeUrl?: string }
+  payload: { tablatureUrl?: string; youtubeUrl?: string }
 ): Promise<IProgrammeSong> => {
   const response: AxiosResponse<IApiResponse<IProgrammeSong>> = await patchRequest(
     `/musique/songs/${songId}`,
