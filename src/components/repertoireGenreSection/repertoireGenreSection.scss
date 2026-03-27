@@ -1,0 +1,68 @@
+@use "../../utils/styles/variables" as vars;
+@use "../../utils/styles/mixins" as mixins;
+
+.repertoireGenreSection {
+  & {
+    border: 1px solid vars.$borderColor;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .genreSectionHeader {
+    @include mixins.resetButton;
+    @include mixins.flexContainer(row, 0.75em);
+
+    & {
+      width: 100%;
+      align-items: center;
+      padding: 0.875em 1em;
+      background: vars.$greyBackground;
+      transition: background vars.$transitionFast;
+    }
+
+    &:hover {
+      background: color-mix(in srgb, vars.$musiquePrimary 6%, vars.$greyBackground);
+    }
+  }
+
+  .genreChevron {
+    & {
+      font-size: 1.1em;
+      color: vars.$fontColorSecondary;
+      transition: transform vars.$transitionFast;
+      flex-shrink: 0;
+    }
+
+    &.open {
+      transform: rotate(180deg);
+    }
+  }
+
+  .genreName {
+    & {
+      font-size: 0.9em;
+      font-weight: 700;
+      color: vars.$fontColorPrimary;
+      flex: 1;
+      text-align: left;
+    }
+  }
+
+  .genreCount {
+    & {
+      font-size: 0.75em;
+      color: vars.$fontColorSecondary;
+      background: white;
+      border: 1px solid vars.$borderColor;
+      border-radius: 20px;
+      padding: 1px 8px;
+      flex-shrink: 0;
+    }
+  }
+
+  .genreSectionBody {
+    & {
+      border-top: 1px solid vars.$borderColor;
+    }
+  }
+}
