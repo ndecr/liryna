@@ -83,13 +83,14 @@ function PretImmobilier(): ReactElement {
   const [geoError, setGeoError] = useState<string>("");
 
   const searchDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasFetchedDashboard = useRef(false);
 
-  // ── Chargement dashboard si absent
+  // ── Chargement dashboard si absent (une seule tentative)
   useEffect(() => {
-    if (!dashboard && !isBudgetLoading) {
-      getBudgetDashboard().catch(() => {});
-    }
-  }, [dashboard, isBudgetLoading, getBudgetDashboard]);
+    if (hasFetchedDashboard.current) return;
+    hasFetchedDashboard.current = true;
+    getBudgetDashboard().catch(() => {});
+  }, [getBudgetDashboard]);
 
   // ── Init depuis budget + simulation sauvegardée
   useEffect(() => {
