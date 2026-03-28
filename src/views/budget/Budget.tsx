@@ -2,7 +2,7 @@
 import "./budget.scss";
 
 // hooks | libraries
-import { ReactElement, useState, useContext, useEffect } from "react";
+import { ReactElement, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoWallet, IoTrendingUp, IoTrendingDown } from "react-icons/io5";
 import { MdDashboard } from "react-icons/md";
@@ -14,13 +14,13 @@ import WithAuth from "../../utils/middleware/WithAuth.tsx";
 import Header from "../../components/header/Header.tsx";
 import SubNav from "../../components/subNav/SubNav.tsx";
 
-// context
-import { BudgetContext } from "../../context/budget/BudgetContext.tsx";
+// hooks
+import { useBudget } from "../../hooks/useBudget.ts";
 import { formatCurrency } from "../../utils/helpers/formatters.ts";
 
 function Budget(): ReactElement {
   const navigate = useNavigate();
-  const { dashboard, getBudgetDashboard } = useContext(BudgetContext);
+  const { dashboard, getBudgetDashboard } = useBudget();
   const [dashboardLoading, setDashboardLoading] = useState<boolean>(true);
   const [isExporting, setIsExporting] = useState<boolean>(false);
 

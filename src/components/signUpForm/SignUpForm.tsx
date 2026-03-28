@@ -1,5 +1,5 @@
 // hooks | library
-import { ChangeEvent, ReactElement, useContext, useState, useEffect, FormEvent } from "react";
+import { ChangeEvent, ReactElement, useState, useEffect, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 
@@ -21,8 +21,8 @@ interface ISignUpFormProps {
   setLastName: (value: string) => void;
 }
 
-// context
-import { UserContext } from "../../context/user/UserContext.tsx";
+// hooks
+import { useUser } from "../../hooks/useUser.ts";
 import { IUserRegistration } from "../../utils/types/user.types.ts";
 
 // utils
@@ -42,7 +42,7 @@ export default function SignUpForm({
   setLastName,
 }: Readonly<ISignUpFormProps>): ReactElement {
   const navigate = useNavigate();
-  const { register, user, isLoading } = useContext(UserContext);
+  const { register, user, isLoading } = useUser();
   const [error, setError] = useState<string>("");
   const [passwordIsValid, setPasswordIsValid] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);

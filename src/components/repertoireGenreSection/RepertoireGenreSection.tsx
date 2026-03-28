@@ -2,7 +2,7 @@
 import "./repertoireGenreSection.scss";
 
 // hooks | libraries
-import { ReactElement, useState } from "react";
+import { ReactElement } from "react";
 import { IoChevronDown } from "react-icons/io5";
 
 // types
@@ -14,6 +14,8 @@ import RepertoireTrackItem from "../repertoireTrackItem/RepertoireTrackItem.tsx"
 interface IRepertoireGenreSectionProps {
   genre: string;
   tracks: IRepertoireTrack[];
+  isOpen: boolean;
+  onToggle: () => void;
   onEdit: (track: IRepertoireTrack) => void;
   onDelete: (id: number) => void;
   onToggleMastered: (id: number) => void;
@@ -22,18 +24,18 @@ interface IRepertoireGenreSectionProps {
 export default function RepertoireGenreSection({
   genre,
   tracks,
+  isOpen,
+  onToggle,
   onEdit,
   onDelete,
   onToggleMastered,
 }: IRepertoireGenreSectionProps): ReactElement {
-  const [isOpen, setIsOpen] = useState(true);
-
   return (
     <div className="repertoireGenreSection">
       <button
         type="button"
         className="genreSectionHeader"
-        onClick={() => setIsOpen((v) => !v)}
+        onClick={onToggle}
         aria-expanded={isOpen}
       >
         <IoChevronDown className={`genreChevron ${isOpen ? "open" : ""}`} aria-hidden />

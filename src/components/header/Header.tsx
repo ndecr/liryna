@@ -2,14 +2,14 @@
 import "./header.scss";
 
 // hooks | libraries
-import { ReactElement, useState, useContext } from "react";
+import { ReactElement, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
 import { IoHome, IoAdd, IoList, IoWallet, IoCreate } from "react-icons/io5";
 import { MdDashboard, MdLogout, MdMusicNote, MdLibraryMusic, MdTune } from "react-icons/md";
 import { FiHome } from "react-icons/fi";
 import { GiGuitar } from "react-icons/gi";
-import { UserContext } from "../../context/user/UserContext.tsx";
+import { useUser } from "../../hooks/useUser.ts";
 
 // components
 import PWAInstallButton from "../pwaInstallButton/PWAInstallButton.tsx";
@@ -18,7 +18,7 @@ export default function Header(): ReactElement {
   const location = useLocation();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user, logout } = useContext(UserContext);
+  const { user, logout } = useUser();
 
   const isAuthRoute: boolean = location.pathname === "/auth";
 

@@ -2,7 +2,7 @@
 import "./listeCourriers.scss";
 
 // hooks | libraries
-import { ReactElement, useState, useEffect, useContext } from "react";
+import { ReactElement, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   MdArrowBack,
@@ -36,8 +36,8 @@ import Loader from "../../../components/loader/Loader.tsx";
 import EmailModal from "../../../components/emailModal/EmailModal.tsx";
 import ModernPDFViewer from "../../../components/pdfViewer/ModernPDFViewer.tsx";
 
-// context
-import { CourrierContext } from "../../../context/courrier/CourrierContext.tsx";
+// hooks
+import { useCourrier } from "../../../hooks/useCourrier.ts";
 
 // services
 import { sendCourrierEmailService, downloadBulkCourriersService, sendBulkCourrierEmailService } from "../../../API/services/courrier.service.ts";
@@ -65,7 +65,7 @@ import { useCourrierFieldOptions } from "../../../utils/hooks/useCourrierFieldOp
 
 function ListeCourriers(): ReactElement {
   const navigate = useNavigate();
-  const { courriers, pagination, getAllCourriers, downloadCourrier, deleteCourrier, isLoading } = useContext(CourrierContext);
+  const { courriers, pagination, getAllCourriers, downloadCourrier, deleteCourrier, isLoading } = useCourrier();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [tooltip, setTooltip] = useState<{ visible: boolean; content: string; x: number; y: number }>({

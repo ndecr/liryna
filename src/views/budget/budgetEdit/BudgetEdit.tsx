@@ -2,7 +2,7 @@
 import "./budgetEdit.scss";
 
 // hooks | libraries
-import { ReactElement, useContext, useEffect, useState, useCallback } from "react";
+import { ReactElement, useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { StylesConfig } from "react-select";
@@ -13,8 +13,8 @@ import WithAuth from "../../../utils/middleware/WithAuth.tsx";
 import Header from "../../../components/header/Header.tsx";
 import SubNav from "../../../components/subNav/SubNav.tsx";
 
-// context
-import { BudgetContext } from "../../../context/budget/BudgetContext.tsx";
+// hooks
+import { useBudget } from "../../../hooks/useBudget.ts";
 
 // types
 import {
@@ -130,7 +130,7 @@ function BudgetEdit(): ReactElement {
     getMyBudget,
     createBudget,
     updateBudget,
-  } = useContext(BudgetContext);
+  } = useBudget();
 
   const [nombrePersonnes, setNombrePersonnes] = useState<number>(1);
   const [nombreEnfants, setNombreEnfants] = useState<number>(0);

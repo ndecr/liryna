@@ -21,6 +21,46 @@
     @include mixins.actionButton(vars.$budgetPrimary, vars.$budgetDark);
   }
 
+  // ── Guard : pas de budget ─────────────────────────────────────────────────
+
+  .pretNoBudget {
+    @include mixins.flexContainer(column, 1em);
+
+    & {
+      align-items: center;
+      text-align: center;
+      padding: 4em 1em;
+      max-width: 28em;
+      margin: 0 auto;
+    }
+
+    .pretNoBudgetIcon {
+      & {
+        font-size: 3em;
+        color: vars.$budgetPrimary;
+        opacity: 0.6;
+      }
+    }
+
+    .pretNoBudgetTitle {
+      & {
+        font-size: 1.1em;
+        font-weight: 700;
+        color: vars.$fontColorPrimary;
+        margin: 0;
+      }
+    }
+
+    .pretNoBudgetText {
+      & {
+        font-size: 0.875em;
+        color: vars.$fontColorSecondary;
+        line-height: 1.6;
+        margin: 0;
+      }
+    }
+  }
+
   // ── En-tête ───────────────────────────────────────────────────────────────
 
   .pretHeader {

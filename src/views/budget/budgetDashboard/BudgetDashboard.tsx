@@ -2,7 +2,7 @@
 import "./budgetDashboard.scss";
 
 // hooks | libraries
-import { ReactElement, useContext, useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoCreate } from "react-icons/io5";
 import { MdArrowBack } from "react-icons/md";
@@ -26,8 +26,8 @@ import Header from "../../../components/header/Header.tsx";
 import SubNav from "../../../components/subNav/SubNav.tsx";
 import Button from "../../../components/button/Button.tsx";
 
-// context
-import { BudgetContext } from "../../../context/budget/BudgetContext.tsx";
+// hooks
+import { useBudget } from "../../../hooks/useBudget.ts";
 import { formatCurrency } from "../../../utils/helpers/formatters.ts";
 import {
   buildChargesChartData,
@@ -40,7 +40,7 @@ const REVENUS_COLORS = ["#2e7d32", "#4caf50", "#66bb6a", "#81c784"];
 
 function BudgetDashboard(): ReactElement {
   const navigate = useNavigate();
-  const { dashboard, getBudgetDashboard } = useContext(BudgetContext);
+  const { dashboard, getBudgetDashboard } = useBudget();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
