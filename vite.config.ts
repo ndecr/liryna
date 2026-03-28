@@ -4,7 +4,11 @@ import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import type { IndexHtmlTransformContext } from 'vite';
 
-const PROD_CSP = "default-src 'self'; script-src 'self'; style-src 'self' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob: https://api.liryna.app; object-src 'self' blob:; frame-src 'self' blob: https://api.liryna.app; connect-src 'self' https://api.liryna.app https://fonts.googleapis.com https://unpkg.com; worker-src 'self' https://unpkg.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
+// CSP pour les HTTP headers Vercel (frame-ancestors valide uniquement ici)
+const PROD_CSP_HEADERS = "default-src 'self'; script-src 'self' blob:; style-src 'self' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob: https://api.liryna.app; object-src 'self' blob:; frame-src 'self' blob: https://api.liryna.app; connect-src 'self' https://api.liryna.app https://fonts.googleapis.com https://unpkg.com; worker-src 'self' blob: https://unpkg.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
+
+// CSP pour la meta tag HTML (frame-ancestors ignoré dans meta tag, on l'omet)
+const PROD_CSP_META = "default-src 'self'; script-src 'self' blob:; style-src 'self' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob: https://api.liryna.app; object-src 'self' blob:; frame-src 'self' blob: https://api.liryna.app; connect-src 'self' https://api.liryna.app https://fonts.googleapis.com https://unpkg.com; worker-src 'self' blob: https://unpkg.com; base-uri 'self'; form-action 'self';";
 
 // Plugin pour générer CSP adaptée à l'environnement
 const generateCSP = () => {
@@ -12,7 +16,7 @@ const generateCSP = () => {
     name: 'generate-csp',
     buildStart() {
       // CSP pour production - strict et sécurisé
-      const prodCSP = PROD_CSP;
+      const prodCSP = PROD_CSP_HEADERS;
       
       // Générer vercel.json avec la CSP de production
       const vercelConfig = {
@@ -64,8 +68,8 @@ const generateCSP = () => {
         cspValue = "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob: data:; object-src 'self' blob:; frame-src 'self' blob: http://localhost:8800; connect-src 'self' http://localhost:8800 http://localhost:8800/api ws: ws://localhost:* http://localhost:* https://localhost:* https://fonts.googleapis.com https://unpkg.com; worker-src 'self' blob:; base-uri 'self'; form-action 'self';";
         console.log(`🔧 Development CSP applied`);
       } else {
-        // CSP pour production - strict et sécurisé
-        cspValue = PROD_CSP;
+        // CSP pour production - strict et sécurisé (sans frame-ancestors, invalide en meta tag)
+        cspValue = PROD_CSP_META;
         console.log(`🔒 Production CSP applied`);
       }
       
