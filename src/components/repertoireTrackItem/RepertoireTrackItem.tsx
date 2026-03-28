@@ -49,51 +49,46 @@ export default function RepertoireTrackItem({
         <span className="trackArtist">{track.artist}</span>
         <div className="trackMeta">
           <span className="trackTypeBadge">{TRACK_TYPE_LABELS[track.type]}</span>
+
           {track.tuning && (
-            <div className="trackTuningWrapper">
-              <button
-                type="button"
-                className="trackTuningBtn"
-                onClick={() => setTuningOpen((v) => !v)}
-                aria-label={`Accordage : ${track.tuning}`}
-              >
-                {track.tuning}
-              </button>
-              {tuningOpen && tuningResult && (
-                <div className="tuningPopup">
-                  <span className="tuningPopupName">
-                    {tuningResult.tuning.name}
-                    {tuningResult.capo ? ` · Capo ${tuningResult.capo}` : ""}
-                  </span>
-                  <div className="tuningPopupStrings">
-                    {tuningResult.tuning.strings.map((note, idx) => {
-                      const stringNum = 6 - idx;
-                      return (
-                        <div key={idx} className="tuningPopupString">
-                          <span
-                            className="tuningPopupStringNum"
-                            style={{ color: STRING_COLORS[stringNum] }}
-                          >
-                            {stringNum}
-                          </span>
-                          <span
-                            className="tuningPopupNote"
-                            style={{
-                              background: `${STRING_COLORS[stringNum]}18`,
-                              color: STRING_COLORS[stringNum],
-                              borderColor: `${STRING_COLORS[stringNum]}50`,
-                            }}
-                          >
-                            {note}
-                          </span>
-                        </div>
-                      );
-                    })}
+            <button
+              type="button"
+              className={`trackTuningBtn ${tuningOpen ? "open" : ""}`}
+              onClick={() => setTuningOpen((v) => !v)}
+              aria-label={`Accordage : ${track.tuning}`}
+            >
+              {track.tuning}
+            </button>
+          )}
+
+          {tuningOpen && tuningResult && (
+            <div className="trackTuningStrings">
+              {tuningResult.tuning.strings.map((note, idx) => {
+                const stringNum = 6 - idx;
+                return (
+                  <div key={idx} className="tuningStringItem">
+                    <span
+                      className="tuningStringNum"
+                      style={{ color: STRING_COLORS[stringNum] }}
+                    >
+                      {stringNum}
+                    </span>
+                    <span
+                      className="tuningStringNote"
+                      style={{
+                        background: `${STRING_COLORS[stringNum]}18`,
+                        color: STRING_COLORS[stringNum],
+                        borderColor: `${STRING_COLORS[stringNum]}50`,
+                      }}
+                    >
+                      {note}
+                    </span>
                   </div>
-                </div>
-              )}
+                );
+              })}
             </div>
           )}
+
           <div className="trackLinks">
             {track.tablatureUrl && (
               <a
