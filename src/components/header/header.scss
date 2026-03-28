@@ -278,13 +278,19 @@
 }
 
 .mobileMenu {
-  width: 90%;
-  max-width: 25em;
-  background: vars.$whiteBackground;
-  border-radius: 20px;
-  box-shadow: vars.$shadowHeavy;
-  overflow: hidden;
-  animation: slideInDown 0.3s ease;
+  & {
+    width: 90%;
+    max-width: 25em;
+    max-height: 80dvh;
+    background: vars.$whiteBackground;
+    border-radius: 20px;
+    box-shadow: vars.$shadowHeavy;
+    overflow-y: auto;
+    overflow-x: hidden;
+    animation: slideInDown 0.3s ease;
+    display: flex;
+    flex-direction: column;
+  }
 
   &.utils {
     border-top: 4px solid vars.$courrierPrimary;

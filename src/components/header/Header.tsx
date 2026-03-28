@@ -34,7 +34,15 @@ export default function Header(): ReactElement {
     logout();
   };
 
-  const closeMobileMenu = () => setIsMobileMenuOpen(false);
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+    document.body.style.overflow = "";
+  };
+
+  const openMobileMenu = () => {
+    setIsMobileMenuOpen(true);
+    document.body.style.overflow = "hidden";
+  };
 
   const handleNavigate = (path: string) => {
     navigate(path);
@@ -74,7 +82,7 @@ export default function Header(): ReactElement {
             {!isAuthRoute && (
               <button
                 className="headerToggle"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                onClick={() => isMobileMenuOpen ? closeMobileMenu() : openMobileMenu()}
                 aria-label="Toggle navigation"
               >
                 {isMobileMenuOpen ? <HiX /> : <HiMenu />}
