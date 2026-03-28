@@ -21,9 +21,11 @@ axios.interceptors.request.use(async (config) => {
   if (protectedMethods.includes(config.method?.toLowerCase() || '')) {
     try {
       // Exclure les routes de login/register/csrf-token
-      const isAuthRoute = config.url?.includes('/login') || 
-                         config.url?.includes('/register') || 
-                         config.url?.includes('/csrf-token');
+      const isAuthRoute = config.url?.includes('/login') ||
+                         config.url?.includes('/register') ||
+                         config.url?.includes('/csrf-token') ||
+                         config.url?.includes('/forgot-password') ||
+                         config.url?.includes('/reset-password');
       if (!isAuthRoute) {
         const csrfHeaders = await csrfService.getCSRFHeaders();
         Object.assign(config.headers as Record<string, string>, csrfHeaders);

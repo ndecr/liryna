@@ -40,11 +40,6 @@ export default function ForgotPasswordForm({ onBack }: Readonly<IForgotPasswordF
         <p className="forgotInfo">
           Si un compte existe pour <strong>{email}</strong>, vous recevrez un lien de réinitialisation sous quelques minutes.
         </p>
-        <div className="buttonContainer">
-          <Button style="seaGreen" type="button" onClick={onBack}>
-            Retour à la connexion
-          </Button>
-        </div>
       </div>
     );
   }
