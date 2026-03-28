@@ -1,9 +1,17 @@
+export interface IVisibleSections {
+  mail: boolean
+  budget: boolean
+  musique: boolean
+}
+
 export interface IUser {
     id: number
     email: string
     password?: string
     firstName: string
     lastName: string
+    avatarUrl?: string | null
+    visibleSections?: IVisibleSections
     created_at?: string
     updated_at?: string
 }

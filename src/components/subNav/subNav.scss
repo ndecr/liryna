@@ -89,6 +89,14 @@
         background: vars.$musiqueGradientReverse;
       }
     }
+
+    &.settings {
+      background: linear-gradient(135deg, #64748b 0%, #94a3b8 100%);
+
+      &::before {
+        background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+      }
+    }
   }
   
   .subNavIcon {

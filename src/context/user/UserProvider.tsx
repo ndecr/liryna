@@ -5,10 +5,15 @@ import { useState, useMemo, ReactElement, useEffect, useCallback } from "react";
 import { UserContext } from "./UserContext.tsx";
 
 // custom types
-import { IUser, IUserCredentials, IUserRegistration } from "../../utils/types/user.types.ts";
+import { IUser, IUserCredentials, IUserRegistration, IVisibleSections } from "../../utils/types/user.types.ts";
 
 // services
-import { getCurrentUserService } from "../../API/services/user.service.ts";
+import {
+  getCurrentUserService,
+  updateUserPreferencesService,
+  uploadAvatarService,
+  deleteMyAccountService,
+} from "../../API/services/user.service.ts";
 import { loginService, registerService, logoutService } from "../../API/services/auth.service.ts";
 import { csrfService } from "../../utils/services/csrfService.ts";
 
@@ -42,8 +47,6 @@ export const UserProvider = ({
   // Vérifier l'authentification au chargement
   useEffect(() => {
     const initAuth = async () => {
-      // Avec les cookies httpOnly, on tente directement de récupérer le profil utilisateur
-      // Le cookie sera automatiquement envoyé si présent
       try {
         await getCurrentUser();
       } catch (error) {
@@ -52,7 +55,7 @@ export const UserProvider = ({
       }
       setIsLoading(false);
     };
-    
+
     initAuth();
   }, [getCurrentUser, logout]);
 
@@ -76,12 +79,9 @@ export const UserProvider = ({
     setIsLoading(true);
     try {
       const response = await registerService(userData);
-      
-      // Gestion de la réponse avec structure différente (data au lieu de user)
-      const user = response.user || (response as { data?: IUser }).data;
-      
-      if (user) {
-        setUser(user);
+      const registeredUser = response.user || (response as { data?: IUser }).data;
+      if (registeredUser) {
+        setUser(registeredUser);
       }
     } catch (error) {
       console.error("Error while registering:", error);
@@ -90,6 +90,22 @@ export const UserProvider = ({
     } finally {
       setIsLoading(false);
     }
+  }, []);
+
+  const updatePreferences = useCallback(async (visibleSections: IVisibleSections): Promise<void> => {
+    const updated = await updateUserPreferencesService(visibleSections);
+    setUser(updated);
+  }, []);
+
+  const uploadAvatar = useCallback(async (file: File): Promise<void> => {
+    const avatarUrl = await uploadAvatarService(file);
+    setUser((prev) => (prev ? { ...prev, avatarUrl } : prev));
+  }, []);
+
+  const deleteAccount = useCallback(async (): Promise<void> => {
+    await deleteMyAccountService();
+    csrfService.clearToken();
+    setUser(null);
   }, []);
 
   const contextValue = useMemo(
@@ -102,8 +118,11 @@ export const UserProvider = ({
       register,
       logout,
       getCurrentUser,
+      updatePreferences,
+      uploadAvatar,
+      deleteAccount,
     }),
-    [user, isAuthenticated, isLoading],
+    [user, isAuthenticated, isLoading, login, register, logout, getCurrentUser, updatePreferences, uploadAvatar, deleteAccount],
   );
 
   return (
