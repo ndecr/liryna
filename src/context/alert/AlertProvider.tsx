@@ -1,4 +1,4 @@
-import React, { ReactNode, useState, useCallback, useEffect } from 'react';
+import React, { ReactNode, useState, useCallback, useEffect, useMemo } from 'react';
 import { AlertContext, ShowAlertOptions } from './AlertContext';
 import Alert, { AlertProps } from '../../components/alert/Alert';
 import { initializeAlertService } from '../../utils/services/alertService';
@@ -13,10 +13,6 @@ interface ActiveAlert extends Omit<AlertProps, 'onConfirm' | 'onCancel' | 'onClo
 
 export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
   const [alerts, setAlerts] = useState<ActiveAlert[]>([]);
-
-  const removeAlert = useCallback((id: string) => {
-    setAlerts(current => current.filter(alert => alert.id !== id));
-  }, []);
 
   const showAlert = useCallback((options: ShowAlertOptions): Promise<boolean> => {
     return new Promise((resolve) => {
@@ -82,46 +78,43 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
   }, [showAlert]);
 
   const handleConfirm = useCallback((id: string) => {
-    const alert = alerts.find(a => a.id === id);
-    if (alert) {
-      alert.resolve(true);
-      removeAlert(id);
-    }
-  }, [alerts, removeAlert]);
+    setAlerts((current) => {
+      const alert = current.find(a => a.id === id);
+      if (alert) alert.resolve(true);
+      return current.filter(a => a.id !== id);
+    });
+  }, []);
 
   const handleCancel = useCallback((id: string) => {
-    const alert = alerts.find(a => a.id === id);
-    if (alert) {
-      alert.resolve(false);
-      removeAlert(id);
-    }
-  }, [alerts, removeAlert]);
+    setAlerts((current) => {
+      const alert = current.find(a => a.id === id);
+      if (alert) alert.resolve(false);
+      return current.filter(a => a.id !== id);
+    });
+  }, []);
 
   const handleClose = useCallback((id: string) => {
-    const alert = alerts.find(a => a.id === id);
-    if (alert) {
-      // Pour les alertes non-confirmation, on résout à true (action terminée)
-      // Pour les confirmations, on résout à false (action annulée)
-      alert.resolve(alert.type !== 'confirm');
-      removeAlert(id);
-    }
-  }, [alerts, removeAlert]);
+    setAlerts((current) => {
+      const alert = current.find(a => a.id === id);
+      if (alert) alert.resolve(alert.type !== 'confirm');
+      return current.filter(a => a.id !== id);
+    });
+  }, []);
 
-  const contextValue = {
+  const contextValue = useMemo(() => ({
     showAlert,
     showConfirm,
     showInfo,
     showSuccess,
     showWarning,
-    showError
-  };
+    showError,
+  }), [showAlert, showConfirm, showInfo, showSuccess, showWarning, showError]);
 
   // Initialiser le service d'alerte au montage du provider
   useEffect(() => {
     initializeAlertService(contextValue);
-    // Exposer le service globalement pour les fallbacks legacy
     (window as any).liryna_alert_service = contextValue;
-    
+
     return () => {
       (window as any).liryna_alert_service = null;
     };
