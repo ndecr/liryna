@@ -5,6 +5,7 @@ import {
   getRepertoireService,
   createRepertoireTrackService,
   updateRepertoireTrackService,
+  toggleRepertoireTrackMasteredService,
   deleteRepertoireTrackService,
 } from "../../API/services/repertoire.service.ts";
 
@@ -61,6 +62,21 @@ export const RepertoireProvider = ({
     []
   );
 
+  const toggleMastered = useCallback(
+    async (id: number): Promise<void> => {
+      const track = tracks.find((t) => t.id === id);
+      if (!track) return;
+      try {
+        const updated = await toggleRepertoireTrackMasteredService(id, !track.isMastered);
+        setTracks((prev) => prev.map((t) => (t.id === id ? updated : t)));
+      } catch (error) {
+        console.error("Error while toggling mastered:", error);
+        throw error;
+      }
+    },
+    [tracks]
+  );
+
   const deleteTrack = useCallback(async (id: number): Promise<void> => {
     setIsLoading(true);
     try {
@@ -75,8 +91,8 @@ export const RepertoireProvider = ({
   }, []);
 
   const contextValue = useMemo(
-    () => ({ tracks, isLoading, getTracks, addTrack, updateTrack, deleteTrack }),
-    [tracks, isLoading, getTracks, addTrack, updateTrack, deleteTrack]
+    () => ({ tracks, isLoading, getTracks, addTrack, updateTrack, toggleMastered, deleteTrack }),
+    [tracks, isLoading, getTracks, addTrack, updateTrack, toggleMastered, deleteTrack]
   );
 
   return (

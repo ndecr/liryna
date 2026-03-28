@@ -63,6 +63,74 @@
     }
   }
 
+  .repertoireProgress {
+    @include mixins.flexContainer(row, 0.75em);
+
+    & {
+      align-items: center;
+      padding: 0.875em 1em;
+      background: color-mix(in srgb, vars.$musiquePrimary 6%, transparent);
+      border: 1px solid color-mix(in srgb, vars.$musiquePrimary 20%, transparent);
+      border-radius: 12px;
+    }
+
+    .progressInfo {
+      @include mixins.flexContainer(column, 0.1em);
+
+      & {
+        flex-shrink: 0;
+      }
+    }
+
+    .progressLabel {
+      & {
+        font-size: 0.65em;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: vars.$musiquePrimary;
+      }
+    }
+
+    .progressCount {
+      & {
+        font-size: 0.85em;
+        font-weight: 800;
+        color: vars.$fontColorPrimary;
+      }
+    }
+
+    .progressBarTrack {
+      & {
+        flex: 1;
+        height: 6px;
+        background: color-mix(in srgb, vars.$musiquePrimary 15%, transparent);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+    }
+
+    .progressBarFill {
+      & {
+        height: 100%;
+        background: vars.$musiqueGradient;
+        border-radius: 3px;
+        transition: width 0.4s ease;
+      }
+    }
+
+    .progressPercent {
+      & {
+        font-size: 0.8em;
+        font-weight: 700;
+        color: vars.$musiquePrimary;
+        flex-shrink: 0;
+        min-width: 2.5em;
+        text-align: right;
+      }
+    }
+  }
+
   .repertoireToolbar {
     @include mixins.flexContainer(row, 0.75em);
 

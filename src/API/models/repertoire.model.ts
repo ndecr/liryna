@@ -10,6 +10,8 @@ export const repertoireTrackModel = (data: Partial<IRepertoireTrack>): IRepertoi
   type: VALID_TYPES.includes(data.type as IRepertoireTrackType)
     ? (data.type as IRepertoireTrackType)
     : "partition_complete",
+  tuning: data.tuning ?? "",
+  isMastered: data.isMastered ?? false,
   tablatureUrl: data.tablatureUrl ?? "",
   youtubeUrl: data.youtubeUrl ?? "",
   createdAt: data.createdAt,

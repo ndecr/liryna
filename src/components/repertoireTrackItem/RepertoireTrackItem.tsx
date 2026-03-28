@@ -2,8 +2,8 @@
 import "./repertoireTrackItem.scss";
 
 // hooks | libraries
-import { ReactElement } from "react";
-import { MdEdit, MdDelete, MdOpenInNew } from "react-icons/md";
+import { ReactElement, useState } from "react";
+import { MdEdit, MdDelete, MdOpenInNew, MdCheck } from "react-icons/md";
 import { FaYoutube } from "react-icons/fa";
 
 // types
@@ -12,24 +12,88 @@ import { IRepertoireTrack } from "../../utils/types/musique.types.ts";
 // hooks
 import { TRACK_TYPE_LABELS } from "../../hooks/useRepertoire.ts";
 
+// constants
+import { findTuningByName, STRING_COLORS } from "../../utils/constants/guitarTunings.ts";
+
 interface IRepertoireTrackItemProps {
   track: IRepertoireTrack;
   onEdit: (track: IRepertoireTrack) => void;
   onDelete: (id: number) => void;
+  onToggleMastered: (id: number) => void;
 }
 
 export default function RepertoireTrackItem({
   track,
   onEdit,
   onDelete,
+  onToggleMastered,
 }: IRepertoireTrackItemProps): ReactElement {
+  const [tuningOpen, setTuningOpen] = useState<boolean>(false);
+
+  const tuningResult = track.tuning ? findTuningByName(track.tuning) : null;
+
   return (
     <div className="repertoireTrackItem">
+      <button
+        type="button"
+        className={`trackMasteredBtn ${track.isMastered ? "mastered" : ""}`}
+        onClick={() => onToggleMastered(track.id)}
+        aria-label={track.isMastered ? "Marquer comme non maîtrisé" : "Marquer comme maîtrisé"}
+        title={track.isMastered ? "Maîtrisé" : "Non maîtrisé"}
+      >
+        <MdCheck />
+      </button>
+
       <div className="trackInfo">
         <span className="trackTitle">{track.title}</span>
         <span className="trackArtist">{track.artist}</span>
         <div className="trackMeta">
           <span className="trackTypeBadge">{TRACK_TYPE_LABELS[track.type]}</span>
+          {track.tuning && (
+            <div className="trackTuningWrapper">
+              <button
+                type="button"
+                className="trackTuningBtn"
+                onClick={() => setTuningOpen((v) => !v)}
+                aria-label={`Accordage : ${track.tuning}`}
+              >
+                {track.tuning}
+              </button>
+              {tuningOpen && tuningResult && (
+                <div className="tuningPopup">
+                  <span className="tuningPopupName">
+                    {tuningResult.tuning.name}
+                    {tuningResult.capo ? ` · Capo ${tuningResult.capo}` : ""}
+                  </span>
+                  <div className="tuningPopupStrings">
+                    {tuningResult.tuning.strings.map((note, idx) => {
+                      const stringNum = 6 - idx;
+                      return (
+                        <div key={idx} className="tuningPopupString">
+                          <span
+                            className="tuningPopupStringNum"
+                            style={{ color: STRING_COLORS[stringNum] }}
+                          >
+                            {stringNum}
+                          </span>
+                          <span
+                            className="tuningPopupNote"
+                            style={{
+                              background: `${STRING_COLORS[stringNum]}18`,
+                              color: STRING_COLORS[stringNum],
+                              borderColor: `${STRING_COLORS[stringNum]}50`,
+                            }}
+                          >
+                            {note}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
           <div className="trackLinks">
             {track.tablatureUrl && (
               <a

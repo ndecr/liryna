@@ -14,7 +14,7 @@ interface IForgotPasswordFormProps {
   onBack: () => void;
 }
 
-export default function ForgotPasswordForm({ onBack }: Readonly<IForgotPasswordFormProps>): ReactElement {
+export default function ForgotPasswordForm({ onBack: _onBack }: Readonly<IForgotPasswordFormProps>): ReactElement {
   const [email, setEmail] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDone, setIsDone] = useState<boolean>(false);

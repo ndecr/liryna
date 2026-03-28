@@ -8,6 +8,36 @@ import { MdClose, MdCheck } from "react-icons/md";
 // types
 import { IRepertoireTrack, IRepertoireTrackFormData } from "../../utils/types/musique.types.ts";
 
+// constants
+import { GUITAR_TUNING_CATEGORIES } from "../../utils/constants/guitarTunings.ts";
+
+const TUNING_ID_TO_VALUE: Record<string, string> = {
+  "standard": "Standard",
+  "eb": "Eb",
+  "d-standard": "D Standard",
+  "db-standard": "C# Standard",
+  "c-standard": "C Standard",
+  "b-standard": "B Standard",
+  "drop-d": "Drop D",
+  "drop-db": "Drop C#",
+  "drop-c": "Drop C",
+  "drop-b": "Drop B",
+  "drop-a": "Drop A",
+  "double-drop-d": "Double Drop D",
+  "open-e": "Open E",
+  "open-d": "Open D",
+  "open-g": "Open G",
+  "open-a": "Open A",
+  "open-c": "Open C",
+  "open-b": "Open B",
+  "dadgad": "DADGAD",
+  "open-dm": "Open Dm",
+  "open-g5": "Open G5",
+  "all-fourths": "All Fourths",
+  "celtic": "Celtic",
+  "lute": "Lute",
+};
+
 const GENRES_SUGGESTIONS = [
   "Blues", "Classical", "Country", "Electro", "Flamenco", "Folk",
   "Funk", "Jazz", "Metal", "Pop", "Punk", "R&B", "Raggae",
@@ -32,6 +62,7 @@ const DEFAULT_FORM: IRepertoireTrackFormData = {
   artist: "",
   genre: "",
   type: "partition_complete",
+  tuning: "",
   tablatureUrl: "",
   youtubeUrl: "",
 };
@@ -54,6 +85,7 @@ export default function RepertoireTrackModal({
         artist: track.artist,
         genre: track.genre,
         type: track.type,
+        tuning: track.tuning,
         tablatureUrl: track.tablatureUrl,
         youtubeUrl: track.youtubeUrl,
       });
@@ -188,6 +220,26 @@ export default function RepertoireTrackModal({
                 <option value="solo">Solo</option>
               </select>
             </div>
+          </div>
+
+          <div className="formField">
+            <label className="formLabel">Accordage</label>
+            <select
+              className="formSelect"
+              value={form.tuning}
+              onChange={handleChange("tuning")}
+            >
+              <option value="">— Aucun —</option>
+              {GUITAR_TUNING_CATEGORIES.map((cat) => (
+                <optgroup key={cat.id} label={cat.title}>
+                  {cat.tunings.map((t) => (
+                    <option key={t.id} value={TUNING_ID_TO_VALUE[t.id] ?? t.name}>
+                      {t.name}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
           </div>
 
           <div className="formField">

@@ -51,6 +51,13 @@ export const useRepertoire = () => {
   const isEmpty = context.tracks.length === 0;
   const isFilteredEmpty = filteredTracks.length === 0 && !isEmpty;
 
+  const progressStats = useMemo(() => {
+    const total = context.tracks.length;
+    const mastered = context.tracks.filter((t) => t.isMastered).length;
+    const percent = total > 0 ? Math.round((mastered / total) * 100) : 0;
+    return { total, mastered, percent };
+  }, [context.tracks]);
+
   return {
     ...context,
     activeFilter,
@@ -58,6 +65,7 @@ export const useRepertoire = () => {
     tracksByGenre,
     isEmpty,
     isFilteredEmpty,
+    progressStats,
     FILTER_OPTIONS,
     TRACK_TYPE_LABELS,
   };
