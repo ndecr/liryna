@@ -6,7 +6,7 @@ import { ReactElement, useState, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
 import { IoHome, IoAdd, IoList, IoWallet, IoCreate } from "react-icons/io5";
-import { MdDashboard } from "react-icons/md";
+import { MdDashboard, MdLogout } from "react-icons/md";
 import { FiHome } from "react-icons/fi";
 import { UserContext } from "../../context/user/UserContext.tsx";
 
@@ -20,6 +20,14 @@ export default function Header(): ReactElement {
   const { user, logout } = useContext(UserContext);
 
   const isAuthRoute: boolean = location.pathname === "/auth";
+
+  const getGreeting = (): string => {
+    const hour = new Date().getHours();
+    if (hour >= 6 && hour < 12) return "Bonjour";
+    if (hour >= 12 && hour < 18) return "Bon après-midi";
+    if (hour >= 18 && hour < 22) return "Bonsoir";
+    return "Bonne nuit";
+  };
 
   const handleLogout = () => {
     logout();
@@ -53,10 +61,10 @@ export default function Header(): ReactElement {
           <div className="headerRight">
             {user && !isAuthRoute && (
               <div className="userInfo">
-                <span className="userGreeting">Bonjour {user.firstName}</span>
+                <span className="userGreeting">{getGreeting()}, <strong>{user.firstName}</strong></span>
                 <PWAInstallButton variant="desktop" compact={true} />
-                <button onClick={handleLogout} className="logoutButton">
-                  Déconnexion
+                <button onClick={handleLogout} className="logoutButton" aria-label="Déconnexion" title="Déconnexion">
+                  <MdLogout />
                 </button>
               </div>
             )}
@@ -94,11 +102,12 @@ export default function Header(): ReactElement {
               {user && (
                 <div className="mobileUserInfo">
                   <span className="mobileUserGreeting">
-                    Bonjour {user.firstName}
+                    {getGreeting()}, <strong>{user.firstName}</strong>
                   </span>
                   <PWAInstallButton variant="mobile" compact={true} />
-                  <button onClick={handleLogout} className="mobileLogoutButton">
-                    Déconnexion
+                  <button onClick={handleLogout} className="mobileLogoutButton" aria-label="Déconnexion">
+                    <MdLogout />
+                    <span>Déconnexion</span>
                   </button>
                 </div>
               )}

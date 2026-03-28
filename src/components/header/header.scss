@@ -131,16 +131,26 @@
 }
 
 .logoutButton {
-  color: vars.$fontColorPrimary !important;
-  padding: 0.25em 0.5em !important;
-  font-size: 0.85em !important;
-  font-weight: 400 !important;
-  text-decoration: underline !important;
-  transition: color vars.$transitionFast !important;
   @include mixins.resetButton;
 
+  & {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    font-size: 1.05em;
+    color: vars.$fontColorSecondary;
+    background: transparent;
+    transition: all vars.$transitionFast;
+    flex-shrink: 0;
+  }
+
   &:hover {
-    color: vars.$courrierDark;
+    background: rgba(220, 38, 38, 0.1);
+    color: vars.$errorColor;
+    transform: translateY(-1px);
   }
 }
 
@@ -352,15 +362,23 @@
   }
 
   .mobileLogoutButton {
-    color: #36395a !important;
-    padding: 0.25em 0.5em !important;
-    font-size: 0.8rem !important;
-    font-weight: 400 !important;
-    text-decoration: underline !important;
     @include mixins.resetButton;
+    @include mixins.flexContainer(row, 0.5rem);
+
+    & {
+      align-items: center;
+      justify-content: center;
+      padding: 0.5em 1em;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: vars.$errorColor;
+      background: rgba(220, 38, 38, 0.08);
+      transition: all vars.$transitionFast;
+    }
 
     &:hover {
-      color: #ff7e5f;
+      background: rgba(220, 38, 38, 0.15);
     }
   }
 }
