@@ -4,13 +4,15 @@ import "./authForm.scss";
 // hooks | library
 import { ReactElement } from "react";
 
-// component
+// components
 import SignInForm from "../signInForm/SignInForm";
 import SignUpForm from "../signUpForm/SignUpForm";
+import ForgotPasswordForm from "../forgotPasswordForm/ForgotPasswordForm.tsx";
 
 interface IAuthFormProps {
   props: {
     isSignIn: boolean;
+    isForgotPassword: boolean;
     email: string;
     password: string;
     firstName: string;
@@ -19,6 +21,8 @@ interface IAuthFormProps {
     setPassword: (value: string) => void;
     setFirstName: (value: string) => void;
     setLastName: (value: string) => void;
+    onForgotPassword: () => void;
+    onBackToLogin: () => void;
   };
 }
 
@@ -27,6 +31,7 @@ export default function AuthForm({
 }: Readonly<IAuthFormProps>): ReactElement {
   const {
     isSignIn,
+    isForgotPassword,
     email,
     password,
     firstName,
@@ -35,16 +40,21 @@ export default function AuthForm({
     setPassword,
     setFirstName,
     setLastName,
+    onForgotPassword,
+    onBackToLogin,
   } = props;
 
   return (
     <div id="authFormWrapper">
-      {isSignIn ? (
+      {isForgotPassword ? (
+        <ForgotPasswordForm onBack={onBackToLogin} />
+      ) : isSignIn ? (
         <SignInForm
           email={email}
           password={password}
           setEmail={setEmail}
           setPassword={setPassword}
+          onForgotPassword={onForgotPassword}
         />
       ) : (
         <SignUpForm

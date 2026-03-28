@@ -40,6 +40,7 @@ import RhythmGuitarProgressionWithAuth from "./views/musique/programmeGuitare/rh
 import SlapGuitarProgressionWithAuth from "./views/musique/programmeGuitare/slapGuitarProgression/SlapGuitarProgression.tsx";
 import AccordagesGuitareWithAuth from "./views/musique/accordagesGuitare/AccordagesGuitare.tsx";
 import RepertoireWithAuth from "./views/musique/repertoire/Repertoire.tsx";
+import ResetPassword from "./views/resetPassword/ResetPassword.tsx";
 
 // Component to manage body classes based on current route
 function BodyClassManager(): ReactElement | null {
@@ -94,6 +95,7 @@ function App(): ReactElement {
       <Routes>
         <Route path="/" element={<Navigate to="/auth" />}></Route>
         <Route path={"auth"} element={<AuthPage />}></Route>
+        <Route path={"reset-password"} element={<ResetPassword />}></Route>
         <Route path={"home"} element={<HomeWithAuth />}></Route>
         <Route path={"mail"} element={<CourriersWithAuth />}></Route>
         <Route path={"mail/list"} element={<ListeCourriersWithAuth />}></Route>

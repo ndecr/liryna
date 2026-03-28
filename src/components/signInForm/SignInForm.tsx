@@ -15,6 +15,7 @@ interface ISignInFormProps {
   password: string;
   setEmail: (value: string) => void;
   setPassword: (value: string) => void;
+  onForgotPassword: () => void;
 }
 
 // context
@@ -32,6 +33,7 @@ export default function SignInForm({
   password,
   setEmail,
   setPassword,
+  onForgotPassword,
 }: Readonly<ISignInFormProps>): ReactElement {
   const navigate: NavigateFunction = useNavigate();
   const { login, user, isLoading } = useContext(UserContext);
@@ -107,6 +109,11 @@ export default function SignInForm({
           type="submit"
           disabled={isLoading}
         />
+      </div>
+      <div className="forgotPasswordLink">
+        <button type="button" onClick={onForgotPassword}>
+          Mot de passe oublié ?
+        </button>
       </div>
     </form>
   );

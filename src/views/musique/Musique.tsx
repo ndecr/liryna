@@ -29,7 +29,7 @@ function Musique(): ReactElement {
       label: "Mon Répertoire",
       icon: <MdLibraryMusic />,
       route: "/musique/repertoire",
-      primary: true,
+      primary: false,
     },
     {
       id: "accordages-guitare",
