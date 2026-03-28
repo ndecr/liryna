@@ -114,8 +114,9 @@ const DEV_PATTERNS = [
 
 const EXTERNAL_HOSTS = new Set([
   'fonts.googleapis.com',
-  'fonts.gstatic.com', 
-  'unpkg.com'
+  'fonts.gstatic.com',
+  'unpkg.com',
+  'api.liryna.app'
 ]);
 
 // Throttling : Limiter le nombre d'opérations de cache simultanées
