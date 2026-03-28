@@ -103,6 +103,7 @@
   .trackTuningWrapper {
     & {
       position: relative;
+      z-index: 10;
     }
   }
 
@@ -139,7 +140,7 @@
       border-radius: 10px;
       padding: 0.75em;
       box-shadow: vars.$shadowMedium;
-      z-index: 100;
+      z-index: 1000;
       min-width: 9em;
     }
   }
