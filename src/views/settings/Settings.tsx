@@ -162,19 +162,20 @@ function Settings(): ReactElement {
                   className="avatarInput"
                   onChange={handleFileSelect}
                 />
-                {uploadingAvatar && (
-                  <span className="avatarUploading">Envoi...</span>
-                )}
-                {currentAvatar && !uploadingAvatar && (
-                  <Button
-                    style="red"
+                {currentAvatar && (
+                  <button
                     type="button"
+                    className="avatarDeleteBtn"
                     onClick={handleDeleteAvatar}
                     disabled={deletingAvatar}
+                    aria-label="Supprimer la photo"
+                    title="Supprimer la photo"
                   >
                     <MdDelete />
-                    {deletingAvatar ? "Suppression..." : "Supprimer la photo"}
-                  </Button>
+                  </button>
+                )}
+                {uploadingAvatar && (
+                  <span className="avatarUploading">Envoi...</span>
                 )}
               </div>
 
