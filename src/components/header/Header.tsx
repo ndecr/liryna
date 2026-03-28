@@ -6,8 +6,9 @@ import { ReactElement, useState, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
 import { IoHome, IoAdd, IoList, IoWallet, IoCreate } from "react-icons/io5";
-import { MdDashboard, MdLogout } from "react-icons/md";
+import { MdDashboard, MdLogout, MdMusicNote, MdLibraryMusic, MdTune } from "react-icons/md";
 import { FiHome } from "react-icons/fi";
+import { GiGuitar } from "react-icons/gi";
 import { UserContext } from "../../context/user/UserContext.tsx";
 
 // components
@@ -87,10 +88,10 @@ export default function Header(): ReactElement {
       {isMobileMenuOpen && !isAuthRoute && (
         <div className="mobileMenuOverlay" onClick={closeMobileMenu}>
           <div
-            className="mobileMenu utils"
+            className={`mobileMenu ${location.pathname.startsWith("/musique") ? "musique" : location.pathname.startsWith("/budget") ? "webdev" : "utils"}`}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="mobileMenuHeader utils">
+            <div className={`mobileMenuHeader ${location.pathname.startsWith("/musique") ? "musique" : location.pathname.startsWith("/budget") ? "webdev" : "utils"}`}>
               <span className="mobileMenuTitle">Navigation</span>
               <button className="mobileMenuClose" onClick={closeMobileMenu}>
                 <HiX />
@@ -182,6 +183,47 @@ export default function Header(): ReactElement {
                 >
                   <FiHome className="mobileNavIcon" />
                   <span className="mobileNavText">Simulateur immobilier</span>
+                </button>
+              </div>
+
+              {/* Navigation de la musique */}
+              <div className="mobileSection">
+                <h3 className="mobileSectionTitle musique">Musique</h3>
+                <button
+                  className={`mobileNavItem ${
+                    location.pathname === "/musique" ? "active" : ""
+                  }`}
+                  onClick={() => handleNavigate("/musique")}
+                >
+                  <MdMusicNote className="mobileNavIcon" />
+                  <span className="mobileNavText">Hub Musique</span>
+                </button>
+                <button
+                  className={`mobileNavItem ${
+                    location.pathname.startsWith("/musique/programme-guitare") ? "active" : ""
+                  }`}
+                  onClick={() => handleNavigate("/musique/programme-guitare")}
+                >
+                  <GiGuitar className="mobileNavIcon" />
+                  <span className="mobileNavText">Programme Guitare</span>
+                </button>
+                <button
+                  className={`mobileNavItem ${
+                    location.pathname === "/musique/repertoire" ? "active" : ""
+                  }`}
+                  onClick={() => handleNavigate("/musique/repertoire")}
+                >
+                  <MdLibraryMusic className="mobileNavIcon" />
+                  <span className="mobileNavText">Mon Répertoire</span>
+                </button>
+                <button
+                  className={`mobileNavItem ${
+                    location.pathname === "/musique/accordages-guitare" ? "active" : ""
+                  }`}
+                  onClick={() => handleNavigate("/musique/accordages-guitare")}
+                >
+                  <MdTune className="mobileNavIcon" />
+                  <span className="mobileNavText">Accordages Guitare</span>
                 </button>
               </div>
             </div>
