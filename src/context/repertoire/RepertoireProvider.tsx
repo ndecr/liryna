@@ -64,17 +64,29 @@ export const RepertoireProvider = ({
 
   const toggleMastered = useCallback(
     async (id: number): Promise<void> => {
-      const track = tracks.find((t) => t.id === id);
-      if (!track) return;
+      let isMastered = false;
+      let found = false;
+
+      setTracks((prev) => {
+        const track = prev.find((t) => t.id === id);
+        if (track) {
+          found = true;
+          isMastered = track.isMastered;
+        }
+        return prev;
+      });
+
+      if (!found) return;
+
       try {
-        const updated = await toggleRepertoireTrackMasteredService(id, !track.isMastered);
+        const updated = await toggleRepertoireTrackMasteredService(id, !isMastered);
         setTracks((prev) => prev.map((t) => (t.id === id ? updated : t)));
       } catch (error) {
         console.error("Error while toggling mastered:", error);
         throw error;
       }
     },
-    [tracks]
+    []
   );
 
   const deleteTrack = useCallback(async (id: number): Promise<void> => {

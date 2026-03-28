@@ -70,16 +70,22 @@ export const ProgrammeGuitareProvider = ({
   const toggleSong = useCallback(
     async (songId: number): Promise<void> => {
       const key = songId.toString();
-      const current = progression?.completedSongs ?? {};
-      const optimistic: CompletedSongs = { ...current, [key]: !current[key] };
-      setProgression((prev) => (prev ? { ...prev, completedSongs: optimistic } : prev));
+      let current: CompletedSongs = {};
+      let optimistic: CompletedSongs = {};
+
+      setProgression((prev) => {
+        current = prev?.completedSongs ?? {};
+        optimistic = { ...current, [key]: !current[key] };
+        return prev ? { ...prev, completedSongs: optimistic } : prev;
+      });
+
       try {
         await updateProgression(optimistic);
       } catch {
         setProgression((prev) => (prev ? { ...prev, completedSongs: current } : prev));
       }
     },
-    [progression, updateProgression]
+    [updateProgression]
   );
 
   const updateSongLinks = useCallback(

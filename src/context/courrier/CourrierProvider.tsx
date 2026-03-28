@@ -54,7 +54,7 @@ export const CourrierProvider = ({
     }
   }, []);
 
-  const getCourrierById = async (id: number): Promise<void> => {
+  const getCourrierById = useCallback(async (id: number): Promise<void> => {
     setIsLoading(true);
     try {
       const courrier = await getCourrierByIdService(id);
@@ -66,23 +66,14 @@ export const CourrierProvider = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const updateCourrier = async (id: number, metadata: Partial<ICourrierUploadData>): Promise<ICourrier> => {
+  const updateCourrier = useCallback(async (id: number, metadata: Partial<ICourrierUploadData>): Promise<ICourrier> => {
     setIsLoading(true);
     try {
       const updatedCourrier = await updateCourrierService(id, metadata);
-      
-      setCourriers(prev => 
-        prev.map(courrier => 
-          courrier.id === id ? updatedCourrier : courrier
-        )
-      );
-      
-      if (currentCourrier?.id === id) {
-        setCurrentCourrier(updatedCourrier);
-      }
-      
+      setCourriers(prev => prev.map(courrier => courrier.id === id ? updatedCourrier : courrier));
+      setCurrentCourrier(prev => prev?.id === id ? updatedCourrier : prev);
       return updatedCourrier;
     } catch (error) {
       console.error("Error while updating courrier:", error);
@@ -90,27 +81,23 @@ export const CourrierProvider = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   const deleteCourrier = useCallback(async (id: number): Promise<void> => {
     setIsLoading(true);
     try {
       await deleteCourrierService(id);
-      
       setCourriers(prev => prev.filter(courrier => courrier.id !== id));
-      
-      if (currentCourrier?.id === id) {
-        setCurrentCourrier(null);
-      }
+      setCurrentCourrier(prev => prev?.id === id ? null : prev);
     } catch (error) {
       console.error("Error while deleting courrier:", error);
       throw error;
     } finally {
       setIsLoading(false);
     }
-  }, [currentCourrier]);
+  }, []);
 
-  const searchCourriers = async (params: ICourrierSearchParams): Promise<void> => {
+  const searchCourriers = useCallback(async (params: ICourrierSearchParams): Promise<void> => {
     setIsLoading(true);
     try {
       const response = await searchCourriersService(params);
@@ -124,7 +111,7 @@ export const CourrierProvider = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   const downloadCourrier = useCallback(async (id: number): Promise<Blob> => {
     setIsLoading(true);
@@ -139,8 +126,8 @@ export const CourrierProvider = ({
     }
   }, []);
 
-  const sendCourrierEmail = async (
-    id: number, 
+  const sendCourrierEmail = useCallback(async (
+    id: number,
     emailData: { to: string; subject: string; message: string }
   ): Promise<void> => {
     setIsLoading(true);
@@ -152,7 +139,7 @@ export const CourrierProvider = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   const getCourrierStats = useCallback(async (): Promise<void> => {
     try {
@@ -184,7 +171,7 @@ export const CourrierProvider = ({
       sendCourrierEmail,
       getCourrierStats,
     }),
-    [courriers, currentCourrier, isLoading, pagination, stats, uploadCourrier, getAllCourriers, deleteCourrier, downloadCourrier, getCourrierStats],
+    [courriers, currentCourrier, isLoading, pagination, stats, uploadCourrier, getAllCourriers, getCourrierById, updateCourrier, deleteCourrier, searchCourriers, downloadCourrier, sendCourrierEmail, getCourrierStats],
   );
 
   return (
