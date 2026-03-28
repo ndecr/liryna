@@ -24,6 +24,7 @@ export default function Header(): ReactElement {
   const isAuthRoute: boolean = location.pathname === "/auth";
   const visibleSections = user?.visibleSections ?? { mail: true, budget: true, musique: true };
   const avatarUrl = resolveAvatarUrl(user?.avatarUrl);
+  const initials = `${user?.firstName?.[0] ?? ""}${user?.lastName?.[0] ?? ""}`.toUpperCase() || "?";
 
   const getGreeting = (): string => {
     const hour = new Date().getHours();
@@ -85,7 +86,7 @@ export default function Header(): ReactElement {
                   {avatarUrl ? (
                     <img src={avatarUrl} alt="Avatar" className="headerAvatarImg" />
                   ) : (
-                    <span className="headerAvatarInitial">{user.firstName?.[0]?.toUpperCase() ?? "?"}</span>
+                    <span className="headerAvatarInitial">{initials}</span>
                   )}
                 </div>
                 <button

@@ -13,6 +13,7 @@ interface IUserContext {
     getCurrentUser: () => Promise<void>;
     updatePreferences: (visibleSections: IVisibleSections) => Promise<void>;
     uploadAvatar: (file: File) => Promise<void>;
+    deleteAvatar: () => Promise<void>;
     deleteAccount: () => Promise<void>;
 }
 
@@ -27,5 +28,6 @@ export const UserContext: Context<IUserContext> = createContext<IUserContext>({
     getCurrentUser: async (): Promise<void> => {},
     updatePreferences: async (): Promise<void> => {},
     uploadAvatar: async (): Promise<void> => {},
+    deleteAvatar: async (): Promise<void> => {},
     deleteAccount: async (): Promise<void> => {},
 });

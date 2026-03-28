@@ -12,6 +12,7 @@ import {
   getCurrentUserService,
   updateUserPreferencesService,
   uploadAvatarService,
+  deleteAvatarService,
   deleteMyAccountService,
 } from "../../API/services/user.service.ts";
 import { loginService, registerService, logoutService } from "../../API/services/auth.service.ts";
@@ -103,6 +104,11 @@ export const UserProvider = ({
     setUser((prev) => (prev ? { ...prev, avatarUrl: avatarUrlWithBust } : prev));
   }, []);
 
+  const deleteAvatar = useCallback(async (): Promise<void> => {
+    await deleteAvatarService();
+    setUser((prev) => (prev ? { ...prev, avatarUrl: null } : prev));
+  }, []);
+
   const deleteAccount = useCallback(async (): Promise<void> => {
     await deleteMyAccountService();
     csrfService.clearToken();
@@ -121,9 +127,10 @@ export const UserProvider = ({
       getCurrentUser,
       updatePreferences,
       uploadAvatar,
+      deleteAvatar,
       deleteAccount,
     }),
-    [user, isAuthenticated, isLoading, login, register, logout, getCurrentUser, updatePreferences, uploadAvatar, deleteAccount],
+    [user, isAuthenticated, isLoading, login, register, logout, getCurrentUser, updatePreferences, uploadAvatar, deleteAvatar, deleteAccount],
   );
 
   return (
