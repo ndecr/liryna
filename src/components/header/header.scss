@@ -293,6 +293,10 @@
   &.webdev {
     border-top: 4px solid vars.$budgetPrimary;
   }
+
+  &.musique {
+    border-top: 4px solid vars.$musiquePrimary;
+  }
 }
 
 .mobileMenuHeader {
@@ -309,6 +313,10 @@
 
     &.webdev {
       background: rgba(255, 107, 71, 0.1);
+    }
+
+    &.musique {
+      background: rgba(124, 58, 237, 0.08);
     }
   }
 }
@@ -392,12 +400,18 @@
 }
 
 .mobileSectionTitle {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: vars.$courrierPrimary;
-  margin: 1rem 0 0.75rem 1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  & {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: vars.$courrierPrimary;
+    margin: 1rem 0 0.75rem 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &.musique {
+    color: vars.$musiquePrimary;
+  }
 }
 
 .mobileNavItem {
@@ -429,6 +443,10 @@
 
     .mobileMenu.webdev & {
       background: vars.$budgetGradient;
+    }
+
+    .mobileMenu.musique & {
+      background: vars.$musiqueGradient;
     }
   }
 
