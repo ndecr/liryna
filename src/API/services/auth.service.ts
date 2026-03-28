@@ -36,7 +36,16 @@ export const logoutService = async (): Promise<void> => {
   // Plus besoin de nettoyer localStorage - tout est dans le cookie httpOnly
 };
 
-// Plus nécessaire avec les cookies httpOnly - supprimé
-// export const getStoredToken = (): string | null => {
-//   return localStorage.getItem('authToken');
-// };
+export const forgotPasswordService = async (email: string): Promise<void> => {
+  await postRequest<{ email: string }, { success: boolean; message: string }>(
+    "/users/forgot-password",
+    { email }
+  );
+};
+
+export const resetPasswordService = async (token: string, password: string): Promise<void> => {
+  await postRequest<{ token: string; password: string }, { success: boolean; message: string }>(
+    "/users/reset-password",
+    { token, password }
+  );
+};

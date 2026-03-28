@@ -11,14 +11,29 @@ import Footer from "../../components/footer/Footer";
 
 export default function AuthPage(): ReactElement {
   const [isSignIn, setIsSignIn] = useState<boolean>(true);
+  const [isForgotPassword, setIsForgotPassword] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
 
+  const handleForgotPassword = () => {
+    setIsForgotPassword(true);
+  };
 
+  const handleBackToLogin = () => {
+    setIsForgotPassword(false);
+    setIsSignIn(true);
+  };
 
   const ChangeFormLink = (): ReactElement => {
+    if (isForgotPassword) {
+      return (
+        <p>
+          <button onClick={handleBackToLogin}>Retour à la connexion</button>
+        </p>
+      );
+    }
     return isSignIn ? (
       <p>
         Pas encore de compte ?{" "}
@@ -39,15 +54,18 @@ export default function AuthPage(): ReactElement {
       <main>
         <AuthForm
           props={{
-            isSignIn: isSignIn,
-            email: email,
-            password: password,
-            firstName: firstName,
-            lastName: lastName,
-            setEmail: setEmail,
-            setPassword: setPassword,
-            setFirstName: setFirstName,
-            setLastName: setLastName,
+            isSignIn,
+            isForgotPassword,
+            email,
+            password,
+            firstName,
+            lastName,
+            setEmail,
+            setPassword,
+            setFirstName,
+            setLastName,
+            onForgotPassword: handleForgotPassword,
+            onBackToLogin: handleBackToLogin,
           }}
         />
         <div className={'changeFormButtonWrapper'}>
