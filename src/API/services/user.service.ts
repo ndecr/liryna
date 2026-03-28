@@ -78,6 +78,14 @@ export const uploadAvatarService = async (file: File): Promise<string> => {
   throw new Error(response.data.message || "Failed to upload avatar");
 };
 
+export const deleteAvatarService = async (): Promise<void> => {
+  const response: AxiosResponse<IApiResponse> = await deleteRequest("/users/me/avatar");
+
+  if (!response.data.success) {
+    throw new Error(response.data.message || "Failed to delete avatar");
+  }
+};
+
 export const deleteMyAccountService = async (): Promise<void> => {
   const response: AxiosResponse<IApiResponse> = await deleteRequest("/users/me");
 

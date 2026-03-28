@@ -160,9 +160,10 @@
 
   .headerAvatarInitial {
     & {
-      font-size: 0.75em;
+      font-size: 0.6em;
       font-weight: 700;
       color: vars.$fontColorSecondary;
+      letter-spacing: 0.03em;
     }
   }
 }

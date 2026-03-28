@@ -4,7 +4,7 @@ import "./settings.scss";
 // hooks | libraries
 import { ReactElement, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { MdPerson, MdVisibility, MdDeleteForever, MdCameraAlt, MdMail, MdMusicNote } from "react-icons/md";
+import { MdPerson, MdVisibility, MdDeleteForever, MdCameraAlt, MdMail, MdMusicNote, MdDelete } from "react-icons/md";
 import { IoWallet } from "react-icons/io5";
 
 // components
@@ -25,7 +25,7 @@ import { resolveAvatarUrl } from "../../utils/scripts/utils.ts";
 
 function Settings(): ReactElement {
   const navigate = useNavigate();
-  const { user, updatePreferences, uploadAvatar, deleteAccount } = useUser();
+  const { user, updatePreferences, uploadAvatar, deleteAvatar, deleteAccount } = useUser();
 
   const [sections, setSections] = useState<IVisibleSections>({
     mail: user?.visibleSections?.mail ?? true,
@@ -37,6 +37,7 @@ function Settings(): ReactElement {
 
   const [cropImageUrl, setCropImageUrl] = useState<string | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [deletingAvatar, setDeletingAvatar] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [deleteConfirm, setDeleteConfirm] = useState("");
@@ -86,7 +87,19 @@ function Settings(): ReactElement {
     setCropImageUrl(null);
   };
 
+  const handleDeleteAvatar = async () => {
+    setDeletingAvatar(true);
+    try {
+      await deleteAvatar();
+    } catch {
+      // ignore
+    } finally {
+      setDeletingAvatar(false);
+    }
+  };
+
   const currentAvatar = resolveAvatarUrl(user?.avatarUrl);
+  const initials = `${user?.firstName?.[0] ?? ""}${user?.lastName?.[0] ?? ""}`.toUpperCase() || "?";
 
   // ── Suppression compte
   const handleDeleteAccount = async () => {
@@ -136,9 +149,7 @@ function Settings(): ReactElement {
                   {currentAvatar ? (
                     <img src={currentAvatar} alt="Avatar" className="avatarImg" />
                   ) : (
-                    <div className="avatarPlaceholder">
-                      {user?.firstName?.[0]?.toUpperCase() ?? "?"}
-                    </div>
+                    <div className="avatarPlaceholder">{initials}</div>
                   )}
                   <div className="avatarOverlay">
                     <MdCameraAlt />
@@ -153,6 +164,17 @@ function Settings(): ReactElement {
                 />
                 {uploadingAvatar && (
                   <span className="avatarUploading">Envoi...</span>
+                )}
+                {currentAvatar && !uploadingAvatar && (
+                  <Button
+                    style="red"
+                    type="button"
+                    onClick={handleDeleteAvatar}
+                    disabled={deletingAvatar}
+                  >
+                    <MdDelete />
+                    {deletingAvatar ? "Suppression..." : "Supprimer la photo"}
+                  </Button>
                 )}
               </div>
 
