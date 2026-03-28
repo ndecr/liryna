@@ -21,6 +21,12 @@ export const getApiBaseUrl = (): string => {
   }
 };
 
+export const resolveAvatarUrl = (avatarPath: string | null | undefined): string | null => {
+  if (!avatarPath) return null;
+  const base = getApiBaseUrl().replace(/\/api$/, "");
+  return `${base}${avatarPath}`;
+};
+
 /**
  * Détermine l'environnement actuel de l'application
  */

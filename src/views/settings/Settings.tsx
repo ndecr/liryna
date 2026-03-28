@@ -20,6 +20,9 @@ import { useUser } from "../../hooks/useUser.ts";
 // types
 import { IVisibleSections } from "../../utils/types/user.types.ts";
 
+// utils
+import { resolveAvatarUrl } from "../../utils/scripts/utils.ts";
+
 function Settings(): ReactElement {
   const navigate = useNavigate();
   const { user, updatePreferences, uploadAvatar, deleteAccount } = useUser();
@@ -83,7 +86,7 @@ function Settings(): ReactElement {
     setCropImageUrl(null);
   };
 
-  const currentAvatar = user?.avatarUrl ?? null;
+  const currentAvatar = resolveAvatarUrl(user?.avatarUrl);
 
   // ── Suppression compte
   const handleDeleteAccount = async () => {

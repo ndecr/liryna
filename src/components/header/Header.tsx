@@ -10,6 +10,7 @@ import { MdDashboard, MdLogout, MdMusicNote, MdLibraryMusic, MdTune, MdSettings 
 import { FiHome } from "react-icons/fi";
 import { GiGuitar } from "react-icons/gi";
 import { useUser } from "../../hooks/useUser.ts";
+import { resolveAvatarUrl } from "../../utils/scripts/utils.ts";
 
 // components
 import PWAInstallButton from "../pwaInstallButton/PWAInstallButton.tsx";
@@ -22,6 +23,7 @@ export default function Header(): ReactElement {
 
   const isAuthRoute: boolean = location.pathname === "/auth";
   const visibleSections = user?.visibleSections ?? { mail: true, budget: true, musique: true };
+  const avatarUrl = resolveAvatarUrl(user?.avatarUrl);
 
   const getGreeting = (): string => {
     const hour = new Date().getHours();
@@ -79,6 +81,13 @@ export default function Header(): ReactElement {
               <div className="userInfo">
                 <span className="userGreeting">{getGreeting()}, <strong>{user.firstName}</strong></span>
                 <PWAInstallButton variant="desktop" compact={true} />
+                <div className="headerAvatar" onClick={() => navigate("/settings")} title="Paramètres">
+                  {avatarUrl ? (
+                    <img src={avatarUrl} alt="Avatar" className="headerAvatarImg" />
+                  ) : (
+                    <span className="headerAvatarInitial">{user.firstName?.[0]?.toUpperCase() ?? "?"}</span>
+                  )}
+                </div>
                 <button
                   onClick={() => navigate("/settings")}
                   className="settingsButton"
