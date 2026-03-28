@@ -130,6 +130,30 @@
 
 }
 
+.settingsButton {
+  @include mixins.resetButton;
+
+  & {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    font-size: 1.05em;
+    color: vars.$fontColorSecondary;
+    background: transparent;
+    transition: all vars.$transitionFast;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: rgba(100, 116, 139, 0.1);
+    color: #64748b;
+    transform: translateY(-1px);
+  }
+}
+
 .logoutButton {
   @include mixins.resetButton;
 
@@ -375,6 +399,27 @@
     min-width: 150px;
   }
 
+  .mobileSettingsButton {
+    @include mixins.resetButton;
+    @include mixins.flexContainer(row, 0.5rem);
+
+    & {
+      align-items: center;
+      justify-content: center;
+      padding: 0.5em 1em;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #64748b;
+      background: rgba(100, 116, 139, 0.08);
+      transition: all vars.$transitionFast;
+    }
+
+    &:hover {
+      background: rgba(100, 116, 139, 0.15);
+    }
+  }
+
   .mobileLogoutButton {
     @include mixins.resetButton;
     @include mixins.flexContainer(row, 0.5rem);
@@ -454,6 +499,11 @@
     .mobileMenu.musique & {
       background: vars.$musiqueGradient;
     }
+  }
+
+  &.settings.active {
+    background: linear-gradient(135deg, #64748b 0%, #94a3b8 100%) !important;
+    color: vars.$whiteBackground !important;
   }
 
   .mobileNavIcon {

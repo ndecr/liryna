@@ -1,0 +1,125 @@
+@use "../../utils/styles/variables" as vars;
+
+.avatarCropOverlay {
+  & {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1em;
+  }
+}
+
+.avatarCropModal {
+  & {
+    display: flex;
+    flex-direction: column;
+    background: vars.$whiteBackground;
+    border-radius: 14px;
+    box-shadow: vars.$shadowHeavy;
+    width: 100%;
+    max-width: 26em;
+    max-height: 90dvh;
+    overflow: hidden;
+  }
+}
+
+.avatarCropHeader {
+  & {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1em 1.25em;
+    border-bottom: 1px solid vars.$borderColor;
+  }
+
+  .avatarCropTitle {
+    & {
+      font-size: 1em;
+      font-weight: 600;
+      color: vars.$fontColorPrimary;
+      margin: 0;
+    }
+  }
+
+  .avatarCropClose {
+    & {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.8em;
+      height: 1.8em;
+      border: none;
+      background: transparent;
+      border-radius: 50%;
+      font-size: 1.1em;
+      color: vars.$fontColorSecondary;
+      cursor: pointer;
+      transition: background vars.$transitionFast;
+    }
+
+    &:hover {
+      background: vars.$greyBackground;
+      color: vars.$fontColorPrimary;
+    }
+  }
+}
+
+.avatarCropBody {
+  & {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+    padding: 1.25em;
+    overflow-y: auto;
+  }
+
+  .avatarCropHint {
+    & {
+      font-size: 0.82em;
+      color: vars.$fontColorSecondary;
+      margin: 0;
+      text-align: center;
+    }
+  }
+}
+
+.avatarCropWrapper {
+  & {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a2e;
+    border-radius: 8px;
+    overflow: hidden;
+    max-height: 55dvh;
+  }
+
+  // Overrides ReactCrop pour qu'il s'adapte
+  .ReactCrop {
+    max-height: 55dvh;
+  }
+}
+
+.avatarCropImage {
+  & {
+    max-width: 100%;
+    max-height: 55dvh;
+    display: block;
+    object-fit: contain;
+  }
+}
+
+.avatarCropFooter {
+  & {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75em;
+    padding: 1em 1.25em;
+    border-top: 1px solid vars.$borderColor;
+  }
+}

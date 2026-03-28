@@ -1,6 +1,6 @@
-import { getRequest, patchRequest, deleteRequest } from "../APICalls.ts";
+import { getRequest, patchRequest, deleteRequest, postFormDataRequest } from "../APICalls.ts";
 import { AxiosResponse } from "axios";
-import { IUser, IApiResponse } from "../../utils/types/user.types.ts";
+import { IUser, IApiResponse, IVisibleSections } from "../../utils/types/user.types.ts";
 import { userModel } from "../models/user.model.ts";
 
 export const getCurrentUserService = async (): Promise<IUser> => {
@@ -48,8 +48,40 @@ export const updateUserService = async (
 
 export const deleteUserService = async (id: number): Promise<void> => {
   const response: AxiosResponse<IApiResponse> = await deleteRequest(`/users/${id}`);
-  
+
   if (!response.data.success) {
     throw new Error(response.data.message || "Failed to delete user");
+  }
+};
+
+export const updateUserPreferencesService = async (visibleSections: IVisibleSections): Promise<IUser> => {
+  const response: AxiosResponse<IApiResponse<IUser>> = await patchRequest("/users/me/preferences", { visibleSections });
+
+  if (response.data.success && response.data.data) {
+    return userModel(response.data.data);
+  }
+
+  throw new Error(response.data.message || "Failed to update preferences");
+};
+
+export const uploadAvatarService = async (file: File): Promise<string> => {
+  const formData = new FormData();
+  formData.append("avatar", file);
+
+  const response: AxiosResponse<IApiResponse<{ avatarUrl: string }>> =
+    await postFormDataRequest("/users/me/avatar", formData);
+
+  if (response.data.success && response.data.data) {
+    return response.data.data.avatarUrl;
+  }
+
+  throw new Error(response.data.message || "Failed to upload avatar");
+};
+
+export const deleteMyAccountService = async (): Promise<void> => {
+  const response: AxiosResponse<IApiResponse> = await deleteRequest("/users/me");
+
+  if (!response.data.success) {
+    throw new Error(response.data.message || "Failed to delete account");
   }
 };

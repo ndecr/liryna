@@ -6,7 +6,7 @@ import { ReactElement, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
 import { IoHome, IoAdd, IoList, IoWallet, IoCreate } from "react-icons/io5";
-import { MdDashboard, MdLogout, MdMusicNote, MdLibraryMusic, MdTune } from "react-icons/md";
+import { MdDashboard, MdLogout, MdMusicNote, MdLibraryMusic, MdTune, MdSettings } from "react-icons/md";
 import { FiHome } from "react-icons/fi";
 import { GiGuitar } from "react-icons/gi";
 import { useUser } from "../../hooks/useUser.ts";
@@ -21,6 +21,7 @@ export default function Header(): ReactElement {
   const { user, logout } = useUser();
 
   const isAuthRoute: boolean = location.pathname === "/auth";
+  const visibleSections = user?.visibleSections ?? { mail: true, budget: true, musique: true };
 
   const getGreeting = (): string => {
     const hour = new Date().getHours();
@@ -30,9 +31,7 @@ export default function Header(): ReactElement {
     return "Bonne nuit";
   };
 
-  const handleLogout = () => {
-    logout();
-  };
+  const handleLogout = () => { logout(); };
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
@@ -49,11 +48,16 @@ export default function Header(): ReactElement {
     closeMobileMenu();
   };
 
+  const menuTheme = location.pathname.startsWith("/musique")
+    ? "musique"
+    : location.pathname.startsWith("/budget")
+      ? "webdev"
+      : "utils";
+
   return (
     <>
       <header id="header">
         <div className="headerContainer">
-          {/* Logo/Brand */}
           <Link
             to={isAuthRoute ? "/auth" : "/home"}
             className="headerBrand"
@@ -66,19 +70,25 @@ export default function Header(): ReactElement {
             </h1>
           </Link>
 
-          {/* User Info & Desktop Navigation */}
           <div className="headerRight">
             {user && !isAuthRoute && (
               <div className="userInfo">
                 <span className="userGreeting">{getGreeting()}, <strong>{user.firstName}</strong></span>
                 <PWAInstallButton variant="desktop" compact={true} />
+                <button
+                  onClick={() => navigate("/settings")}
+                  className="settingsButton"
+                  aria-label="Paramètres"
+                  title="Paramètres"
+                >
+                  <MdSettings />
+                </button>
                 <button onClick={handleLogout} className="logoutButton" aria-label="Déconnexion" title="Déconnexion">
                   <MdLogout />
                 </button>
               </div>
             )}
 
-            {/* Mobile Menu Toggle */}
             {!isAuthRoute && (
               <button
                 className="headerToggle"
@@ -92,14 +102,13 @@ export default function Header(): ReactElement {
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && !isAuthRoute && (
         <div className="mobileMenuOverlay" onClick={closeMobileMenu}>
           <div
-            className={`mobileMenu ${location.pathname.startsWith("/musique") ? "musique" : location.pathname.startsWith("/budget") ? "webdev" : "utils"}`}
+            className={`mobileMenu ${menuTheme}`}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className={`mobileMenuHeader ${location.pathname.startsWith("/musique") ? "musique" : location.pathname.startsWith("/budget") ? "webdev" : "utils"}`}>
+            <div className={`mobileMenuHeader ${menuTheme}`}>
               <span className="mobileMenuTitle">Navigation</span>
               <button className="mobileMenuClose" onClick={closeMobileMenu}>
                 <HiX />
@@ -107,13 +116,16 @@ export default function Header(): ReactElement {
             </div>
 
             <div className="mobileMenuContent">
-              {/* User info in mobile menu */}
               {user && (
                 <div className="mobileUserInfo">
                   <span className="mobileUserGreeting">
                     {getGreeting()}, <strong>{user.firstName}</strong>
                   </span>
                   <PWAInstallButton variant="mobile" compact={true} />
+                  <button onClick={() => handleNavigate("/settings")} className="mobileSettingsButton" aria-label="Paramètres">
+                    <MdSettings />
+                    <span>Paramètres</span>
+                  </button>
                   <button onClick={handleLogout} className="mobileLogoutButton" aria-label="Déconnexion">
                     <MdLogout />
                     <span>Déconnexion</span>
@@ -121,119 +133,108 @@ export default function Header(): ReactElement {
                 </div>
               )}
 
-              {/* Navigation des courriers */}
+              {/* Accueil */}
               <div className="mobileSection">
                 <button
-                  className={`mobileNavItem ${
-                    location.pathname === "/home" ? "active" : ""
-                  }`}
+                  className={`mobileNavItem ${location.pathname === "/home" ? "active" : ""}`}
                   onClick={() => handleNavigate("/home")}
                 >
                   <IoHome className="mobileNavIcon" />
                   <span className="mobileNavText">Accueil</span>
                 </button>
-                <h3 className="mobileSectionTitle">Gestion des courriers</h3>
-                <button
-                  className={`mobileNavItem ${
-                    location.pathname === "/mail/new" ? "active" : ""
-                  }`}
-                  onClick={() => handleNavigate("/mail/new")}
-                >
-                  <IoAdd className="mobileNavIcon" />
-                  <span className="mobileNavText">Ajouter un courrier</span>
-                </button>
-                <button
-                  className={`mobileNavItem ${
-                    location.pathname === "/mail/list" ? "active" : ""
-                  }`}
-                  onClick={() => handleNavigate("/mail/list")}
-                >
-                  <IoList className="mobileNavIcon" />
-                  <span className="mobileNavText">Liste des courriers</span>
-                </button>
               </div>
 
-              {/* Navigation du budget */}
-              <div className="mobileSection">
-                <h3 className="mobileSectionTitle">Gestion du budget</h3>
-                <button
-                  className={`mobileNavItem ${
-                    location.pathname === "/budget" ? "active" : ""
-                  }`}
-                  onClick={() => handleNavigate("/budget")}
-                >
-                  <IoWallet className="mobileNavIcon" />
-                  <span className="mobileNavText">Budget</span>
-                </button>
-                <button
-                  className={`mobileNavItem ${
-                    location.pathname.startsWith("/budget/dashboard") ? "active" : ""
-                  }`}
-                  onClick={() => handleNavigate("/budget/dashboard")}
-                >
-                  <MdDashboard className="mobileNavIcon" />
-                  <span className="mobileNavText">Tableau de bord</span>
-                </button>
-                <button
-                  className={`mobileNavItem ${
-                    location.pathname.startsWith("/budget/edit") ? "active" : ""
-                  }`}
-                  onClick={() => handleNavigate("/budget/edit")}
-                >
-                  <IoCreate className="mobileNavIcon" />
-                  <span className="mobileNavText">Editer le budget</span>
-                </button>
-                <button
-                  className={`mobileNavItem ${
-                    location.pathname.startsWith("/budget/pret-immobilier") ? "active" : ""
-                  }`}
-                  onClick={() => handleNavigate("/budget/pret-immobilier")}
-                >
-                  <FiHome className="mobileNavIcon" />
-                  <span className="mobileNavText">Simulateur immobilier</span>
-                </button>
-              </div>
+              {/* Courriers */}
+              {visibleSections.mail && (
+                <div className="mobileSection">
+                  <h3 className="mobileSectionTitle">Gestion des courriers</h3>
+                  <button
+                    className={`mobileNavItem ${location.pathname === "/mail/new" ? "active" : ""}`}
+                    onClick={() => handleNavigate("/mail/new")}
+                  >
+                    <IoAdd className="mobileNavIcon" />
+                    <span className="mobileNavText">Ajouter un courrier</span>
+                  </button>
+                  <button
+                    className={`mobileNavItem ${location.pathname === "/mail/list" ? "active" : ""}`}
+                    onClick={() => handleNavigate("/mail/list")}
+                  >
+                    <IoList className="mobileNavIcon" />
+                    <span className="mobileNavText">Liste des courriers</span>
+                  </button>
+                </div>
+              )}
 
-              {/* Navigation de la musique */}
-              <div className="mobileSection">
-                <h3 className="mobileSectionTitle musique">Musique</h3>
-                <button
-                  className={`mobileNavItem ${
-                    location.pathname === "/musique" ? "active" : ""
-                  }`}
-                  onClick={() => handleNavigate("/musique")}
-                >
-                  <MdMusicNote className="mobileNavIcon" />
-                  <span className="mobileNavText">Hub Musique</span>
-                </button>
-                <button
-                  className={`mobileNavItem ${
-                    location.pathname.startsWith("/musique/programme-guitare") ? "active" : ""
-                  }`}
-                  onClick={() => handleNavigate("/musique/programme-guitare")}
-                >
-                  <GiGuitar className="mobileNavIcon" />
-                  <span className="mobileNavText">Programme Guitare</span>
-                </button>
-                <button
-                  className={`mobileNavItem ${
-                    location.pathname === "/musique/repertoire" ? "active" : ""
-                  }`}
-                  onClick={() => handleNavigate("/musique/repertoire")}
-                >
-                  <MdLibraryMusic className="mobileNavIcon" />
-                  <span className="mobileNavText">Mon Répertoire</span>
-                </button>
-                <button
-                  className={`mobileNavItem ${
-                    location.pathname === "/musique/accordages-guitare" ? "active" : ""
-                  }`}
-                  onClick={() => handleNavigate("/musique/accordages-guitare")}
-                >
-                  <MdTune className="mobileNavIcon" />
-                  <span className="mobileNavText">Accordages Guitare</span>
-                </button>
-              </div>
+              {/* Budget */}
+              {visibleSections.budget && (
+                <div className="mobileSection">
+                  <h3 className="mobileSectionTitle">Gestion du budget</h3>
+                  <button
+                    className={`mobileNavItem ${location.pathname === "/budget" ? "active" : ""}`}
+                    onClick={() => handleNavigate("/budget")}
+                  >
+                    <IoWallet className="mobileNavIcon" />
+                    <span className="mobileNavText">Budget</span>
+                  </button>
+                  <button
+                    className={`mobileNavItem ${location.pathname.startsWith("/budget/dashboard") ? "active" : ""}`}
+                    onClick={() => handleNavigate("/budget/dashboard")}
+                  >
+                    <MdDashboard className="mobileNavIcon" />
+                    <span className="mobileNavText">Tableau de bord</span>
+                  </button>
+                  <button
+                    className={`mobileNavItem ${location.pathname.startsWith("/budget/edit") ? "active" : ""}`}
+                    onClick={() => handleNavigate("/budget/edit")}
+                  >
+                    <IoCreate className="mobileNavIcon" />
+                    <span className="mobileNavText">Editer le budget</span>
+                  </button>
+                  <button
+                    className={`mobileNavItem ${location.pathname.startsWith("/budget/pret-immobilier") ? "active" : ""}`}
+                    onClick={() => handleNavigate("/budget/pret-immobilier")}
+                  >
+                    <FiHome className="mobileNavIcon" />
+                    <span className="mobileNavText">Simulateur immobilier</span>
+                  </button>
+                </div>
+              )}
+
+              {/* Musique */}
+              {visibleSections.musique && (
+                <div className="mobileSection">
+                  <h3 className="mobileSectionTitle musique">Musique</h3>
+                  <button
+                    className={`mobileNavItem ${location.pathname === "/musique" ? "active" : ""}`}
+                    onClick={() => handleNavigate("/musique")}
+                  >
+                    <MdMusicNote className="mobileNavIcon" />
+                    <span className="mobileNavText">Hub Musique</span>
+                  </button>
+                  <button
+                    className={`mobileNavItem ${location.pathname.startsWith("/musique/programme-guitare") ? "active" : ""}`}
+                    onClick={() => handleNavigate("/musique/programme-guitare")}
+                  >
+                    <GiGuitar className="mobileNavIcon" />
+                    <span className="mobileNavText">Programme Guitare</span>
+                  </button>
+                  <button
+                    className={`mobileNavItem ${location.pathname === "/musique/repertoire" ? "active" : ""}`}
+                    onClick={() => handleNavigate("/musique/repertoire")}
+                  >
+                    <MdLibraryMusic className="mobileNavIcon" />
+                    <span className="mobileNavText">Mon Répertoire</span>
+                  </button>
+                  <button
+                    className={`mobileNavItem ${location.pathname === "/musique/accordages-guitare" ? "active" : ""}`}
+                    onClick={() => handleNavigate("/musique/accordages-guitare")}
+                  >
+                    <MdTune className="mobileNavIcon" />
+                    <span className="mobileNavText">Accordages Guitare</span>
+                  </button>
+                </div>
+              )}
+
             </div>
           </div>
         </div>
