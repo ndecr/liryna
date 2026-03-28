@@ -2,7 +2,7 @@
 import "./header.scss";
 
 // hooks | libraries
-import { ReactElement, useState } from "react";
+import { ReactElement, useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
 import { IoHome, IoAdd, IoList, IoWallet, IoCreate } from "react-icons/io5";
@@ -32,6 +32,10 @@ export default function Header(): ReactElement {
   };
 
   const handleLogout = () => { logout(); };
+
+  useEffect(() => {
+    return () => { document.body.style.overflow = ""; };
+  }, []);
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
