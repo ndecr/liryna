@@ -4,13 +4,15 @@ import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import type { IndexHtmlTransformContext } from 'vite';
 
+const PROD_CSP = "default-src 'self'; script-src 'self'; style-src 'self' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob: https://api.liryna.app; object-src 'self' blob:; frame-src 'self' blob: https://api.liryna.app; connect-src 'self' https://api.liryna.app https://fonts.googleapis.com https://unpkg.com; worker-src 'self' https://unpkg.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
+
 // Plugin pour générer CSP adaptée à l'environnement
 const generateCSP = () => {
   return {
     name: 'generate-csp',
     buildStart() {
       // CSP pour production - strict et sécurisé
-      const prodCSP = "default-src 'self'; script-src 'self'; style-src 'self' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob:; object-src 'self' blob:; frame-src 'self' blob: https://api.liryna.app; connect-src 'self' https://api.liryna.app https://fonts.googleapis.com https://unpkg.com; worker-src 'self' https://unpkg.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
+      const prodCSP = PROD_CSP;
       
       // Générer vercel.json avec la CSP de production
       const vercelConfig = {
@@ -63,7 +65,7 @@ const generateCSP = () => {
         console.log(`🔧 Development CSP applied`);
       } else {
         // CSP pour production - strict et sécurisé
-        cspValue = "default-src 'self'; script-src 'self'; style-src 'self' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob:; object-src 'self' blob:; frame-src 'self' blob: https://api.liryna.app; connect-src 'self' https://api.liryna.app https://fonts.googleapis.com https://unpkg.com; worker-src 'self' https://unpkg.com; base-uri 'self'; form-action 'self';";
+        cspValue = PROD_CSP;
         console.log(`🔒 Production CSP applied`);
       }
       
