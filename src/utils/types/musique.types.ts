@@ -8,6 +8,8 @@ export interface IRepertoireTrack {
   artist: string;
   genre: string;
   type: IRepertoireTrackType;
+  tuning: string;
+  isMastered: boolean;
   tablatureUrl: string;
   youtubeUrl: string;
   createdAt?: string;
@@ -19,6 +21,7 @@ export interface IRepertoireTrackFormData {
   artist: string;
   genre: string;
   type: IRepertoireTrackType;
+  tuning: string;
   tablatureUrl: string;
   youtubeUrl: string;
 }

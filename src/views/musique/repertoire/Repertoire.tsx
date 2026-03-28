@@ -3,7 +3,8 @@ import "./repertoire.scss";
 
 // hooks | libraries
 import { ReactElement, useEffect, useState } from "react";
-import { MdAdd, MdLibraryMusic } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import { MdAdd, MdLibraryMusic, MdArrowBack } from "react-icons/md";
 
 // utils
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
@@ -21,21 +22,25 @@ import { IRepertoireTrack, IRepertoireTrackFormData } from "../../../utils/types
 import Header from "../../../components/header/Header.tsx";
 import SubNav from "../../../components/subNav/SubNav.tsx";
 import Loader from "../../../components/loader/Loader.tsx";
+import Button from "../../../components/button/Button.tsx";
 import RepertoireGenreSection from "../../../components/repertoireGenreSection/RepertoireGenreSection.tsx";
 import RepertoireTrackModal from "../../../components/repertoireTrackModal/RepertoireTrackModal.tsx";
 
 function Repertoire(): ReactElement {
+  const navigate = useNavigate();
   const {
     isLoading,
     getTracks,
     addTrack,
     updateTrack,
+    toggleMastered,
     deleteTrack,
     tracksByGenre,
     activeFilter,
     setActiveFilter,
     isEmpty,
     isFilteredEmpty,
+    progressStats,
     FILTER_OPTIONS,
   } = useRepertoire();
 
@@ -80,11 +85,34 @@ function Repertoire(): ReactElement {
       <SubNav />
       <main id="repertoire">
         <div className="repertoireContainer">
+          <Button style="musiqueBack" onClick={() => navigate("/musique")}>
+            <MdArrowBack />
+            <span>Retour</span>
+          </Button>
+
           <header className="repertoireHeader">
             <p className="repertoireLabel">Mon Répertoire</p>
             <h1 className="repertoireTitle">Mes morceaux</h1>
             <p className="repertoireSubtitle">Suivi personnel de tes pistes et partitions</p>
           </header>
+
+          {!isEmpty && (
+            <div className="repertoireProgress">
+              <div className="progressInfo">
+                <span className="progressLabel">Maîtrisés</span>
+                <span className="progressCount">
+                  {progressStats.mastered} / {progressStats.total}
+                </span>
+              </div>
+              <div className="progressBarTrack">
+                <div
+                  className="progressBarFill"
+                  style={{ width: `${progressStats.percent}%` }}
+                />
+              </div>
+              <span className="progressPercent">{progressStats.percent}%</span>
+            </div>
+          )}
 
           <div className="repertoireToolbar">
             <div className="repertoireFilters">
@@ -137,6 +165,7 @@ function Repertoire(): ReactElement {
                   tracks={group.tracks}
                   onEdit={handleOpenEdit}
                   onDelete={handleDelete}
+                  onToggleMastered={toggleMastered}
                 />
               ))}
             </div>

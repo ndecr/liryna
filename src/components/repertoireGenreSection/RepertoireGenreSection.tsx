@@ -16,6 +16,7 @@ interface IRepertoireGenreSectionProps {
   tracks: IRepertoireTrack[];
   onEdit: (track: IRepertoireTrack) => void;
   onDelete: (id: number) => void;
+  onToggleMastered: (id: number) => void;
 }
 
 export default function RepertoireGenreSection({
@@ -23,6 +24,7 @@ export default function RepertoireGenreSection({
   tracks,
   onEdit,
   onDelete,
+  onToggleMastered,
 }: IRepertoireGenreSectionProps): ReactElement {
   const [isOpen, setIsOpen] = useState(true);
 
@@ -47,6 +49,7 @@ export default function RepertoireGenreSection({
               track={track}
               onEdit={onEdit}
               onDelete={onDelete}
+              onToggleMastered={onToggleMastered}
             />
           ))}
         </div>

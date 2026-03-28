@@ -44,6 +44,18 @@ export const updateRepertoireTrackService = async (
   throw new Error(response.data.message || "Erreur lors de la mise à jour");
 };
 
+export const toggleRepertoireTrackMasteredService = async (
+  id: number,
+  isMastered: boolean
+): Promise<IRepertoireTrack> => {
+  const response: AxiosResponse<IApiResponse<IRepertoireTrack>> =
+    await patchRequest(`/repertoire/${id}`, { isMastered });
+  if (response.data.success && response.data.data) {
+    return repertoireTrackModel(response.data.data);
+  }
+  throw new Error(response.data.message || "Erreur lors de la mise à jour");
+};
+
 export const deleteRepertoireTrackService = async (id: number): Promise<void> => {
   const response: AxiosResponse<IApiResponse> =
     await deleteRequest(`/repertoire/${id}`);

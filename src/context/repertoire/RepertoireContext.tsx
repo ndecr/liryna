@@ -7,6 +7,7 @@ export interface IRepertoireContext {
   getTracks: () => Promise<void>;
   addTrack: (formData: IRepertoireTrackFormData) => Promise<void>;
   updateTrack: (id: number, formData: Partial<IRepertoireTrackFormData>) => Promise<void>;
+  toggleMastered: (id: number) => Promise<void>;
   deleteTrack: (id: number) => Promise<void>;
 }
 
@@ -17,5 +18,6 @@ export const RepertoireContext: Context<IRepertoireContext> =
     getTracks: async () => {},
     addTrack: async () => {},
     updateTrack: async () => {},
+    toggleMastered: async () => {},
     deleteTrack: async () => {},
   });
