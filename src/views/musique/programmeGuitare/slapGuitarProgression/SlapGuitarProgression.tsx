@@ -2,15 +2,17 @@
 import "./slapGuitarProgression.scss";
 
 // hooks | libraries
-import { ReactElement, useContext, useEffect, useRef, useState } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MdArrowBack } from "react-icons/md";
 import { FaGuitar } from "react-icons/fa";
 import { IoChevronDown, IoChevronForward } from "react-icons/io5";
 
 // context
-import { ProgrammeGuitareContext } from "../../../../context/programmeGuitare/ProgrammeGuitareContext.tsx";
 import { ProgrammeGuitareProvider } from "../../../../context/programmeGuitare/ProgrammeGuitareProvider.tsx";
+
+// hooks
+import { useProgrammeGuitare } from "../../../../hooks/useProgrammeGuitare.ts";
 
 // types
 import { IProgrammeLevel, IProgrammeSong } from "../../../../utils/types/musique.types.ts";
@@ -35,7 +37,7 @@ interface IModalSong {
 function SlapGuitarProgression(): ReactElement {
   const navigate = useNavigate();
   const { levels, progression, isLoading, getLevels, getProgression, toggleSong, updateSongLinks } =
-    useContext(ProgrammeGuitareContext);
+    useProgrammeGuitare();
 
   const [expandedLevel, setExpandedLevel] = useState<number | null>(null);
   const [expandedSong, setExpandedSong] = useState<number | null>(null);

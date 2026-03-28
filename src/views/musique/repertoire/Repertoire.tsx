@@ -46,6 +46,7 @@ function Repertoire(): ReactElement {
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [editingTrack, setEditingTrack] = useState<IRepertoireTrack | null>(null);
+  const [openGenre, setOpenGenre] = useState<string | null>(null);
 
   useEffect(() => {
     getTracks();
@@ -163,6 +164,8 @@ function Repertoire(): ReactElement {
                   key={group.genre}
                   genre={group.genre}
                   tracks={group.tracks}
+                  isOpen={openGenre === group.genre}
+                  onToggle={() => setOpenGenre(openGenre === group.genre ? null : group.genre)}
                   onEdit={handleOpenEdit}
                   onDelete={handleDelete}
                   onToggleMastered={toggleMastered}

@@ -3,7 +3,6 @@ import {
   ChangeEvent,
   FormEvent,
   ReactElement,
-  useContext,
   useEffect,
   useState,
 } from "react";
@@ -18,8 +17,8 @@ interface ISignInFormProps {
   onForgotPassword: () => void;
 }
 
-// context
-import { UserContext } from "../../context/user/UserContext.tsx";
+// hooks
+import { useUser } from "../../hooks/useUser.ts";
 import { IUserCredentials } from "../../utils/types/user.types.ts";
 
 // utils
@@ -36,7 +35,7 @@ export default function SignInForm({
   onForgotPassword,
 }: Readonly<ISignInFormProps>): ReactElement {
   const navigate: NavigateFunction = useNavigate();
-  const { login, user, isLoading } = useContext(UserContext);
+  const { login, user, isLoading } = useUser();
   const [error, setError] = useState<string>("");
 
   const handleSubmit = async (): Promise<void> => {

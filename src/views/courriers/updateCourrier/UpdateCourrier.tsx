@@ -2,14 +2,14 @@
 import "./updateCourrier.scss";
 
 // hooks | libraries
-import { ReactElement, useState, useEffect, useContext } from "react";
+import { ReactElement, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
 import { MdArrowBack, MdSave, MdCancel } from "react-icons/md";
 import { FiMail, FiUser, FiCalendar, FiFileText, FiTag, FiEye } from "react-icons/fi";
 
-// context
-import { CourrierContext } from "../../../context/courrier/CourrierContext.tsx";
+// hooks
+import { useCourrier } from "../../../hooks/useCourrier.ts";
 
 // components
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
@@ -39,7 +39,7 @@ import { showError, showSuccess } from "../../../utils/services/alertService";
 function UpdateCourrier(): ReactElement {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { updateCourrier, isLoading } = useContext(CourrierContext);
+  const { updateCourrier, isLoading } = useCourrier();
 
   const { courrier, formDefaults, pdfUrl, fileType, loadingCourrier } =
     useCourrierEditPreview(id);

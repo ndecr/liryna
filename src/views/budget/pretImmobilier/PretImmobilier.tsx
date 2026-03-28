@@ -2,7 +2,7 @@
 import "./pretImmobilier.scss";
 
 // hooks | libraries
-import { ReactElement, useContext, useEffect, useMemo, useState, useCallback, useRef } from "react";
+import { ReactElement, useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiHome, FiSave, FiSearch, FiInfo } from "react-icons/fi";
 import { IoPersonOutline } from "react-icons/io5";
@@ -13,10 +13,11 @@ import WithAuth from "../../../utils/middleware/WithAuth.tsx";
 import Header from "../../../components/header/Header.tsx";
 import SubNav from "../../../components/subNav/SubNav.tsx";
 import Button from "../../../components/button/Button.tsx";
+import Loader from "../../../components/loader/Loader.tsx";
 
-// context
-import { BudgetContext } from "../../../context/budget/BudgetContext.tsx";
-import { PretImmobilierContext } from "../../../context/pretImmobilier/PretImmobilierContext.tsx";
+// hooks
+import { useBudget } from "../../../hooks/useBudget.ts";
+import { usePretImmobilier } from "../../../hooks/usePretImmobilier.ts";
 
 // services
 import {
@@ -55,8 +56,8 @@ const RADIUS_OPTIONS = [5, 10, 30, 50, 100];
 
 function PretImmobilier(): ReactElement {
   const navigate = useNavigate();
-  const { dashboard } = useContext(BudgetContext);
-  const { simulation, getSimulation, upsertSimulation } = useContext(PretImmobilierContext);
+  const { dashboard, isLoading: isBudgetLoading, getBudgetDashboard } = useBudget();
+  const { simulation, getSimulation, upsertSimulation } = usePretImmobilier();
 
   // ── Borrowers
   const [borrowers, setBorrowers] = useState<IBorrower[]>([]);
@@ -82,6 +83,13 @@ function PretImmobilier(): ReactElement {
   const [geoError, setGeoError] = useState<string>("");
 
   const searchDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ── Chargement dashboard si absent
+  useEffect(() => {
+    if (!dashboard && !isBudgetLoading) {
+      getBudgetDashboard().catch(() => {});
+    }
+  }, [dashboard, isBudgetLoading, getBudgetDashboard]);
 
   // ── Init depuis budget + simulation sauvegardée
   useEffect(() => {
@@ -259,7 +267,44 @@ function PretImmobilier(): ReactElement {
     }
   };
 
-  if (!dashboard) return <></>;
+  if (isBudgetLoading) {
+    return (
+      <>
+        <Header />
+        <SubNav />
+        <main id="pretImmobilier">
+          <Loader size="large" />
+        </main>
+      </>
+    );
+  }
+
+  if (!dashboard) {
+    return (
+      <>
+        <Header />
+        <SubNav />
+        <main id="pretImmobilier">
+          <div className="pretContainer">
+            <Button style="back" onClick={() => navigate("/budget")} type="button">
+              <MdArrowBack />
+              <span>Retour</span>
+            </Button>
+            <div className="pretNoBudget">
+              <FiHome className="pretNoBudgetIcon" />
+              <p className="pretNoBudgetTitle">Aucun budget configuré</p>
+              <p className="pretNoBudgetText">
+                Le simulateur de prêt immobilier nécessite un budget configuré pour calculer ta capacité d'emprunt.
+              </p>
+              <Button style="orange" onClick={() => navigate("/budget/edit")} type="button">
+                Configurer mon budget
+              </Button>
+            </div>
+          </div>
+        </main>
+      </>
+    );
+  }
 
   return (
     <>

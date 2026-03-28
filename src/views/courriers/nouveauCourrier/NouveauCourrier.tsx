@@ -2,14 +2,14 @@
 import "./nouveauCourrier.scss";
 
 // hooks | libraries
-import { ReactElement, useState, useContext } from "react";
+import { ReactElement, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { MdArrowBack, MdUploadFile, MdSave, MdCancel } from "react-icons/md";
 import { FiMail, FiUser, FiCalendar, FiFileText, FiTag } from "react-icons/fi";
 
-// context
-import { CourrierContext } from "../../../context/courrier/CourrierContext.tsx";
+// hooks
+import { useCourrier } from "../../../hooks/useCourrier.ts";
 
 // components
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
@@ -29,7 +29,7 @@ import { useCourrierFieldOptions } from "../../../utils/hooks/useCourrierFieldOp
 
 function NouveauCourrier(): ReactElement {
   const navigate = useNavigate();
-  const { uploadCourrier, isLoading } = useContext(CourrierContext);
+  const { uploadCourrier, isLoading } = useCourrier();
   
   // Charger les options pour les champs avec autocomplétion
   const kindOptions = useCourrierFieldOptions('kind');
