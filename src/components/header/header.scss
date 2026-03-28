@@ -130,6 +130,43 @@
 
 }
 
+.headerAvatar {
+  & {
+    width: 1.9em;
+    height: 1.9em;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid vars.$borderColor;
+    background: vars.$greyBackground;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color vars.$transitionFast;
+  }
+
+  &:hover {
+    border-color: vars.$courrierPrimary;
+  }
+
+  .headerAvatarImg {
+    & {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .headerAvatarInitial {
+    & {
+      font-size: 0.75em;
+      font-weight: 700;
+      color: vars.$fontColorSecondary;
+    }
+  }
+}
+
 .settingsButton {
   @include mixins.resetButton;
 

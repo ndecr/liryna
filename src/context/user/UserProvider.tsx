@@ -99,7 +99,8 @@ export const UserProvider = ({
 
   const uploadAvatar = useCallback(async (file: File): Promise<void> => {
     const avatarUrl = await uploadAvatarService(file);
-    setUser((prev) => (prev ? { ...prev, avatarUrl } : prev));
+    const avatarUrlWithBust = avatarUrl ? `${avatarUrl}?t=${Date.now()}` : avatarUrl;
+    setUser((prev) => (prev ? { ...prev, avatarUrl: avatarUrlWithBust } : prev));
   }, []);
 
   const deleteAccount = useCallback(async (): Promise<void> => {
