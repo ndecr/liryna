@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, ReactElement } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef, ReactElement } from "react";
 import { ProgrammeGuitareContext, IUpdateSongLinksPayload } from "./ProgrammeGuitareContext.tsx";
 import {
   IProgrammeLevel,
@@ -24,6 +24,11 @@ export const ProgrammeGuitareProvider = ({
   const [levels, setLevels] = useState<IProgrammeLevel[]>([]);
   const [progression, setProgression] = useState<IProgrammeProgression | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const completedSongsRef = useRef<CompletedSongs>({});
+
+  useEffect(() => {
+    completedSongsRef.current = progression?.completedSongs ?? {};
+  }, [progression]);
 
   const getLevels = useCallback(async (): Promise<void> => {
     setIsLoading(true);
@@ -70,14 +75,10 @@ export const ProgrammeGuitareProvider = ({
   const toggleSong = useCallback(
     async (songId: number): Promise<void> => {
       const key = songId.toString();
-      let current: CompletedSongs = {};
-      let optimistic: CompletedSongs = {};
+      const current = { ...completedSongsRef.current };
+      const optimistic = { ...current, [key]: !current[key] };
 
-      setProgression((prev) => {
-        current = prev?.completedSongs ?? {};
-        optimistic = { ...current, [key]: !current[key] };
-        return prev ? { ...prev, completedSongs: optimistic } : prev;
-      });
+      setProgression((prev) => (prev ? { ...prev, completedSongs: optimistic } : prev));
 
       try {
         await updateProgression(optimistic);
