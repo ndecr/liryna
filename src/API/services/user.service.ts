@@ -1,6 +1,6 @@
 import { getRequest, patchRequest, deleteRequest, postFormDataRequest } from "../APICalls.ts";
 import { AxiosResponse } from "axios";
-import { IUser, IApiResponse, IVisibleSections } from "../../utils/types/user.types.ts";
+import { IUser, IApiResponse, IVisibleSections, IChangeEmailResponse } from "../../utils/types/user.types.ts";
 import { userModel } from "../models/user.model.ts";
 
 export const getCurrentUserService = async (): Promise<IUser> => {
@@ -94,11 +94,13 @@ export const deleteMyAccountService = async (): Promise<void> => {
   }
 };
 
-export const changeMyEmailService = async (newEmail: string, password: string): Promise<IUser> => {
-  const response: AxiosResponse<IApiResponse<IUser>> = await patchRequest("/users/me/email", { newEmail, password });
+export const changeMyEmailService = async (newEmail: string, password: string): Promise<{ avatarUrl: string | null }> => {
+  const response: AxiosResponse<IChangeEmailResponse> = await patchRequest("/users/me/email", { newEmail, password });
 
   if (response.data.success && response.data.data) {
-    return userModel(response.data.data);
+    return {
+      avatarUrl: response.data.data.avatarUrl ?? null,
+    };
   }
 
   throw new Error(response.data.message || "Failed to change email");
