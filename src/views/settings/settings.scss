@@ -390,4 +390,267 @@
       }
     }
   }
+
+  // ── Credential buttons
+  .credentialBtn {
+    & {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0.75em 1em;
+      background: vars.$greyBackground;
+      border: 1px solid vars.$borderColor;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: vars.$transitionFast;
+      text-align: left;
+    }
+
+    &:hover {
+      background: vars.$borderColor;
+    }
+
+    .credentialLabel {
+      & {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15em;
+      }
+
+      .credentialTitle {
+        & {
+          font-size: 0.9em;
+          font-weight: 500;
+          color: vars.$fontColorPrimary;
+        }
+      }
+
+      .credentialValue {
+        & {
+          font-size: 0.8em;
+          color: vars.$fontColorSecondary;
+        }
+      }
+    }
+
+    .credentialIcon {
+      & {
+        font-size: 1.2em;
+        color: vars.$fontColorSecondary;
+      }
+    }
+  }
+}
+
+// ── Modal overlay
+.modalOverlay {
+  & {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1em;
+  }
+}
+
+.modalContent {
+  & {
+    background: vars.$whiteBackground;
+    border-radius: 12px;
+    padding: 1.5em;
+    width: 100%;
+    max-width: 28em;
+    box-shadow: vars.$shadowMedium;
+  }
+
+  &.modalContentLarge {
+    max-width: 34em;
+  }
+
+  .modalTitle {
+    & {
+      font-size: 1.1em;
+      font-weight: 600;
+      color: vars.$fontColorPrimary;
+      margin: 0 0 1em 0;
+    }
+  }
+
+  .formField {
+    & {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4em;
+      margin-bottom: 1em;
+    }
+
+    label {
+      & {
+        font-size: 0.85em;
+        font-weight: 500;
+        color: vars.$fontColorSecondary;
+      }
+    }
+
+    input {
+      & {
+        padding: 0.6em 0.8em;
+        border: 1px solid vars.$borderColor;
+        border-radius: 6px;
+        font-size: 0.9em;
+        color: vars.$fontColorPrimary;
+        background: vars.$whiteBackground;
+        outline: none;
+        transition: vars.$transitionFast;
+        width: 100%;
+      }
+
+      &:focus {
+        border-color: vars.$budgetPrimary;
+        box-shadow: 0 0 0 2px rgba(255, 107, 71, 0.15);
+      }
+    }
+  }
+
+  .passwordInputWrapper {
+    & {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+
+    input {
+      & {
+        flex: 1;
+      }
+    }
+
+    .passwordToggle {
+      & {
+        padding: 0.4em 0.6em;
+        font-size: 0.75em;
+        color: vars.$fontColorSecondary;
+        background: vars.$greyBackground;
+        border: 1px solid vars.$borderColor;
+        border-radius: 4px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: vars.$transitionFast;
+      }
+
+      &:hover {
+        background: vars.$borderColor;
+      }
+    }
+  }
+
+  .passwordStrength {
+    & {
+      margin-top: 0.5em;
+    }
+  }
+
+  .strengthBar {
+    & {
+      height: 0.3em;
+      background: vars.$greyBackground;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .strengthFill {
+      & {
+        height: 100%;
+        transition: vars.$transitionSmooth;
+        border-radius: 999px;
+      }
+
+      &.strength-0,
+      &.strength-1 {
+        background: #e74c3c;
+      }
+
+      &.strength-2 {
+        background: #e67e22;
+      }
+
+      &.strength-3 {
+        background: #f1c40f;
+      }
+
+      &.strength-4 {
+        background: #2ecc71;
+      }
+
+      &.strength-5 {
+        background: #27ae60;
+      }
+    }
+  }
+
+  .strengthRequirements {
+    & {
+      list-style: none;
+      padding: 0;
+      margin: 0.5em 0 0 0;
+      font-size: 0.75em;
+    }
+
+    li {
+      & {
+        padding: 0.15em 0;
+      }
+
+      &.met {
+        color: #27ae60;
+      }
+
+      &.unmet {
+        color: vars.$fontColorSecondary;
+      }
+    }
+  }
+
+  .generateBtn {
+    & {
+      display: block;
+      width: 100%;
+      padding: 0.5em;
+      margin-bottom: 1em;
+      font-size: 0.8em;
+      color: vars.$budgetPrimary;
+      background: transparent;
+      border: 1px dashed vars.$budgetPrimary;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: vars.$transitionFast;
+    }
+
+    &:hover {
+      background: rgba(255, 107, 71, 0.05);
+    }
+  }
+
+  .modalError {
+    & {
+      font-size: 0.8em;
+      color: vars.$errorColor;
+      margin: 0 0 1em 0;
+      padding: 0.5em;
+      background: rgba(231, 76, 60, 0.05);
+      border-radius: 4px;
+    }
+  }
+
+  .modalActions {
+    & {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75em;
+    }
+  }
 }

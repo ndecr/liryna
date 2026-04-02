@@ -14,6 +14,8 @@ import {
   uploadAvatarService,
   deleteAvatarService,
   deleteMyAccountService,
+  changeMyEmailService,
+  changeMyPasswordService,
 } from "../../API/services/user.service.ts";
 import { loginService, registerService, logoutService } from "../../API/services/auth.service.ts";
 import { csrfService } from "../../utils/services/csrfService.ts";
@@ -115,6 +117,15 @@ export const UserProvider = ({
     setUser(null);
   }, []);
 
+  const changeEmail = useCallback(async (newEmail: string, password: string): Promise<void> => {
+    const updatedUser = await changeMyEmailService(newEmail, password);
+    setUser(updatedUser);
+  }, []);
+
+  const changePassword = useCallback(async (currentPassword: string, newPassword: string): Promise<void> => {
+    await changeMyPasswordService(currentPassword, newPassword);
+  }, []);
+
   const contextValue = useMemo(
     () => ({
       user,
@@ -129,8 +140,10 @@ export const UserProvider = ({
       uploadAvatar,
       deleteAvatar,
       deleteAccount,
+      changeEmail,
+      changePassword,
     }),
-    [user, isAuthenticated, isLoading, login, register, logout, getCurrentUser, updatePreferences, uploadAvatar, deleteAvatar, deleteAccount],
+    [user, isAuthenticated, isLoading, login, register, logout, getCurrentUser, updatePreferences, uploadAvatar, deleteAvatar, deleteAccount, changeEmail, changePassword],
   );
 
   return (
