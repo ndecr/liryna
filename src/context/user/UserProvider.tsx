@@ -118,8 +118,12 @@ export const UserProvider = ({
   }, []);
 
   const changeEmail = useCallback(async (newEmail: string, password: string): Promise<void> => {
-    const updatedUser = await changeMyEmailService(newEmail, password);
-    setUser(updatedUser);
+    const response = await changeMyEmailService(newEmail, password);
+    
+    setUser((prev) => (prev ? { ...prev, email: newEmail, avatarUrl: response.avatarUrl } : prev));
+    
+    csrfService.clearToken();
+    await csrfService.getToken();
   }, []);
 
   const changePassword = useCallback(async (currentPassword: string, newPassword: string): Promise<void> => {
