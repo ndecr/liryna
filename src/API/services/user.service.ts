@@ -93,3 +93,21 @@ export const deleteMyAccountService = async (): Promise<void> => {
     throw new Error(response.data.message || "Failed to delete account");
   }
 };
+
+export const changeMyEmailService = async (newEmail: string, password: string): Promise<IUser> => {
+  const response: AxiosResponse<IApiResponse<IUser>> = await patchRequest("/users/me/email", { newEmail, password });
+
+  if (response.data.success && response.data.data) {
+    return userModel(response.data.data);
+  }
+
+  throw new Error(response.data.message || "Failed to change email");
+};
+
+export const changeMyPasswordService = async (currentPassword: string, newPassword: string): Promise<void> => {
+  const response: AxiosResponse<IApiResponse> = await patchRequest("/users/me/password", { currentPassword, newPassword });
+
+  if (!response.data.success) {
+    throw new Error(response.data.message || "Failed to change password");
+  }
+};

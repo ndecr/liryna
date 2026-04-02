@@ -15,6 +15,8 @@ interface IUserContext {
     uploadAvatar: (file: File) => Promise<void>;
     deleteAvatar: () => Promise<void>;
     deleteAccount: () => Promise<void>;
+    changeEmail: (newEmail: string, password: string) => Promise<void>;
+    changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
 }
 
 export const UserContext: Context<IUserContext> = createContext<IUserContext>({
@@ -30,4 +32,6 @@ export const UserContext: Context<IUserContext> = createContext<IUserContext>({
     uploadAvatar: async (): Promise<void> => {},
     deleteAvatar: async (): Promise<void> => {},
     deleteAccount: async (): Promise<void> => {},
+    changeEmail: async (): Promise<void> => {},
+    changePassword: async (): Promise<void> => {},
 });
