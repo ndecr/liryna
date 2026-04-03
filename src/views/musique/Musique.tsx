@@ -6,7 +6,7 @@ import { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoMusicalNotes } from "react-icons/io5";
 import { GiGuitar, GiMusicalNotes } from "react-icons/gi";
-import { MdLibraryMusic } from "react-icons/md";
+import { MdLibraryMusic, MdDescription } from "react-icons/md";
 
 // components
 import WithAuth from "../../utils/middleware/WithAuth.tsx";
@@ -29,6 +29,13 @@ function Musique(): ReactElement {
       label: "Mon Répertoire",
       icon: <MdLibraryMusic />,
       route: "/musique/repertoire",
+      primary: false,
+    },
+    {
+      id: "mes-documents",
+      label: "Mes Documents",
+      icon: <MdDescription />,
+      route: "/musique/documents",
       primary: false,
     },
     {

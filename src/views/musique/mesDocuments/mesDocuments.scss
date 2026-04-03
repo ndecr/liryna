@@ -1,0 +1,627 @@
+@use "../../../utils/styles/variables" as vars;
+@use "../../../utils/styles/mixins" as mixins;
+
+#mes-documents {
+  @include mixins.mainView;
+
+  & {
+    @include mixins.responsivePadding(1em, 1.5em, 2em);
+  }
+
+  .documentsContainer {
+    @include mixins.centeredContainer;
+    @include mixins.flexContainer(column, 1.5em);
+  }
+
+  // ─── Header ──────────────────────────────────────────────────────────────
+
+  .documentsHeader {
+    & {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75em;
+    }
+  }
+
+  .documentsTitle {
+    & {
+      font-size: 1.1em;
+      font-weight: 800;
+      color: vars.$fontColorPrimary;
+      margin: 0;
+      text-align: center;
+      flex: 1;
+    }
+
+    @media (min-width: vars.$tabletWidth) {
+      font-size: 1.4em;
+    }
+  }
+
+  // ─── Contrôles (recherche + filtre toggle) ───────────────────────────────
+
+  .documentsControls {
+    & {
+      display: flex;
+      align-items: center;
+      gap: 0.75em;
+    }
+  }
+
+  .searchBar {
+    & {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      flex: 1;
+      padding: 0.6em 0.875em;
+      background-color: vars.$whiteBackground;
+      border: 1px solid vars.$borderColor;
+      border-radius: 8px;
+      transition: border-color vars.$transitionFast;
+    }
+
+    &:focus-within {
+      border-color: vars.$musiquePrimary;
+    }
+
+    svg {
+      color: vars.$fontColorSecondary;
+      font-size: 1.1em;
+      flex-shrink: 0;
+    }
+
+    input {
+      & {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-family: inherit;
+        font-size: 0.9em;
+        color: vars.$fontColorPrimary;
+        width: 100%;
+      }
+
+      &::placeholder {
+        color: vars.$fontColorSecondary;
+      }
+    }
+  }
+
+  .filterToggle {
+    @include mixins.resetButton;
+
+    & {
+      display: flex;
+      align-items: center;
+      gap: 0.4em;
+      padding: 0.6em 0.875em;
+      font-size: 0.85em;
+      font-weight: 600;
+      color: vars.$fontColorSecondary;
+      background-color: vars.$whiteBackground;
+      border: 1px solid vars.$borderColor;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all vars.$transitionFast;
+      white-space: nowrap;
+    }
+
+    &:hover,
+    &.active {
+      color: vars.$musiquePrimary;
+      border-color: vars.$musiquePrimary;
+      background-color: color-mix(in srgb, vars.$musiquePrimary 8%, transparent);
+    }
+  }
+
+  // ─── Filtres ─────────────────────────────────────────────────────────────
+
+  .documentsFilters {
+    & {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1em;
+      padding: 1em;
+      background-color: vars.$whiteBackground;
+      border: 1px solid vars.$borderColor;
+      border-radius: 8px;
+    }
+  }
+
+  .filterGroup {
+    & {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3em;
+      min-width: 14em;
+    }
+
+    label {
+      font-size: 0.72em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: vars.$fontColorSecondary;
+    }
+
+    .react-select-container {
+      @include mixins.reactSelect;
+
+      .react-select__control--is-focused {
+        border-color: vars.$musiquePrimary;
+        box-shadow: 0 0 0 3px color-mix(in srgb, vars.$musiquePrimary 15%, transparent);
+
+        &:hover {
+          border-color: vars.$musiquePrimary;
+        }
+      }
+
+      .react-select__dropdown-indicator {
+        &:hover {
+          color: vars.$musiquePrimary;
+        }
+      }
+
+      .react-select__option--is-selected {
+        background-color: vars.$musiquePrimary;
+      }
+
+      .react-select__option--is-focused {
+        background-color: color-mix(in srgb, vars.$musiquePrimary 10%, transparent);
+        color: vars.$fontColorPrimary;
+      }
+
+      .react-select__option:hover {
+        background-color: color-mix(in srgb, vars.$musiquePrimary 10%, transparent);
+      }
+    }
+  }
+
+  .filterGroupCheckbox {
+    & {
+      min-width: auto;
+      flex-direction: row;
+      align-items: center;
+      gap: 0;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      font-size: 0.875em;
+      font-weight: 600;
+      text-transform: none;
+      letter-spacing: 0;
+      color: vars.$fontColorPrimary;
+      cursor: pointer;
+    }
+
+    input[type="checkbox"] {
+      cursor: pointer;
+      accent-color: vars.$musiquePrimary;
+      width: 1em;
+      height: 1em;
+    }
+  }
+
+  // ─── Liste de documents ──────────────────────────────────────────────────
+
+  .documentsList {
+    @include mixins.flexContainer(column, 0.75em);
+  }
+
+  .emptyState {
+    & {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75em;
+      padding: 4em 1em;
+      color: vars.$fontColorSecondary;
+      text-align: center;
+    }
+
+    svg {
+      font-size: 3.5em;
+      opacity: 0.35;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.95em;
+    }
+  }
+
+  .documentCard {
+    & {
+      padding: 1em;
+      background-color: vars.$whiteBackground;
+      border: 1px solid vars.$borderColor;
+      border-radius: 10px;
+      transition: box-shadow vars.$transitionFast;
+    }
+
+    &:hover {
+      box-shadow: vars.$shadowLight;
+    }
+  }
+
+  .documentHeader {
+    & {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75em;
+    }
+  }
+
+  .documentInfo {
+    @include mixins.flexContainer(column, 0.25em);
+
+    & {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  .documentTitle {
+    & {
+      font-size: 0.95em;
+      font-weight: 700;
+      color: vars.$fontColorPrimary;
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .documentMeta {
+    & {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.4em;
+    }
+  }
+
+  .documentType {
+    & {
+      padding: 0.15em 0.5em;
+      background-color: color-mix(in srgb, vars.$musiquePrimary 12%, transparent);
+      color: vars.$musiquePrimary;
+      border-radius: 4px;
+      font-size: 0.75em;
+      font-weight: 700;
+    }
+  }
+
+  .documentSize {
+    & {
+      font-size: 0.75em;
+      color: vars.$fontColorSecondary;
+    }
+  }
+
+  .documentDescription {
+    & {
+      font-size: 0.8em;
+      color: vars.$fontColorSecondary;
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .documentActions {
+    & {
+      display: flex;
+      align-items: center;
+      gap: 0.15em;
+      flex-shrink: 0;
+    }
+  }
+
+  .actionBtn {
+    @include mixins.resetButton;
+
+    & {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.4em;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all vars.$transitionFast;
+      color: vars.$fontColorSecondary;
+      font-size: 1.1em;
+    }
+
+    &:hover {
+      background-color: vars.$greyBackground;
+    }
+
+    &.favoriteBtn.active {
+      color: #f59e0b;
+    }
+
+    &.favoriteBtn:hover {
+      color: #f59e0b;
+      background-color: color-mix(in srgb, #f59e0b 12%, transparent);
+    }
+
+    &.downloadBtn:hover,
+    &.editBtn:hover {
+      color: vars.$musiquePrimary;
+      background-color: color-mix(in srgb, vars.$musiquePrimary 12%, transparent);
+    }
+
+    &.deleteBtn:hover {
+      color: vars.$errorColor;
+      background-color: color-mix(in srgb, vars.$errorColor 12%, transparent);
+    }
+  }
+
+  // ─── Pagination ───────────────────────────────────────────────────────────
+
+  .pagination {
+    & {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1em;
+    }
+  }
+
+  .paginationBtn {
+    @include mixins.resetButton;
+
+    & {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.4em;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1.3em;
+      color: vars.$fontColorPrimary;
+      transition: all vars.$transitionFast;
+    }
+
+    &:hover:not(:disabled) {
+      color: vars.$musiquePrimary;
+      background-color: color-mix(in srgb, vars.$musiquePrimary 12%, transparent);
+    }
+
+    &:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+  }
+
+  .pageInfo {
+    & {
+      font-size: 0.875em;
+      color: vars.$fontColorSecondary;
+    }
+  }
+
+  // ─── Formulaires dans les modals ─────────────────────────────────────────
+
+  .documentForm {
+    @include mixins.flexContainer(column, 1em);
+
+    & {
+      padding: 1.25em;
+    }
+  }
+
+  .formField {
+    @include mixins.flexContainer(column, 0.35em);
+  }
+
+  .formLabel {
+    & {
+      font-size: 0.72em;
+      font-weight: 700;
+      color: vars.$fontColorSecondary;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .required {
+      color: vars.$errorColor;
+      margin-left: 2px;
+    }
+  }
+
+  .formInput {
+    & {
+      width: 100%;
+      padding: 0.6em 0.75em;
+      border: 1px solid vars.$borderColor;
+      border-radius: 8px;
+      font-size: 0.875em;
+      font-family: inherit;
+      color: vars.$fontColorPrimary;
+      background: vars.$whiteBackground;
+      transition: border-color vars.$transitionFast;
+      box-sizing: border-box;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: vars.$musiquePrimary;
+    }
+
+    &::placeholder {
+      color: vars.$fontColorSecondary;
+    }
+  }
+
+  textarea.formInput {
+    resize: vertical;
+    min-height: 5em;
+  }
+
+  .react-select-container {
+    @include mixins.reactSelect;
+
+    .react-select__control--is-focused {
+      border-color: vars.$musiquePrimary;
+      box-shadow: 0 0 0 3px color-mix(in srgb, vars.$musiquePrimary 15%, transparent);
+
+      &:hover {
+        border-color: vars.$musiquePrimary;
+      }
+    }
+
+    .react-select__dropdown-indicator {
+      &:hover {
+        color: vars.$musiquePrimary;
+      }
+    }
+
+    .react-select__option--is-selected {
+      background-color: vars.$musiquePrimary;
+    }
+
+    .react-select__option--is-focused {
+      background-color: color-mix(in srgb, vars.$musiquePrimary 10%, transparent);
+      color: vars.$fontColorPrimary;
+    }
+
+    .react-select__option:hover {
+      background-color: color-mix(in srgb, vars.$musiquePrimary 10%, transparent);
+    }
+  }
+
+  // ─── Zone upload ─────────────────────────────────────────────────────────
+
+  .uploadZone {
+    & {
+      border: 2px dashed vars.$borderColor;
+      border-radius: 10px;
+      padding: 1.5em 1em;
+      text-align: center;
+      cursor: pointer;
+      transition: all vars.$transitionFast;
+      background: vars.$greyBackground;
+    }
+
+    &:hover {
+      border-color: vars.$musiquePrimary;
+      background: color-mix(in srgb, vars.$musiquePrimary 4%, transparent);
+    }
+
+    &.hasFile {
+      border-color: vars.$successColor;
+      background: color-mix(in srgb, vars.$successColor 5%, transparent);
+    }
+
+    .uploadPrompt {
+      @include mixins.flexContainer(column, 0.3em);
+
+      & {
+        align-items: center;
+      }
+
+      .uploadIcon {
+        font-size: 2.5em;
+        color: vars.$musiquePrimary;
+        opacity: 0.7;
+      }
+
+      .primaryText {
+        font-size: 0.875em;
+        font-weight: 700;
+        color: vars.$fontColorPrimary;
+      }
+
+      .secondaryText {
+        font-size: 0.75em;
+        color: vars.$fontColorSecondary;
+      }
+    }
+
+    .fileInfo {
+      & {
+        display: flex;
+        align-items: center;
+        gap: 0.75em;
+        padding: 0.75em;
+        background: vars.$whiteBackground;
+        border-radius: 8px;
+        border: 1px solid vars.$borderColor;
+        text-align: left;
+      }
+
+      .fileIcon {
+        font-size: 1.75em;
+        color: vars.$successColor;
+        flex-shrink: 0;
+      }
+
+      .fileDetails {
+        @include mixins.flexContainer(column, 0.1em);
+
+        & {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .fileName {
+          font-size: 0.875em;
+          font-weight: 600;
+          color: vars.$fontColorPrimary;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .fileSize {
+          font-size: 0.75em;
+          color: vars.$fontColorSecondary;
+        }
+      }
+
+      .removeFile {
+        @include mixins.resetButton;
+
+        & {
+          color: vars.$fontColorSecondary;
+          font-size: 1.2em;
+          cursor: pointer;
+          transition: color vars.$transitionFast;
+          flex-shrink: 0;
+        }
+
+        &:hover {
+          color: vars.$errorColor;
+        }
+      }
+    }
+  }
+
+  // ─── Actions du formulaire ────────────────────────────────────────────────
+
+  .formActions {
+    & {
+      display: flex;
+      flex-direction: row;
+      gap: 0.75em;
+      padding-top: 0.25em;
+    }
+
+    button {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+}
