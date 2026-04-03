@@ -19,6 +19,7 @@ import {
   MdFilterListOff,
   MdUploadFile,
   MdCancel,
+  MdVisibility,
 } from "react-icons/md";
 import { GiFiles } from "react-icons/gi";
 
@@ -29,6 +30,7 @@ import SubNav from "../../../components/subNav/SubNav.tsx";
 import Button from "../../../components/button/Button.tsx";
 import Modal from "../../../components/modal/Modal.tsx";
 import Loader from "../../../components/loader/Loader.tsx";
+import ModernPDFViewer from "../../../components/pdfViewer/ModernPDFViewer.tsx";
 
 // hooks
 import { useMusicDocument } from "../../../hooks/useMusicDocument.ts";
@@ -36,6 +38,9 @@ import { useMusicDocument } from "../../../hooks/useMusicDocument.ts";
 // utils
 import { showErrorNotification } from "../../../utils/scripts/errorHandling.ts";
 import { confirm, showSuccess, showError } from "../../../utils/services/alertService";
+
+// services
+import { generateMusicDocumentViewUrlService } from "../../../API/services/musicDocument.service.ts";
 
 // types
 import { IMusicDocument, MusicDocumentType } from "../../../utils/types/musicDocument.types.ts";
@@ -86,6 +91,13 @@ function MesDocuments(): ReactElement {
     visible: false,
     document: null,
   });
+  const [previewModal, setPreviewModal] = useState<{
+    visible: boolean;
+    fileUrl: string;
+    fileName: string;
+    mimeType: string;
+  }>({ visible: false, fileUrl: "", fileName: "", mimeType: "" });
+  const [dragActive, setDragActive] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [formData, setFormData] = useState<{
     title: string;
@@ -256,6 +268,47 @@ function MesDocuments(): ReactElement {
     setEditModal({ visible: true, document: doc });
   };
 
+  const handlePreview = async (doc: IMusicDocument) => {
+    const isImage = doc.mimeType.startsWith("image/");
+    const isPdf = doc.mimeType === "application/pdf";
+
+    if (!isImage && !isPdf) {
+      handleDownload(doc);
+      return;
+    }
+
+    try {
+      const { viewUrl } = await generateMusicDocumentViewUrlService(doc.id);
+      setPreviewModal({ visible: true, fileUrl: viewUrl, fileName: doc.fileName, mimeType: doc.mimeType });
+    } catch (error) {
+      console.error("Erreur lors de la prévisualisation:", error);
+      showError("Erreur", "Impossible d'ouvrir la prévisualisation");
+    }
+  };
+
+  const closePreviewModal = () => {
+    setPreviewModal({ visible: false, fileUrl: "", fileName: "", mimeType: "" });
+  };
+
+  const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setSelectedFile(e.dataTransfer.files[0]);
+    }
+  };
+
   const resetForm = () => {
     setFormData({ title: "", type: "", customFileName: "", description: "" });
     setSelectedFile(null);
@@ -371,6 +424,14 @@ function MesDocuments(): ReactElement {
                           </button>
                           <button
                             type="button"
+                            className="actionBtn previewBtn"
+                            onClick={() => handlePreview(doc)}
+                            title="Prévisualiser"
+                          >
+                            <MdVisibility />
+                          </button>
+                          <button
+                            type="button"
                             className="actionBtn downloadBtn"
                             onClick={() => handleDownload(doc)}
                             title="Télécharger"
@@ -442,8 +503,12 @@ function MesDocuments(): ReactElement {
               Fichier <span className="required">*</span>
             </label>
             <div
-              className={`uploadZone ${selectedFile ? "hasFile" : ""}`}
+              className={`uploadZone ${selectedFile ? "hasFile" : ""} ${dragActive ? "dragActive" : ""}`}
               onClick={() => document.getElementById("doc-file-input")?.click()}
+              onDragEnter={handleDrag}
+              onDragOver={handleDrag}
+              onDragLeave={handleDrag}
+              onDrop={handleDrop}
             >
               <input
                 type="file"
@@ -562,6 +627,20 @@ function MesDocuments(): ReactElement {
         title="Modifier le document"
       >
         <form onSubmit={handleEditSubmit} className="documentForm">
+          {editModal.document && (
+            <div className="documentPreviewRow">
+              <span className="previewFileName">{editModal.document.fileName}</span>
+              <button
+                type="button"
+                className="previewFileBtn"
+                onClick={() => handlePreview(editModal.document!)}
+              >
+                <MdVisibility />
+                <span>Prévisualiser</span>
+              </button>
+            </div>
+          )}
+
           <div className="formField">
             <label className="formLabel">
               Titre <span className="required">*</span>
@@ -617,6 +696,25 @@ function MesDocuments(): ReactElement {
             </Button>
           </div>
         </form>
+      </Modal>
+
+      {/* Preview Modal */}
+      <Modal
+        isVisible={previewModal.visible}
+        onClose={closePreviewModal}
+        title={previewModal.fileName}
+      >
+        <div className="documentPreviewContent">
+          {previewModal.mimeType.startsWith("image/") ? (
+            <img
+              src={previewModal.fileUrl}
+              alt={previewModal.fileName}
+              className="previewImage"
+            />
+          ) : (
+            <ModernPDFViewer pdfUrl={previewModal.fileUrl} />
+          )}
+        </div>
       </Modal>
       </main>
     </>
