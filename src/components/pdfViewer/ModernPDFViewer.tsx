@@ -40,14 +40,17 @@ const ModernPDFViewer: React.FC<ModernPDFViewerProps> = ({ pdfUrl }) => {
   }
 
   return (
-    <div className="modern-pdf-viewer">
+    <div
+      className="modern-pdf-viewer"
+      style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', width: '100%' }}
+    >
       {loading && (
         <div className="pdf-viewer-loading">
           <p>Chargement du PDF...</p>
         </div>
       )}
-      
-      <div style={{ height: '80vh', minHeight: '600px' }}>
+
+      <div style={{ flex: 1, minHeight: 0 }}>
         <Worker workerUrl="/pdf.worker.min.js">
           <Viewer
             fileUrl={pdfUrl}

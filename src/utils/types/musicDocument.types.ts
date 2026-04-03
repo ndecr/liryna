@@ -74,3 +74,11 @@ export interface IMusicDocumentListParams {
   filterType?: MusicDocumentType;
   filterFavorite?: boolean;
 }
+
+export interface IMusicDocumentViewUrlResponse {
+  viewUrl: string;
+  expiresIn: number;
+  expiresAt: string;
+  documentId: number;
+  userId: number;
+}

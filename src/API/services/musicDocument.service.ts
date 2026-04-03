@@ -8,7 +8,8 @@ import {
   IMusicDocumentSearchParams,
   IPagination,
   IMusicDocumentStats,
-  IMusicDocumentListParams
+  IMusicDocumentListParams,
+  IMusicDocumentViewUrlResponse
 } from "../../utils/types/musicDocument.types.ts";
 
 export const uploadMusicDocumentService = async (
@@ -126,10 +127,25 @@ export const toggleFavoriteService = async (id: number): Promise<IMusicDocument>
 
 export const getMusicDocumentStatsService = async (): Promise<IMusicDocumentStats> => {
   const response: AxiosResponse<IApiResponse<IMusicDocumentStats>> = await getRequest("/music-documents/stats");
-  
+
   if (response.data.success && response.data.data) {
     return response.data.data;
   }
-  
+
   throw new Error(response.data.message || "Failed to get music document stats");
+};
+
+export const generateMusicDocumentViewUrlService = async (
+  documentId: number,
+  expiresInMinutes: number = 10
+): Promise<IMusicDocumentViewUrlResponse> => {
+  const response: AxiosResponse<IApiResponse<IMusicDocumentViewUrlResponse>> = await getRequest(
+    `/music-documents/${documentId}/view-url?expires=${expiresInMinutes}`
+  );
+
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+
+  throw new Error(response.data.message || "Failed to generate view URL for music document");
 };
