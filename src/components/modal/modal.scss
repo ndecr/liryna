@@ -68,41 +68,19 @@
       
       .modalContent {
         flex: 1;
-        min-height: 0;
         overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        width: 100%;
 
         iframe, embed, object {
-          flex: 1;
-          min-height: 0;
           width: 100%;
+          height: 100%;
           border: none;
         }
 
-        .modal-image-container {
-          flex: 1;
-          min-height: 0;
-          position: relative;
+        img {
           width: 100%;
-          overflow: hidden;
-
-          img {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-          }
-        }
-
-        #pdfViewer {
-          flex: 1;
-          min-height: 0;
-          display: flex;
-          flex-direction: column;
+          height: 100%;
+          object-fit: contain;
+          border: none;
         }
       }
     }
