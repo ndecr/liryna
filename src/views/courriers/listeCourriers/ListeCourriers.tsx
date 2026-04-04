@@ -1089,11 +1089,12 @@ function ListeCourriers(): ReactElement {
         title={pdfModal.fileName || `Visualisation ${pdfModal.fileType.toUpperCase()}`}
       >
         {pdfModal.fileType === 'image' ? (
-          <img
-            src={pdfModal.pdfUrl}
-            alt={pdfModal.fileName}
-            className="modal-content-image"
-          />
+          <div className="modal-image-container">
+            <img
+              src={pdfModal.pdfUrl}
+              alt={pdfModal.fileName}
+            />
+          </div>
         ) : (
           // Utiliser PDF.js pour un rendu optimal des PDFs
           <div id="pdfViewer">
