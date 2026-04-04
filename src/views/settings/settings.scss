@@ -391,6 +391,14 @@
     }
   }
 
+  .credentialsActions {
+    & {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75em;
+    }
+  }
+
   // ── Credential buttons
   .credentialBtn {
     & {
@@ -444,7 +452,7 @@
 }
 
 // ── Modal overlay
-.modalOverlay {
+.settingsModalOverlay {
   & {
     position: fixed;
     inset: 0;
@@ -457,7 +465,7 @@
   }
 }
 
-.modalContent {
+.settingsModalContent {
   & {
     background: vars.$whiteBackground;
     border-radius: 12px;
@@ -467,11 +475,11 @@
     box-shadow: vars.$shadowMedium;
   }
 
-  &.modalContentLarge {
+  &.settingsModalContentLarge {
     max-width: 34em;
   }
 
-  .modalTitle {
+  .settingsModalTitle {
     & {
       font-size: 1.1em;
       font-weight: 600;
@@ -635,7 +643,7 @@
     }
   }
 
-  .modalError {
+  .settingsModalError {
     & {
       font-size: 0.8em;
       color: vars.$errorColor;
@@ -646,7 +654,7 @@
     }
   }
 
-  .modalActions {
+  .settingsModalActions {
     & {
       display: flex;
       justify-content: flex-end;

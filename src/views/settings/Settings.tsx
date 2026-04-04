@@ -408,9 +408,9 @@ function Settings(): ReactElement {
       )}
 
       {showEmailModal && (
-        <div className="modalOverlay" onClick={handleCloseEmailModal}>
-          <div className="modalContent" onClick={(e) => e.stopPropagation()}>
-            <h3 className="modalTitle">Changer l'email</h3>
+        <div className="settingsModalOverlay" onClick={handleCloseEmailModal}>
+          <div className="settingsModalContent" onClick={(e) => e.stopPropagation()}>
+            <h3 className="settingsModalTitle">Changer l'email</h3>
             <form onSubmit={handleSubmitEmail}>
               <div className="formField">
                 <label htmlFor="newEmail">Nouvel email</label>
@@ -434,8 +434,8 @@ function Settings(): ReactElement {
                   autoComplete="current-password"
                 />
               </div>
-              {emailError && <p className="modalError">{emailError}</p>}
-              <div className="modalActions">
+              {emailError && <p className="settingsModalError">{emailError}</p>}
+              <div className="settingsModalActions">
                 <Button style="grey" type="button" onClick={handleCloseEmailModal}>
                   Annuler
                 </Button>
@@ -449,9 +449,9 @@ function Settings(): ReactElement {
       )}
 
       {showPasswordModal && (
-        <div className="modalOverlay" onClick={handleClosePasswordModal}>
-          <div className="modalContent modalContentLarge" onClick={(e) => e.stopPropagation()}>
-            <h3 className="modalTitle">Changer le mot de passe</h3>
+        <div className="settingsModalOverlay" onClick={handleClosePasswordModal}>
+          <div className="settingsModalContent settingsModalContentLarge" onClick={(e) => e.stopPropagation()}>
+            <h3 className="settingsModalTitle">Changer le mot de passe</h3>
             <form onSubmit={handleSubmitPassword}>
               <div className="formField">
                 <label htmlFor="currentPassword">Mot de passe actuel</label>
@@ -542,8 +542,8 @@ function Settings(): ReactElement {
                 Générer un mot de passe fort
               </button>
 
-              {passwordError && <p className="modalError">{passwordError}</p>}
-              <div className="modalActions">
+              {passwordError && <p className="settingsModalError">{passwordError}</p>}
+              <div className="settingsModalActions">
                 <Button style="grey" type="button" onClick={handleClosePasswordModal}>
                   Annuler
                 </Button>
