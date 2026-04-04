@@ -712,7 +712,7 @@ function MesDocuments(): ReactElement {
               className="previewImage"
             />
           ) : (
-            <ModernPDFViewer pdfUrl={previewModal.fileUrl} />
+            <ModernPDFViewer pdfUrl={previewModal.fileUrl} fileName={previewModal.fileName} />
           )}
         </div>
       </Modal>
