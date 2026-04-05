@@ -1,5 +1,3 @@
-// ─── Répertoire personnel ────────────────────────────────────────────────────
-
 export type IRepertoireTrackType = "rythmique" | "solo" | "partition_complete";
 
 export interface IRepertoireTrack {
@@ -25,8 +23,6 @@ export interface IRepertoireTrackFormData {
   tablatureUrl: string;
   youtubeUrl: string;
 }
-
-// ─── Programme guitare ───────────────────────────────────────────────────────
 
 export interface IProgrammeSong {
   id: number;
@@ -62,7 +58,6 @@ export interface IProgrammeModule {
   levels: IProgrammeLevel[];
 }
 
-// completedSongs : clé = song.id.toString(), valeur = boolean
 export type CompletedSongs = Record<string, boolean>;
 
 export interface IProgrammeProgression {

@@ -7,7 +7,8 @@ import {
   IMusicDocumentSearchParams,
   IPagination,
   IMusicDocumentStats,
-  IMusicDocumentListParams
+  IMusicDocumentListParams,
+  IMusicDocumentViewUrlResponse
 } from "../../utils/types/musicDocument.types.ts";
 import {
   uploadMusicDocumentService,
@@ -18,7 +19,8 @@ import {
   searchMusicDocumentsService,
   downloadMusicDocumentService,
   toggleFavoriteService,
-  getMusicDocumentStatsService
+  getMusicDocumentStatsService,
+  generateMusicDocumentViewUrlService
 } from "../../API/services/musicDocument.service.ts";
 
 export const MusicDocumentProvider = ({
@@ -160,6 +162,15 @@ export const MusicDocumentProvider = ({
     }
   }, []);
 
+  const generateViewUrl = useCallback(async (documentId: number, expiresInMinutes: number = 10): Promise<IMusicDocumentViewUrlResponse> => {
+    try {
+      return await generateMusicDocumentViewUrlService(documentId, expiresInMinutes);
+    } catch (error) {
+      console.error("Error while generating view URL:", error);
+      throw error;
+    }
+  }, []);
+
   const contextValue = useMemo(
     () => ({
       documents,
@@ -178,8 +189,9 @@ export const MusicDocumentProvider = ({
       downloadDocument,
       toggleFavorite,
       getStats,
+      generateViewUrl,
     }),
-    [documents, currentDocument, isLoading, pagination, stats, uploadDocument, getAllDocuments, getDocumentById, updateDocument, deleteDocument, searchDocuments, downloadDocument, toggleFavorite, getStats],
+    [documents, currentDocument, isLoading, pagination, stats, uploadDocument, getAllDocuments, getDocumentById, updateDocument, deleteDocument, searchDocuments, downloadDocument, toggleFavorite, getStats, generateViewUrl],
   );
 
   return (
