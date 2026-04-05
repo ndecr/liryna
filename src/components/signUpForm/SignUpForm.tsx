@@ -6,9 +6,6 @@ import { IoEye, IoEyeOff } from "react-icons/io5";
 // components
 import PasswordStrengthIndicator from "../passwordStrengthIndicator/PasswordStrengthIndicator.tsx";
 
-// utils
-import { PasswordStrength } from "../../utils/scripts/passwordValidation.ts";
-
 // custom types
 interface ISignUpFormProps {
   email: string;
@@ -89,9 +86,8 @@ export default function SignUpForm({
   };
 
   // Gestionnaire de validation du mot de passe
-  const handlePasswordValidityChange = (isValid: boolean, _strength: PasswordStrength) => {
+  const handlePasswordValidityChange = (isValid: boolean) => {
     setPasswordIsValid(isValid);
-    // setPasswordStrength(strength); // Non utilisé
   };
 
   // Gestionnaire de génération de mot de passe

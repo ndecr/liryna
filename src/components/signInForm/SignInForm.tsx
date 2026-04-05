@@ -56,7 +56,6 @@ export default function SignInForm({
 
   useEffect((): void => {
     if (user) {
-      console.log("user =>", user);
       navigate("/home");
     }
   }, [user]);
