@@ -5,7 +5,8 @@ import {
   IMusicDocumentSearchParams,
   IPagination,
   IMusicDocumentStats,
-  IMusicDocumentListParams
+  IMusicDocumentListParams,
+  IMusicDocumentViewUrlResponse
 } from "../../utils/types/musicDocument.types.ts";
 import { createContext, Context } from "react";
 
@@ -26,6 +27,7 @@ interface IMusicDocumentContext {
   downloadDocument: (id: number) => Promise<Blob>;
   toggleFavorite: (id: number) => Promise<IMusicDocument>;
   getStats: () => Promise<void>;
+  generateViewUrl: (documentId: number, expiresInMinutes?: number) => Promise<IMusicDocumentViewUrlResponse>;
 }
 
 export const MusicDocumentContext: Context<IMusicDocumentContext> = createContext<IMusicDocumentContext>({
@@ -45,4 +47,5 @@ export const MusicDocumentContext: Context<IMusicDocumentContext> = createContex
   downloadDocument: async (): Promise<Blob> => { throw new Error("Context not initialized"); },
   toggleFavorite: async (): Promise<IMusicDocument> => { throw new Error("Context not initialized"); },
   getStats: async (): Promise<void> => {},
+  generateViewUrl: async (): Promise<IMusicDocumentViewUrlResponse> => { throw new Error("Context not initialized"); },
 });

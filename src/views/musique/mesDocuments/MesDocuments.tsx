@@ -1,8 +1,6 @@
-// styles
 import "./mesDocuments.scss";
 
-// hooks | libraries
-import { ReactElement, useState, useEffect } from "react";
+import { ReactElement, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import {
@@ -23,7 +21,6 @@ import {
 } from "react-icons/md";
 import { GiFiles } from "react-icons/gi";
 
-// components
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
 import Header from "../../../components/header/Header.tsx";
 import SubNav from "../../../components/subNav/SubNav.tsx";
@@ -32,39 +29,20 @@ import Modal from "../../../components/modal/Modal.tsx";
 import Loader from "../../../components/loader/Loader.tsx";
 import ModernPDFViewer from "../../../components/pdfViewer/ModernPDFViewer.tsx";
 
-// hooks
 import { useMusicDocument } from "../../../hooks/useMusicDocument.ts";
 
-// utils
 import { showErrorNotification } from "../../../utils/scripts/errorHandling.ts";
 import { confirm, showSuccess, showError } from "../../../utils/services/alertService";
+import { formatFileSize } from "../../../utils/helpers/formatters.ts";
+import {
+  DOCUMENT_TYPE_LABELS,
+  DOCUMENT_TYPE_OPTIONS,
+  FILTER_TYPE_OPTIONS,
+  type IDocumentTypeOption,
+  type IFilterTypeOption,
+} from "../../../utils/constants/musicDocumentOptions.ts";
 
-// services
-import { generateMusicDocumentViewUrlService } from "../../../API/services/musicDocument.service.ts";
-
-// types
 import { IMusicDocument, MusicDocumentType } from "../../../utils/types/musicDocument.types.ts";
-
-type DocumentTypeOption = { value: MusicDocumentType; label: string };
-type FilterTypeOption = { value: MusicDocumentType | ""; label: string };
-
-const DOCUMENT_TYPE_LABELS: Record<MusicDocumentType, string> = {
-  partition: "Partition",
-  grille_accords: "Grille d'accords",
-  tab: "Tablature",
-  paroles: "Paroles",
-  theorie: "Théorie",
-  autre: "Autre",
-};
-
-const DOCUMENT_TYPE_OPTIONS: DocumentTypeOption[] = Object.entries(DOCUMENT_TYPE_LABELS).map(
-  ([value, label]) => ({ value: value as MusicDocumentType, label })
-);
-
-const FILTER_TYPE_OPTIONS: FilterTypeOption[] = [
-  { value: "", label: "Tous les types" },
-  ...DOCUMENT_TYPE_OPTIONS,
-];
 
 function MesDocuments(): ReactElement {
   const navigate = useNavigate();
@@ -79,6 +57,7 @@ function MesDocuments(): ReactElement {
     downloadDocument,
     toggleFavorite,
     searchDocuments,
+    generateViewUrl,
   } = useMusicDocument();
 
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -111,15 +90,7 @@ function MesDocuments(): ReactElement {
     description: "",
   });
 
-  useEffect(() => {
-    if (searchTerm.trim() && searchTerm.trim().length >= 3) {
-      searchDocumentsLocal();
-    } else if (!searchTerm.trim()) {
-      loadDocuments(currentPage);
-    }
-  }, [currentPage, searchTerm, filterType, filterFavorite]);
-
-  const loadDocuments = async (page: number, limit: number = 10) => {
+  const loadDocuments = useCallback(async (page: number, limit: number = 10) => {
     try {
       await getAllDocuments({
         page,
@@ -131,9 +102,9 @@ function MesDocuments(): ReactElement {
       console.error("Erreur lors du chargement des documents:", error);
       showErrorNotification("Erreur lors du chargement des documents");
     }
-  };
+  }, [getAllDocuments, filterType, filterFavorite]);
 
-  const searchDocumentsLocal = async () => {
+  const searchDocumentsLocal = useCallback(async () => {
     try {
       await searchDocuments({
         query: searchTerm,
@@ -144,7 +115,15 @@ function MesDocuments(): ReactElement {
       console.error("Erreur lors de la recherche:", error);
       showErrorNotification("Erreur lors de la recherche de documents");
     }
-  };
+  }, [searchDocuments, searchTerm, currentPage]);
+
+  useEffect(() => {
+    if (searchTerm.trim() && searchTerm.trim().length >= 3) {
+      searchDocumentsLocal();
+    } else if (!searchTerm.trim()) {
+      loadDocuments(currentPage);
+    }
+  }, [currentPage, searchTerm, filterType, filterFavorite, loadDocuments, searchDocumentsLocal]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newSearchTerm = e.target.value;
@@ -278,7 +257,7 @@ function MesDocuments(): ReactElement {
     }
 
     try {
-      const { viewUrl } = await generateMusicDocumentViewUrlService(doc.id);
+      const { viewUrl } = await generateViewUrl(doc.id);
       setPreviewModal({ visible: true, fileUrl: viewUrl, fileName: doc.fileName, mimeType: doc.mimeType });
     } catch (error) {
       console.error("Erreur lors de la prévisualisation:", error);
@@ -312,14 +291,6 @@ function MesDocuments(): ReactElement {
   const resetForm = () => {
     setFormData({ title: "", type: "", customFileName: "", description: "" });
     setSelectedFile(null);
-  };
-
-  const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
   return (
@@ -367,7 +338,7 @@ function MesDocuments(): ReactElement {
                 <label>Type</label>
                 <Select
                   value={FILTER_TYPE_OPTIONS.find((opt) => opt.value === filterType) ?? FILTER_TYPE_OPTIONS[0]}
-                  onChange={(option: FilterTypeOption | null) =>
+                  onChange={(option: IFilterTypeOption | null) =>
                     setFilterType(option ? option.value : "")
                   }
                   options={FILTER_TYPE_OPTIONS}
@@ -567,7 +538,7 @@ function MesDocuments(): ReactElement {
             </label>
             <Select
               value={DOCUMENT_TYPE_OPTIONS.find((opt) => opt.value === formData.type) ?? null}
-              onChange={(option: DocumentTypeOption | null) =>
+              onChange={(option: IDocumentTypeOption | null) =>
                 setFormData({ ...formData, type: option ? option.value : "" })
               }
               options={DOCUMENT_TYPE_OPTIONS}
@@ -660,7 +631,7 @@ function MesDocuments(): ReactElement {
             </label>
             <Select
               value={DOCUMENT_TYPE_OPTIONS.find((opt) => opt.value === formData.type) ?? null}
-              onChange={(option: DocumentTypeOption | null) =>
+              onChange={(option: IDocumentTypeOption | null) =>
                 setFormData({ ...formData, type: option ? option.value : "" })
               }
               options={DOCUMENT_TYPE_OPTIONS}
