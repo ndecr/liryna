@@ -78,6 +78,12 @@ export default function Header(): ReactElement {
           </Link>
 
           <div className="headerRight">
+            {!user && !location.pathname.startsWith("/auth/login") && (
+              <Link to="/auth/login" className="authButton">
+                Se connecter
+              </Link>
+            )}
+
             {user && !isAuthRoute && (
               <div className="userInfo">
                 <span className="userGreeting">{getGreeting()}, <strong>{user.firstName}</strong></span>

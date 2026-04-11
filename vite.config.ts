@@ -8,7 +8,7 @@ import type { IndexHtmlTransformContext } from 'vite';
 // Les HTTP headers (source de vérité pour Vercel) sont dans vercel.json — ne pas générer vercel.json
 // automatiquement au build pour éviter toute ambiguïté sur quel fichier Vercel utilise.
 // IMPORTANT : toute modification ici doit être répercutée manuellement dans vercel.json.
-const PROD_CSP_META = "default-src 'self'; script-src 'self' blob:; style-src 'self' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob: https://api.liryna.app; object-src 'self' blob:; frame-src 'self' blob: https://api.liryna.app; connect-src 'self' https://api.liryna.app https://fonts.googleapis.com https://unpkg.com; worker-src 'self' blob: https://unpkg.com; base-uri 'self'; form-action 'self';";
+const PROD_CSP_META = "default-src 'self'; script-src 'self' blob:; style-src 'self' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob: https://api.liryna.app:49153; object-src 'self' blob:; frame-src 'self' blob: https://api.liryna.app:49153; connect-src 'self' https://api.liryna.app:49153 https://fonts.googleapis.com https://unpkg.com; worker-src 'self' blob: https://unpkg.com; base-uri 'self'; form-action 'self';";
 
 // Plugin pour injecter la CSP en meta tag selon l'environnement
 const generateCSP = () => {

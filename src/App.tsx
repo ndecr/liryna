@@ -23,6 +23,7 @@ import AOS from 'aos';
 
 // views
 import AuthPage from "./views/authPage/AuthPage";
+import AuthLogin from "./views/authPage/authLogin/AuthLogin.tsx";
 import HomeWithAuth from "./views/home/Home.tsx";
 import CourriersWithAuth from "./views/courriers/Courriers.tsx";
 import NouveauCourrierWithAuth from "./views/courriers/nouveauCourrier/NouveauCourrier.tsx";
@@ -96,7 +97,10 @@ function App(): ReactElement {
       <BodyClassManager />
       <Routes>
         <Route path="/" element={<Navigate to="/auth" />}></Route>
-        <Route path={"auth"} element={<AuthPage />}></Route>
+        <Route path={"auth"} element={<AuthPage />}>
+          <Route index element={null} />
+          <Route path="login" element={<AuthLogin />} />
+        </Route>
         <Route path={"reset-password"} element={<ResetPassword />}></Route>
         <Route path={"home"} element={<HomeWithAuth />}></Route>
         <Route path={"mail"} element={<CourriersWithAuth />}></Route>

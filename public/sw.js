@@ -116,7 +116,7 @@ const EXTERNAL_HOSTS = new Set([
   'fonts.googleapis.com',
   'fonts.gstatic.com',
   'unpkg.com',
-  'api.liryna.app'
+  'api.liryna.app:49153'
 ]);
 
 // Throttling : Limiter le nombre d'opérations de cache simultanées
