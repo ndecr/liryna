@@ -66,10 +66,10 @@ export default function Header(): ReactElement {
       <header id="header">
         <div className="headerContainer">
           <Link
-            to={isAuthRoute ? "/auth" : "/home"}
+            to={isAuthRoute && !user ? "/auth" : "/home"}
             className="headerBrand"
             onClick={closeMobileMenu}
-            title={isAuthRoute ? "" : "Home"}
+            title={isAuthRoute && !user ? "" : "Home"}
           >
             <h1 className="brandTitle">
               <span className="Lir">Lir</span>
