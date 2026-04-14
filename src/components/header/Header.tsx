@@ -14,6 +14,7 @@ import { resolveAvatarUrl } from "../../utils/scripts/utils.ts";
 
 // components
 import PWAInstallButton from "../pwaInstallButton/PWAInstallButton.tsx";
+import Button from "../button/Button.tsx";
 
 export default function Header(): ReactElement {
   const location = useLocation();
@@ -79,8 +80,8 @@ export default function Header(): ReactElement {
 
           <div className="headerRight">
             {!user && !location.pathname.startsWith("/auth/login") && (
-              <Link to="/auth/login" className="authButton">
-                Se connecter
+              <Link to="/auth/login">
+                <Button style="seaGreen">Se connecter</Button>
               </Link>
             )}
 

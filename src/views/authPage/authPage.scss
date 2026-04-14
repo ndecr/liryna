@@ -8,11 +8,10 @@
   main {
     @include mixins.mainContentExpanding;
     align-items: center;
-    justify-content: center;
-    padding: calc(6dvh + 1em) 1em 1em;
+    padding: calc(6dvh + 2em) 1em 1em;
 
     @media (min-width: vars.$tabletWidth) {
-      padding: 2em;
+      padding: calc(6dvh + 3em) 2em 2em;
     }
   }
 }

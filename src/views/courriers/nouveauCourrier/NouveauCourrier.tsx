@@ -173,6 +173,78 @@ function NouveauCourrier(): ReactElement {
             data-aos-delay="100"
           >
             <div className="formGrid">
+              {/* Upload de fichier */}
+              <section className="formSection fullWidth">
+                <h2 className="sectionTitle">
+                  <MdUploadFile />
+                  Document joint
+                </h2>
+
+                <div
+                  className={`uploadZone ${dragActive ? "dragActive" : ""} ${
+                    formData.fichierJoint ? "hasFile" : ""
+                  }`}
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                  onClick={() => document.getElementById("file-input")?.click()}
+                >
+                  <input
+                    type="file"
+                    id="file-input"
+                    onChange={handleFileInput}
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                    hidden
+                  />
+
+                  {formData.fichierJoint ? (
+                    <div className="fileInfo">
+                      <MdUploadFile className="fileIcon" />
+                      <div className="fileDetails">
+                        <span className="fileName">
+                          {formData.fichierJoint.name}
+                        </span>
+                        <span className="fileSize">
+                          {(formData.fichierJoint.size / 1024 / 1024).toFixed(
+                            2
+                          )}{" "}
+                          MB
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        className="removeFile"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setFormData((prev) => ({
+                            ...prev,
+                            fichierJoint: undefined,
+                          }));
+                        }}
+                      >
+                        <MdCancel />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="uploadPrompt">
+                      <MdUploadFile className="uploadIcon" />
+                      <div className="uploadText">
+                        <span className="primaryText">
+                          Cliquez pour sélectionner
+                        </span>
+                        <span className="secondaryText">
+                          ou glissez-déposez votre fichier ici
+                        </span>
+                        <span className="formatText">
+                          PDF, DOC, DOCX, JPG, PNG (max 10MB)
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </section>
+
               {/* Informations principales */}
               <section className="formSection">
                 <h2 className="sectionTitle">
@@ -359,78 +431,6 @@ function NouveauCourrier(): ReactElement {
                     placeholder="Décrivez le contenu du courrier, les actions à prendre..."
                     rows={4}
                   />
-                </div>
-              </section>
-
-              {/* Upload de fichier */}
-              <section className="formSection fullWidth">
-                <h2 className="sectionTitle">
-                  <MdUploadFile />
-                  Document joint
-                </h2>
-
-                <div
-                  className={`uploadZone ${dragActive ? "dragActive" : ""} ${
-                    formData.fichierJoint ? "hasFile" : ""
-                  }`}
-                  onDragEnter={handleDrag}
-                  onDragLeave={handleDrag}
-                  onDragOver={handleDrag}
-                  onDrop={handleDrop}
-                  onClick={() => document.getElementById("file-input")?.click()}
-                >
-                  <input
-                    type="file"
-                    id="file-input"
-                    onChange={handleFileInput}
-                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                    hidden
-                  />
-
-                  {formData.fichierJoint ? (
-                    <div className="fileInfo">
-                      <MdUploadFile className="fileIcon" />
-                      <div className="fileDetails">
-                        <span className="fileName">
-                          {formData.fichierJoint.name}
-                        </span>
-                        <span className="fileSize">
-                          {(formData.fichierJoint.size / 1024 / 1024).toFixed(
-                            2
-                          )}{" "}
-                          MB
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        className="removeFile"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setFormData((prev) => ({
-                            ...prev,
-                            fichierJoint: undefined,
-                          }));
-                        }}
-                      >
-                        <MdCancel />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="uploadPrompt">
-                      <MdUploadFile className="uploadIcon" />
-                      <div className="uploadText">
-                        <span className="primaryText">
-                          Cliquez pour sélectionner
-                        </span>
-                        <span className="secondaryText">
-                          ou glissez-déposez votre fichier ici
-                        </span>
-                        <span className="formatText">
-                          PDF, DOC, DOCX, JPG, PNG (max 10MB)
-                        </span>
-                      </div>
-                    </div>
-                  )}
                 </div>
               </section>
             </div>
