@@ -6,7 +6,7 @@ import { ReactElement, useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
 import { IoHome, IoAdd, IoList, IoWallet, IoCreate } from "react-icons/io5";
-import { MdDashboard, MdLogout, MdMusicNote, MdLibraryMusic, MdTune, MdSettings } from "react-icons/md";
+import { MdDashboard, MdLogout, MdMusicNote, MdLibraryMusic, MdTune, MdSettings, MdDescription } from "react-icons/md";
 import { FiHome } from "react-icons/fi";
 import { GiGuitar } from "react-icons/gi";
 import { useUser } from "../../hooks/useUser.ts";
@@ -245,6 +245,13 @@ export default function Header(): ReactElement {
                   >
                     <MdLibraryMusic className="mobileNavIcon" />
                     <span className="mobileNavText">Mon Répertoire</span>
+                  </button>
+                  <button
+                    className={`mobileNavItem ${location.pathname === "/musique/documents" ? "active" : ""}`}
+                    onClick={() => handleNavigate("/musique/documents")}
+                  >
+                    <MdDescription className="mobileNavIcon" />
+                    <span className="mobileNavText">Mes Documents</span>
                   </button>
                   <button
                     className={`mobileNavItem ${location.pathname === "/musique/accordages-guitare" ? "active" : ""}`}
