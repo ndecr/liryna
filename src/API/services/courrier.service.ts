@@ -231,7 +231,7 @@ export const analyzeCourrierService = async (
   const config = {
     headers: {} as Record<string, string>,
     withCredentials: true,
-    timeout: 60000,
+    timeout: 90000,
   };
 
   // Ajouter le token CSRF
