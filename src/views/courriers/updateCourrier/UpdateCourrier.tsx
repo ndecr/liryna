@@ -6,7 +6,7 @@ import { ReactElement, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
 import { MdArrowBack, MdSave, MdCancel } from "react-icons/md";
-import { FiMail, FiUser, FiCalendar, FiFileText, FiTag, FiEye } from "react-icons/fi";
+import { FiMail, FiUser, FiCalendar, FiFileText, FiTag, FiEye, FiFile } from "react-icons/fi";
 
 // hooks
 import { useCourrier } from "../../../hooks/useCourrier.ts";
@@ -116,6 +116,7 @@ function UpdateCourrier(): ReactElement {
         department: formData.department?.trim() || undefined,
         kind: formData.kind?.trim() || undefined,
         description: formData.description?.trim() || undefined,
+        customFileName: formData.customFileName?.trim() || undefined,
       };
 
       await updateCourrier(courrier.id, updateData);
@@ -224,6 +225,24 @@ function UpdateCourrier(): ReactElement {
                           options={kindOptions.options}
                           placeholder="Sélectionner ou créer un type de courrier..."
                           isLoading={kindOptions.isLoading}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="formRow">
+                      <div className="formGroup">
+                        <label htmlFor="customFileName">
+                          <FiFile />
+                          Nom du fichier *
+                        </label>
+                        <input
+                          type="text"
+                          id="customFileName"
+                          name="customFileName"
+                          value={formData.customFileName}
+                          onChange={handleInputChange}
+                          onBlur={handleInputBlur}
+                          placeholder="Nom du document (sans extension)"
                         />
                       </div>
                     </div>
