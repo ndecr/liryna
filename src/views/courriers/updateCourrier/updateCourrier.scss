@@ -75,10 +75,6 @@
 
     .previewSection {
       @include mixins.card(12px, light);
-      
-      & {
-        overflow: hidden;
-      }
 
       @media (min-width: vars.$desktopWidth) {
         flex: 0 0 40%;
@@ -129,10 +125,6 @@
 
     .formSection {
       @include mixins.card(12px, light);
-      
-      & {
-        overflow: hidden;
-      }
 
       @media (min-width: vars.$desktopWidth) {
         flex: 1;
