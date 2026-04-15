@@ -3,6 +3,7 @@ import { AxiosResponse } from "axios";
 import axios from "axios";
 import { ICourrier, ICourrierUploadData, IApiResponse, ICourrierSearchParams, IPagination, ICourrierStats, ICourrierListParams, ICourrierAnalysisResult } from "../../utils/types/courrier.types.ts";
 import { courrierModel } from "../models/courrier.model.ts";
+import { csrfService } from "../../utils/services/csrfService.ts";
 
 export const uploadCourrierService = async (
   file: File, 
@@ -226,7 +227,22 @@ export const analyzeCourrierService = async (
   const formData = new FormData();
   formData.append('courrier', file);
 
-  const response: AxiosResponse<IApiResponse<ICourrierAnalysisResult>> = await postFormDataRequest("/courriers/analyze", formData);
+  // Timeout de 60s — l'analyse LLM peut prendre du temps
+  const config = {
+    headers: {} as Record<string, string>,
+    withCredentials: true,
+    timeout: 60000,
+  };
+
+  // Ajouter le token CSRF
+  try {
+    const csrfHeaders = await csrfService.getCSRFHeaders();
+    Object.assign(config.headers, csrfHeaders);
+  } catch (error) {
+    console.warn('Impossible d\'ajouter le token CSRF:', error);
+  }
+
+  const response: AxiosResponse<IApiResponse<ICourrierAnalysisResult>> = await axios.post("/courriers/analyze", formData, config);
 
   if (response.data.success && response.data.data) {
     return response.data.data;
