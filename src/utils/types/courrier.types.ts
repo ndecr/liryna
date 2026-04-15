@@ -86,7 +86,7 @@ export interface ICourrierStats {
   thisYear: number;
 }
 
-export type CourrierSortColumn = 'fileName' | 'direction' | 'kind' | 'department' | 'emitter' | 'courrierDate' | 'description';
+export type CourrierSortColumn = 'fileName' | 'direction' | 'kind' | 'department' | 'emitter' | 'recipient' | 'courrierDate' | 'description';
 
 export type SortOrder = 'ASC' | 'DESC';
 

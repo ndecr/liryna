@@ -448,11 +448,12 @@
             &:nth-child(4) { min-width: 8em; }
             &:nth-child(5) { min-width: 10em; }
             &:nth-child(6) { min-width: 10em; }
-            &:nth-child(7) { min-width: 8em; }
-            &:nth-child(8) { min-width: 12em; }
-            &:nth-child(9) {
-              min-width: 10em;
-              text-align: right;
+            &:nth-child(7) { min-width: 10em; }
+            &:nth-child(8) { min-width: 8em; }
+            &:nth-child(9) { min-width: 12em; }
+            &:nth-child(10) {
+              min-width: 4em;
+              text-align: center;
             }
 
             &.sortable {
@@ -587,77 +588,127 @@
               }
               
               &.actions {
-                text-align: right;
-                
-                .actionButtons {
-                  display: flex;
-                  gap: 0.375em;
-                  justify-content: flex-end;
-                  
-                  .actionBtn {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 2em;
-                    height: 2em;
-                    border: none;
-                    border-radius: 6px;
-                    cursor: pointer;
-                    transition: vars.$transitionMedium;
-                    font-size: 1em;
-                    
-                    &.download {
-                      background: rgba(38, 208, 206, 0.1);
-                      color: vars.$courrierPrimary;
-                      
-                      &:hover {
-                        background: vars.$courrierPrimary;
-                        color: white;
-                        transform: translateY(-1px);
-                      }
+                & {
+                  text-align: center;
+                  position: relative;
+                }
+
+                .actionMenuWrapper {
+                  & {
+                    position: relative;
+                    display: inline-block;
+                  }
+
+                  .actionMenuTrigger {
+                    & {
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      width: 2em;
+                      height: 2em;
+                      border: none;
+                      border-radius: 6px;
+                      cursor: pointer;
+                      background: rgba(0, 0, 0, 0.05);
+                      color: vars.$fontColorSecondary;
+                      font-size: 1.2em;
+                      transition: vars.$transitionMedium;
                     }
-                    
-                    &.edit {
-                      background: rgba(243, 156, 18, 0.1);
-                      color: vars.$warningColor;
-                      
-                      &:hover {
-                        background: vars.$warningColor;
-                        color: white;
-                        transform: translateY(-1px);
-                      }
+
+                    &:hover {
+                      background: rgba(0, 0, 0, 0.1);
+                      color: vars.$fontColorPrimary;
                     }
-                    
-                    &.email {
-                      background: rgba(77, 208, 225, 0.1);
-                      color: vars.$courrierSecondary;
-                      
-                      &:hover {
-                        background: vars.$courrierSecondary;
-                        color: white;
-                        transform: translateY(-1px);
-                      }
+                  }
+
+                  .actionMenu {
+                    & {
+                      position: absolute;
+                      right: 0;
+                      top: calc(100% + 0.25em);
+                      display: flex;
+                      gap: 0.375em;
+                      background: white;
+                      border-radius: 8px;
+                      box-shadow: 0 0.25em 1em rgba(0, 0, 0, 0.15);
+                      padding: 0.5em;
+                      z-index: 9999;
+                      white-space: nowrap;
                     }
-                    
-                    &.view {
-                      background: rgba(155, 89, 182, 0.1);
-                      color: #9b59b6;
-                      
-                      &:hover {
-                        background: #9b59b6;
-                        color: white;
-                        transform: translateY(-1px);
+
+                    .actionBtn {
+                      & {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 2em;
+                        height: 2em;
+                        border: none;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        transition: vars.$transitionMedium;
+                        font-size: 1em;
                       }
-                    }
-                    
-                    &.delete {
-                      background: rgba(231, 76, 60, 0.1);
-                      color: vars.$errorColor;
-                      
-                      &:hover {
-                        background: vars.$errorColor;
-                        color: white;
-                        transform: translateY(-1px);
+
+                      &.download {
+                        background: rgba(38, 208, 206, 0.1);
+                        color: vars.$courrierPrimary;
+
+                        &:hover {
+                          background: vars.$courrierPrimary;
+                          color: white;
+                          transform: translateY(-1px);
+                        }
+                      }
+
+                      &.edit {
+                        background: rgba(243, 156, 18, 0.1);
+                        color: vars.$warningColor;
+
+                        &:hover {
+                          background: vars.$warningColor;
+                          color: white;
+                          transform: translateY(-1px);
+                        }
+                      }
+
+                      &.email {
+                        background: rgba(77, 208, 225, 0.1);
+                        color: vars.$courrierSecondary;
+
+                        &:hover {
+                          background: vars.$courrierSecondary;
+                          color: white;
+                          transform: translateY(-1px);
+                        }
+                      }
+
+                      &.view {
+                        background: rgba(155, 89, 182, 0.1);
+                        color: #9b59b6;
+
+                        &:hover {
+                          background: #9b59b6;
+                          color: white;
+                          transform: translateY(-1px);
+                        }
+                      }
+
+                      &.delete {
+                        background: rgba(231, 76, 60, 0.1);
+                        color: vars.$errorColor;
+
+                        &:hover {
+                          background: vars.$errorColor;
+                          color: white;
+                          transform: translateY(-1px);
+                        }
+                      }
+
+                      &.disabled {
+                        opacity: 0.4;
+                        cursor: not-allowed;
+                        transform: none;
                       }
                     }
                   }

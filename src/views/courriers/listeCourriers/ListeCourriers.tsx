@@ -22,6 +22,7 @@ import {
   MdArrowDownward,
   MdFilterList,
   MdFilterListOff,
+  MdMoreVert,
 } from "react-icons/md";
 import Select from "react-select";
 import { FiFileText } from "react-icons/fi";
@@ -96,6 +97,7 @@ function ListeCourriers(): ReactElement {
   const [sortOrder, setSortOrder] = useState<SortOrder>('DESC');
   const [columnFilters, setColumnFilters] = useState<IColumnFilters>({ kind: '', department: '', emitter: '', recipient: '', direction: '', dateMin: '', dateMax: '' });
   const [showFilters, setShowFilters] = useState<boolean>(false);
+  const [openActionMenu, setOpenActionMenu] = useState<number | null>(null);
 
   // Charger les options pour les filtres
   const kindOptions = useCourrierFieldOptions('kind');
@@ -121,6 +123,19 @@ function ListeCourriers(): ReactElement {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Fermer le menu d'actions au clic extérieur
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (openActionMenu !== null && !target.closest('.actionMenuWrapper')) {
+        setOpenActionMenu(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [openActionMenu]);
 
   // Gérer le changement de terme de recherche
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -910,6 +925,9 @@ function ListeCourriers(): ReactElement {
                         <th className={`sortable ${sortBy === 'emitter' ? 'sorted' : ''}`} onClick={() => handleSort('emitter')}>
                           Expediteur {renderSortIcon('emitter')}
                         </th>
+                        <th className={`sortable ${sortBy === 'recipient' ? 'sorted' : ''}`} onClick={() => handleSort('recipient')}>
+                          Destinataire {renderSortIcon('recipient')}
+                        </th>
                         <th className={`sortable dateColumn ${sortBy === 'courrierDate' ? 'sorted' : ''}`} onClick={() => handleSort('courrierDate')}>
                           Date courrier {renderSortIcon('courrierDate')}
                         </th>
@@ -975,8 +993,16 @@ function ListeCourriers(): ReactElement {
                           >
                             {courrier.emitter || "N/A"}
                           </td>
+                          <td
+                            className="recipient"
+                            onMouseEnter={(e) => handleMouseEnter(e, courrier.recipient || "N/A")}
+                            onMouseMove={handleMouseMove}
+                            onMouseLeave={handleMouseLeave}
+                          >
+                            {courrier.recipient || "N/A"}
+                          </td>
                           <td className="courrierDate">{formatDate(courrier.courrierDate)}</td>
-                          <td 
+                          <td
                             className="description"
                             onMouseEnter={(e) => handleMouseEnter(e, courrier.description || "N/A")}
                             onMouseMove={handleMouseMove}
@@ -985,45 +1011,56 @@ function ListeCourriers(): ReactElement {
                             {courrier.description || "N/A"}
                           </td>
                           <td className="actions">
-                            <div className="actionButtons">
-                              <button 
-                                className={`actionBtn view ${selectedCourriers.size > 0 ? 'disabled' : ''}`}
-                                onClick={() => selectedCourriers.size === 0 && handleViewPdf(courrier)}
-                                title={selectedCourriers.size > 0 ? "Désactivé pendant la sélection" : "Visualiser"}
-                                disabled={selectedCourriers.size > 0}
+                            <div className="actionMenuWrapper">
+                              <button
+                                className="actionMenuTrigger"
+                                onClick={() => setOpenActionMenu(openActionMenu === courrier.id ? null : courrier.id)}
+                                title="Actions"
                               >
-                                <MdVisibility />
+                                <MdMoreVert />
                               </button>
-                              <button 
-                                className="actionBtn download"
-                                onClick={() => handleAdaptiveDownload(courrier.id)}
-                                title={getDownloadTooltip()}
-                              >
-                                {selectedCourriers.size > 1 ? <MdArchive /> : <MdDownload />}
-                              </button>
-                              <button 
-                                className={`actionBtn edit ${selectedCourriers.size > 0 ? 'disabled' : ''}`}
-                                onClick={() => selectedCourriers.size === 0 && handleEdit(courrier.id)}
-                                title={selectedCourriers.size > 0 ? "Désactivé pendant la sélection" : "Modifier"}
-                                disabled={selectedCourriers.size > 0}
-                              >
-                                <MdEdit />
-                              </button>
-                              <button 
-                                className="actionBtn email"
-                                onClick={() => handleAdaptiveEmail(courrier.id)}
-                                title={getEmailTooltip()}
-                              >
-                                {selectedCourriers.size > 1 ? <MdOutlineMarkEmailRead /> : <MdEmail />}
-                              </button>
-                              <button 
-                                className={`actionBtn delete ${selectedCourriers.size > 0 ? 'disabled' : ''}`}
-                                onClick={() => selectedCourriers.size === 0 && handleDelete(courrier.id)}
-                                title={selectedCourriers.size > 0 ? "Désactivé pendant la sélection" : "Supprimer"}
-                                disabled={selectedCourriers.size > 0}
-                              >
-                                <MdDelete />
-                              </button>
+                              {openActionMenu === courrier.id && (
+                                <div className="actionMenu">
+                                  <button
+                                    className={`actionBtn view ${selectedCourriers.size > 0 ? 'disabled' : ''}`}
+                                    onClick={() => { setOpenActionMenu(null); selectedCourriers.size === 0 && handleViewPdf(courrier); }}
+                                    title={selectedCourriers.size > 0 ? "Désactivé pendant la sélection" : "Visualiser"}
+                                    disabled={selectedCourriers.size > 0}
+                                  >
+                                    <MdVisibility />
+                                  </button>
+                                  <button
+                                    className="actionBtn download"
+                                    onClick={() => { setOpenActionMenu(null); handleAdaptiveDownload(courrier.id); }}
+                                    title={getDownloadTooltip()}
+                                  >
+                                    {selectedCourriers.size > 1 ? <MdArchive /> : <MdDownload />}
+                                  </button>
+                                  <button
+                                    className={`actionBtn edit ${selectedCourriers.size > 0 ? 'disabled' : ''}`}
+                                    onClick={() => { setOpenActionMenu(null); selectedCourriers.size === 0 && handleEdit(courrier.id); }}
+                                    title={selectedCourriers.size > 0 ? "Désactivé pendant la sélection" : "Modifier"}
+                                    disabled={selectedCourriers.size > 0}
+                                  >
+                                    <MdEdit />
+                                  </button>
+                                  <button
+                                    className="actionBtn email"
+                                    onClick={() => { setOpenActionMenu(null); handleAdaptiveEmail(courrier.id); }}
+                                    title={getEmailTooltip()}
+                                  >
+                                    {selectedCourriers.size > 1 ? <MdOutlineMarkEmailRead /> : <MdEmail />}
+                                  </button>
+                                  <button
+                                    className={`actionBtn delete ${selectedCourriers.size > 0 ? 'disabled' : ''}`}
+                                    onClick={() => { setOpenActionMenu(null); selectedCourriers.size === 0 && handleDelete(courrier.id); }}
+                                    title={selectedCourriers.size > 0 ? "Désactivé pendant la sélection" : "Supprimer"}
+                                    disabled={selectedCourriers.size > 0}
+                                  >
+                                    <MdDelete />
+                                  </button>
+                                </div>
+                              )}
                             </div>
                           </td>
                         </tr>
