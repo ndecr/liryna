@@ -113,3 +113,17 @@ export interface IColumnFilters {
   dateMin: string;
   dateMax: string;
 }
+
+export interface ICourrierAnalysisResult {
+  direction: 'entrant' | 'sortant' | 'interne' | null;
+  emitter: string | null;
+  recipient: string | null;
+  receptionDate: string | null;
+  courrierDate: string | null;
+  priority: 'normal' | 'urgent' | 'bas' | null;
+  department: string | null;
+  kind: string | null;
+  description: string | null;
+  customFileName: string | null;
+  confidence: number;
+}

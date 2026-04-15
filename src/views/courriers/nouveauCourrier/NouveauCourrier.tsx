@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { MdArrowBack, MdUploadFile, MdSave, MdCancel } from "react-icons/md";
 import { FiMail, FiUser, FiCalendar, FiFileText, FiTag } from "react-icons/fi";
+import { MdAutoAwesome } from "react-icons/md";
 
 // hooks
 import { useCourrier } from "../../../hooks/useCourrier.ts";
@@ -29,7 +30,7 @@ import { useCourrierFieldOptions } from "../../../utils/hooks/useCourrierFieldOp
 
 function NouveauCourrier(): ReactElement {
   const navigate = useNavigate();
-  const { uploadCourrier, isLoading } = useCourrier();
+  const { uploadCourrier, isLoading, analyzeCourrier } = useCourrier();
   
   // Charger les options pour les champs avec autocomplétion
   const kindOptions = useCourrierFieldOptions('kind');
@@ -50,6 +51,7 @@ function NouveauCourrier(): ReactElement {
     customFileName: ""
   });
   const [dragActive, setDragActive] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -78,12 +80,88 @@ function NouveauCourrier(): ReactElement {
 
   const handleFileUpload = (file: File) => {
     const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "").trim();
-    
+
     setFormData(prev => ({
       ...prev,
       fichierJoint: file,
-      customFileName: prev.customFileName || nameWithoutExt // Ne remplace que si vide
+      customFileName: prev.customFileName || nameWithoutExt
     }));
+
+    // Lancer l'analyse LLM automatiquement
+    analyzeDocument(file);
+  };
+
+  /**
+   * Cherche la meilleure correspondance parmi les options existantes.
+   * Retourne l'option existante si similarité suffisante, sinon la valeur brute.
+   */
+  const matchExistingOption = (geminiValue: string | null, existingOptions: string[]): string | null => {
+    if (!geminiValue) return null;
+
+    const normalized = geminiValue.toLowerCase().trim();
+
+    // 1. Match exact insensible à la casse
+    const exactMatch = existingOptions.find(opt => opt.toLowerCase() === normalized);
+    if (exactMatch) return exactMatch;
+
+    // 2. Inclusion : l'option existante contient la valeur Gemini ou inversement
+    const inclusiveMatch = existingOptions.find(opt => {
+      const optLower = opt.toLowerCase();
+      return optLower.includes(normalized) || normalized.includes(optLower);
+    });
+    if (inclusiveMatch) return inclusiveMatch;
+
+    // 3. Similarité par mots clés : au moins 60% des mots en commun
+    const geminiWords = normalized.split(/[\s\-_]+/).filter(w => w.length > 2);
+    if (geminiWords.length > 0) {
+      let bestMatch: string | null = null;
+      let bestScore = 0;
+
+      for (const opt of existingOptions) {
+        const optWords = opt.toLowerCase().split(/[\s\-_]+/).filter(w => w.length > 2);
+        const matchCount = geminiWords.filter(gw => optWords.some(ow => ow.includes(gw) || gw.includes(ow))).length;
+        const score = matchCount / Math.max(geminiWords.length, optWords.length);
+        if (score > bestScore && score >= 0.6) {
+          bestScore = score;
+          bestMatch = opt;
+        }
+      }
+
+      if (bestMatch) return bestMatch;
+    }
+
+    // Aucun match : garder la valeur Gemini (nouvelle option légitime)
+    return geminiValue;
+  };
+
+  const analyzeDocument = async (file: File) => {
+    setIsAnalyzing(true);
+    try {
+      const result = await analyzeCourrier(file);
+
+      setFormData(prev => ({
+        ...prev,
+        direction: result.direction || prev.direction,
+        emitter: matchExistingOption(result.emitter, emitterOptions.options) || prev.emitter,
+        recipient: matchExistingOption(result.recipient, recipientOptions.options) || prev.recipient,
+        receptionDate: result.receptionDate || prev.receptionDate,
+        courrierDate: result.courrierDate || prev.courrierDate,
+        priority: result.priority || prev.priority,
+        department: matchExistingOption(result.department, departmentOptions.options) || prev.department,
+        kind: matchExistingOption(result.kind, kindOptions.options) || prev.kind,
+        description: result.description || prev.description,
+        customFileName: result.customFileName || prev.customFileName,
+      }));
+
+      if (result.confidence > 0) {
+        showErrorNotification(`Document analysé (${result.confidence}% de confiance)`, 'info');
+      }
+    } catch (error: unknown) {
+      logError('analyzeDocument', error);
+      // L'analyse échoue silencieusement — l'utilisateur remplit manuellement
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const handleDrag = (e: React.DragEvent) => {
@@ -225,6 +303,12 @@ function NouveauCourrier(): ReactElement {
                       >
                         <MdCancel />
                       </button>
+                      {isAnalyzing && (
+                        <div className="analyzingBadge">
+                          <MdAutoAwesome className="analyzingIcon" />
+                          <span>Analyse IA en cours...</span>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className="uploadPrompt">

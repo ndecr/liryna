@@ -1,7 +1,7 @@
 import { getRequest, postRequest, postFormDataRequest, patchRequest, deleteRequest } from "../APICalls.ts";
 import { AxiosResponse } from "axios";
 import axios from "axios";
-import { ICourrier, ICourrierUploadData, IApiResponse, ICourrierSearchParams, IPagination, ICourrierStats, ICourrierListParams } from "../../utils/types/courrier.types.ts";
+import { ICourrier, ICourrierUploadData, IApiResponse, ICourrierSearchParams, IPagination, ICourrierStats, ICourrierListParams, ICourrierAnalysisResult } from "../../utils/types/courrier.types.ts";
 import { courrierModel } from "../models/courrier.model.ts";
 
 export const uploadCourrierService = async (
@@ -218,4 +218,19 @@ export const sendBulkCourrierEmailService = async (
   }
   
   throw new Error(response.data.message || "Failed to send bulk courrier email");
+};
+
+export const analyzeCourrierService = async (
+  file: File
+): Promise<ICourrierAnalysisResult> => {
+  const formData = new FormData();
+  formData.append('courrier', file);
+
+  const response: AxiosResponse<IApiResponse<ICourrierAnalysisResult>> = await postFormDataRequest("/courriers/analyze", formData);
+
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+
+  throw new Error(response.data.message || "Failed to analyze courrier");
 };

@@ -243,6 +243,25 @@
             background: rgba(231, 76, 60, 0.1);
           }
         }
+
+        .analyzingBadge {
+          & {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4em 0.8em;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(168, 85, 247, 0.1));
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: vars.$musiquePrimary;
+          }
+
+          .analyzingIcon {
+            animation: pulse 1.5s ease-in-out infinite;
+          }
+        }
       }
 
       .uploadPrompt {
@@ -346,4 +365,9 @@
       }
     }
   }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.15); }
 }

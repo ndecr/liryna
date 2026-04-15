@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, ReactElement } from "react";
 import { CourrierContext } from "./CourrierContext.tsx";
-import { ICourrier, ICourrierUploadData, ICourrierSearchParams, IPagination, ICourrierStats, ICourrierListParams } from "../../utils/types/courrier.types.ts";
+import { ICourrier, ICourrierUploadData, ICourrierSearchParams, IPagination, ICourrierStats, ICourrierListParams, ICourrierAnalysisResult } from "../../utils/types/courrier.types.ts";
 import {
   uploadCourrierService,
   getAllCourriersService,
@@ -10,7 +10,8 @@ import {
   searchCourriersService,
   downloadCourrierService,
   sendCourrierEmailService,
-  getCourrierStatsService
+  getCourrierStatsService,
+  analyzeCourrierService
 } from "../../API/services/courrier.service.ts";
 
 export const CourrierProvider = ({
@@ -152,6 +153,10 @@ export const CourrierProvider = ({
     }
   }, []);
 
+  const analyzeCourrier = useCallback(async (file: File): Promise<ICourrierAnalysisResult> => {
+    return await analyzeCourrierService(file);
+  }, []);
+
   const contextValue = useMemo(
     () => ({
       courriers,
@@ -170,8 +175,9 @@ export const CourrierProvider = ({
       downloadCourrier,
       sendCourrierEmail,
       getCourrierStats,
+      analyzeCourrier,
     }),
-    [courriers, currentCourrier, isLoading, pagination, stats, uploadCourrier, getAllCourriers, getCourrierById, updateCourrier, deleteCourrier, searchCourriers, downloadCourrier, sendCourrierEmail, getCourrierStats],
+    [courriers, currentCourrier, isLoading, pagination, stats, uploadCourrier, getAllCourriers, getCourrierById, updateCourrier, deleteCourrier, searchCourriers, downloadCourrier, sendCourrierEmail, getCourrierStats, analyzeCourrier],
   );
 
   return (
