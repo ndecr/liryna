@@ -623,9 +623,6 @@
 
                   .actionMenu {
                     & {
-                      position: absolute;
-                      right: 0;
-                      top: calc(100% + 0.25em);
                       display: flex;
                       gap: 0.375em;
                       background: white;
