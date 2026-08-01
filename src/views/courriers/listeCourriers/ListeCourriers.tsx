@@ -32,10 +32,9 @@ import WithAuth from "../../../utils/middleware/WithAuth.tsx";
 import Header from "../../../components/header/Header.tsx";
 import SubNav from "../../../components/subNav/SubNav.tsx";
 import Button from "../../../components/button/Button.tsx";
-import Modal from "../../../components/modal/Modal.tsx";
 import Loader from "../../../components/loader/Loader.tsx";
 import EmailModal from "../../../components/emailModal/EmailModal.tsx";
-import ModernPDFViewer from "../../../components/pdfViewer/ModernPDFViewer.tsx";
+import { DocumentViewerModal } from "../../../components/documentViewerModal/DocumentViewerModal.tsx";
 
 // hooks
 import { useCourrier } from "../../../hooks/useCourrier.ts";
@@ -1129,20 +1128,13 @@ function ListeCourriers(): ReactElement {
       )}
 
       {/* Modale PDF/Image */}
-      <Modal 
+      <DocumentViewerModal
+        fileName={pdfModal.fileName}
+        fileType={pdfModal.fileType}
+        fileUrl={pdfModal.pdfUrl}
         isVisible={pdfModal.visible}
         onClose={closePdfModal}
-        title={pdfModal.fileName || `Visualisation ${pdfModal.fileType.toUpperCase()}`}
-      >
-        {pdfModal.fileType === 'image' ? (
-          <img src={pdfModal.pdfUrl} alt={pdfModal.fileName} className="modal-content-image" />
-        ) : (
-          <ModernPDFViewer
-            pdfUrl={pdfModal.pdfUrl}
-            fileName={pdfModal.fileName || 'document.pdf'}
-          />
-        )}
-      </Modal>
+      />
 
       {/* Modale Email */}
       <EmailModal

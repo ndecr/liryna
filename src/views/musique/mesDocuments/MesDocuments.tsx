@@ -27,7 +27,7 @@ import SubNav from "../../../components/subNav/SubNav.tsx";
 import Button from "../../../components/button/Button.tsx";
 import Modal from "../../../components/modal/Modal.tsx";
 import Loader from "../../../components/loader/Loader.tsx";
-import ModernPDFViewer from "../../../components/pdfViewer/ModernPDFViewer.tsx";
+import { DocumentViewerModal } from "../../../components/documentViewerModal/DocumentViewerModal.tsx";
 
 import { useMusicDocument } from "../../../hooks/useMusicDocument.ts";
 
@@ -670,23 +670,13 @@ function MesDocuments(): ReactElement {
       </Modal>
 
       {/* Preview Modal */}
-      <Modal
+      <DocumentViewerModal
+        fileName={previewModal.fileName}
+        fileType={previewModal.mimeType.startsWith("image/") ? "image" : "pdf"}
+        fileUrl={previewModal.fileUrl}
         isVisible={previewModal.visible}
         onClose={closePreviewModal}
-        title={previewModal.fileName}
-      >
-        <div className="documentPreviewContent">
-          {previewModal.mimeType.startsWith("image/") ? (
-            <img
-              src={previewModal.fileUrl}
-              alt={previewModal.fileName}
-              className="previewImage"
-            />
-          ) : (
-            <ModernPDFViewer pdfUrl={previewModal.fileUrl} fileName={previewModal.fileName} />
-          )}
-        </div>
-      </Modal>
+      />
       </main>
     </>
   );
