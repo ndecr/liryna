@@ -65,10 +65,8 @@ export const UserProvider = ({
   const login = useCallback(async (credentials: IUserCredentials): Promise<void> => {
     setIsLoading(true);
     try {
-      const response = await loginService(credentials);
-      if (response.user) {
-        setUser(response.user);
-      }
+      await loginService(credentials);
+      await getCurrentUser();
     } catch (error) {
       console.error("Error while logging in:", error);
       setUser(null);
@@ -76,16 +74,13 @@ export const UserProvider = ({
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [getCurrentUser]);
 
   const register = useCallback(async (userData: IUserRegistration): Promise<void> => {
     setIsLoading(true);
     try {
-      const response = await registerService(userData);
-      const registeredUser = response.user || (response as { data?: IUser }).data;
-      if (registeredUser) {
-        setUser(registeredUser);
-      }
+      await registerService(userData);
+      await getCurrentUser();
     } catch (error) {
       console.error("Error while registering:", error);
       setUser(null);
@@ -93,7 +88,7 @@ export const UserProvider = ({
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [getCurrentUser]);
 
   const updatePreferences = useCallback(async (visibleSections: IVisibleSections): Promise<void> => {
     const updated = await updateUserPreferencesService(visibleSections);

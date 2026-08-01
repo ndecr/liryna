@@ -129,5 +129,17 @@
         }
       }
     }
+
+    @media (max-width: vars.$mobileWidth) {
+      padding: 0 !important;
+
+      .modalContainer {
+        &.modalContainer--document {
+          width: 100dvw !important;
+          height: 100dvh !important;
+          border-radius: 0 !important;
+        }
+      }
+    }
   }
 }

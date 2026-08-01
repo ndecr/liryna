@@ -10,9 +10,9 @@ interface DocumentImageViewerProps {
   imageUrl: string;
 }
 
-const MIN_SCALE = 0.5;
-const MAX_SCALE = 2;
-const SCALE_STEP = 0.25;
+const MIN_SCALE = 0.2;
+const MAX_SCALE = 3;
+const SCALE_STEP = 0.15;
 
 export function DocumentImageViewer({
   fileName,

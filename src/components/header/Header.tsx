@@ -139,6 +139,13 @@ export default function Header(): ReactElement {
             <div className="mobileMenuContent">
               {user && (
                 <div className="mobileUserInfo">
+                  <div className="headerAvatar" onClick={() => handleNavigate("/settings")} title="Paramètres">
+                    {avatarUrl ? (
+                      <img src={avatarUrl} alt="Avatar" className="headerAvatarImg" />
+                    ) : (
+                      <span className="headerAvatarInitial">{initials}</span>
+                    )}
+                  </div>
                   <span className="mobileUserGreeting">
                     {getGreeting()}, <strong>{user.firstName}</strong>
                   </span>

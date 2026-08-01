@@ -22,12 +22,12 @@ interface LoadedPdf {
 }
 
 const PDF_OPTIONS = { isEvalSupported: false } as const;
-const MIN_SCALE = 0.75;
-const MAX_SCALE = 2;
-const SCALE_STEP = 0.25;
+const MIN_SCALE = 0.25;
+const MAX_SCALE = 3;
+const SCALE_STEP = 0.15;
 
 const getInitialScale = (): number => (
-  window.matchMedia('(max-width: 768px)').matches ? MIN_SCALE : 1.1
+  window.matchMedia('(max-width: 768px)').matches ? 0.75 : 1.1
 );
 
 const SecurePDFRenderer = ({ pdfUrl, fileName }: SecurePDFRendererProps): ReactElement => {
