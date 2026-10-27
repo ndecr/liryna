@@ -64,7 +64,7 @@ function BudgetDashboard(): ReactElement {
   const revenusChartData = dashboard ? buildRevenusChartData(dashboard) : [];
   const barData = dashboard ? buildBarChartData(dashboard) : [];
 
-  const tooltipFormatter = (value?: number | string | (number | string)[]): string => {
+  const tooltipFormatter = (value?: number | string | readonly (number | string)[]): string => {
     if (typeof value === "number") return formatCurrency(value);
     if (value === undefined) return "";
     return String(value);
